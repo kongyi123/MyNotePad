@@ -3,7 +3,6 @@ package com.example.model
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.telephony.TelephonyManager
 import android.util.Log
@@ -337,83 +336,93 @@ object DataManager {
         mPostReference.updateChildren(childUpdates)
     }
 
+    fun postFirebaseDatabaseStringAtKey(path:String, key: String, string: String) {
+        val mPostReference = FirebaseDatabase.getInstance().reference
+        val childUpdates: MutableMap<String, Any?> = HashMap()
+        val result = HashMap<String, Any>()
+        result[key] = string
+        //childUpdates["/notice/"] = result
+        childUpdates[path] = result
+        mPostReference.updateChildren(childUpdates)
+    }
+
     fun getNotificationState(context:Context):Boolean {
-        val dataManager = PreferenceDataManager(context)
-        if (dataManager.getInt("notification") == 1) {
+        val pdm = PreferenceDataManager(context)
+        if (pdm.getInt("notification") == 1) {
             return true
         }
         return false
     }
 
     fun setNotificationState(context:Context, state:Boolean) {
-        val dataManager = PreferenceDataManager(context)
+        val pdm = PreferenceDataManager(context)
         if (state) {
-            dataManager.setInt("notification", 1)
+            pdm.setInt("notification", 1)
         } else {
-            dataManager.setInt("notification", 0)
+            pdm.setInt("notification", 0)
         }
     }
 
 
     fun getUpdateState(context:Context):Boolean {
-        val dataManager = PreferenceDataManager(context)
-        if (dataManager.getInt("updateEnable") == 1) {
+        val pdm = PreferenceDataManager(context)
+        if (pdm.getInt("updateEnable") == 1) {
             return true
         }
         return false
     }
 
     fun setUpdateState(context:Context, state:Boolean) {
-        val dataManager = PreferenceDataManager(context)
+        val pdm = PreferenceDataManager(context)
         if (state) {
-            dataManager.setInt("updateEnable", 1)
+            pdm.setInt("updateEnable", 1)
         } else {
-            dataManager.setInt("updateEnable", 0)
+            pdm.setInt("updateEnable", 0)
         }
     }
 
     fun setSingleSheet(context:Context, i:Int, item: Sheet?) {
-        val dataManager = PreferenceDataManager(context)
+        val pdm = PreferenceDataManager(context)
         val sheetNameKey = "sheetName$i"
         val sheetContentKey = "sheetContent$i"
         val sheetIdKey = "sheetId$i"
         val sheetTextSizeKey = "sheetTextSize$i"
 
-        dataManager.setString(sheetNameKey, item?.getName())
-        dataManager.setString(sheetContentKey, item?.getContent())
-        dataManager.setString(sheetIdKey, item?.getId().toString())
-        dataManager.setFloat(sheetTextSizeKey, item?.getTextSize()!!)
+        pdm.setString(sheetNameKey, item?.getName())
+        pdm.setString(sheetContentKey, item?.getContent())
+        pdm.setString(sheetIdKey, item?.getId().toString())
+        pdm.setFloat(sheetTextSizeKey, item?.getTextSize()!!)
     }
 
     fun setSheetCount(context:Context, size:Int) {
-        val dataManager = PreferenceDataManager(context)
-        dataManager.setInt("sheetCount", size)
+        val pdm = PreferenceDataManager(context)
+        pdm.setInt("sheetCount", size)
     }
 
     fun setIdCount(context:Context, count:Int) {
-        val dataManager = PreferenceDataManager(context)
-        dataManager.setInt("sheetIdCount", count)
+        val pdm = PreferenceDataManager(context)
+        pdm.setInt("sheetIdCount", count)
     }
 
     fun getSingleSheet(context:Context, i:Int):Sheet {
-        val dataManager = PreferenceDataManager(context)
+        val pdm = PreferenceDataManager(context)
         val sheetNameKey = "sheetName$i"
         val sheetContentKey = "sheetContent$i"
         val sheetIdKey = "sheetId$i"
         val sheetTextSizeKey = "sheetTextSize$i"
-        return Sheet(dataManager.getString(sheetIdKey)?.toInt(),
-            dataManager.getString(sheetNameKey),
-            dataManager.getString(sheetContentKey),
-            dataManager.getFloat(sheetTextSizeKey))
+        return Sheet(pdm.getString(sheetIdKey)?.toInt(),
+            pdm.getString(sheetNameKey),
+            pdm.getString(sheetContentKey),
+            pdm.getFloat(sheetTextSizeKey))
     }
 
     fun getSheetCount(context:Context):Int {
-        val dataManager = PreferenceDataManager(context)
-        return dataManager.getInt("sheetCount")
+        val pdm = PreferenceDataManager(context)
+        return pdm.getInt("sheetCount")
     }
 
     fun getIdCount(context:Context):Int {
-        val dataManager = PreferenceDataManager(context)
-        return dataManager.getInt("sheetIdCount")
+        val pdm = PreferenceDataManager(context)
+        return pdm.getInt("sheetIdCount")
     }
 }
