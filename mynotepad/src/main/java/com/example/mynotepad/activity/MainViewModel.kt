@@ -14,12 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.AndroidViewModel
 import com.example.mynotepad.R
-import com.example.model.PreferenceDataManager
 import com.example.mynotepad.data.Sheet
-import com.example.model.PreferenceManager
 import com.example.mynotepad.utility.SoftKeyboard
 import com.example.mynotepad.view.TabTextView
 import androidx.viewpager2.widget.ViewPager2
+import com.example.model.DataManager
 
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -33,7 +32,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val sheetOrder: MutableMap<Int, Int> = mutableMapOf<Int, Int>()
     var vpPager:ViewPager2? = null
     var currentTabPosition:Int = 0
-    private val dataManager = PreferenceDataManager(getApplication())
     var softKeyboard: SoftKeyboard? = null
     var rootLayout: ViewGroup? = null
     var controlManager: InputMethodManager? = null
@@ -95,22 +93,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /** Save all of the data in the application.
      */
     fun saveAllIntoDB() {
+        val context:Context = getApplication()
+
         // 현재 프레그 먼트 덩어리에 있는 것을 저장하여 올림
         updateFragmentToSheets()
-
         for (i in 1..items.size) {
-            val sheetNameKey = "sheetName$i"
-            val sheetContentKey = "sheetContent$i"
-            val sheetIdKey = "sheetId$i"
-            val sheetTextSizeKey = "sheetTextSize$i"
-
-            dataManager.setString(sheetNameKey, items?.get(i-1)?.getName())
-            dataManager.setString(sheetContentKey, items?.get(i-1)?.getContent())
-            dataManager.setString(sheetIdKey, items?.get(i-1)?.getId().toString())
-            dataManager.setFloat(sheetTextSizeKey, items?.get(i-1)?.getTextSize()!!)
+            val bringTypeSheet = com.example.model.data.Sheet(
+                items[i-1].getId(),
+                items[i-1].getName(),
+                items[i-1].getContent(),
+                items[i-1].getTextSize())
+            DataManager.setSingleSheet(context, i-1, bringTypeSheet)
         }
-        dataManager.setInt("sheetCount", items!!.size)
-        dataManager.setInt("sheetIdCount", sheetIdCount!!)
+        DataManager.setSheetCount(context, items.size)
+        DataManager.setIdCount(context, sheetIdCount)
         Toast.makeText(getApplication(), "saved", Toast.LENGTH_SHORT).show()
     }
 
@@ -119,18 +115,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun loadSheetData() {
         val context:Context = getApplication()
         isFirstStart = false
-        sheetSize = dataManager.getInt("sheetCount")
-        sheetIdCount = dataManager.getInt("sheetIdCount")
-        if (sheetSize!! > 0) {
-            for (i in 1..sheetSize!!) {
-                val sheetNameKey = "sheetName$i"
-                val sheetContentKey = "sheetContent$i"
-                val sheetIdKey = "sheetId$i"
-                val sheetTextSizeKey = "sheetTextSize$i"
-                var sheetName = PreferenceManager.getString(context, sheetNameKey)
-                var sheetContent = PreferenceManager.getString(context, sheetContentKey)
-                var sheetId:String? = PreferenceManager.getString(context, sheetIdKey)
-                var sheetTextSize:Float? = PreferenceManager.getFloat(context, sheetTextSizeKey)
+        sheetSize = DataManager.getSheetCount(context)
+        sheetIdCount = DataManager.getIdCount(context)
+        if (sheetSize > 0) {
+            for (i in 1..sheetSize) {
+                val item:com.example.model.data.Sheet = DataManager.getSingleSheet(context, i)
+                var sheetName = item.getName()
+                var sheetContent = item.getContent()
+                var sheetId:String? = item.getId().toString()
+                var sheetTextSize:Float? = item.getTextSize()
                 if (sheetTextSize == -1.0f) {
                     sheetTextSize = 10.0f
                 }

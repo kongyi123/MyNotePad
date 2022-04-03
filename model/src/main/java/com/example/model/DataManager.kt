@@ -14,6 +14,7 @@ import com.example.common.MyNotification
 import com.example.model.data.History
 import com.example.model.data.Notice
 import com.example.model.data.Schedule
+import com.example.model.data.Sheet
 import com.google.firebase.database.*
 import java.lang.NullPointerException
 import java.util.HashMap
@@ -369,5 +370,50 @@ object DataManager {
         } else {
             dataManager.setInt("updateEnable", 0)
         }
+    }
+
+    fun setSingleSheet(context:Context, i:Int, item: Sheet?) {
+        val dataManager = PreferenceDataManager(context)
+        val sheetNameKey = "sheetName$i"
+        val sheetContentKey = "sheetContent$i"
+        val sheetIdKey = "sheetId$i"
+        val sheetTextSizeKey = "sheetTextSize$i"
+
+        dataManager.setString(sheetNameKey, item?.getName())
+        dataManager.setString(sheetContentKey, item?.getContent())
+        dataManager.setString(sheetIdKey, item?.getId().toString())
+        dataManager.setFloat(sheetTextSizeKey, item?.getTextSize()!!)
+    }
+
+    fun setSheetCount(context:Context, size:Int) {
+        val dataManager = PreferenceDataManager(context)
+        dataManager.setInt("sheetCount", size)
+    }
+
+    fun setIdCount(context:Context, count:Int) {
+        val dataManager = PreferenceDataManager(context)
+        dataManager.setInt("sheetIdCount", count)
+    }
+
+    fun getSingleSheet(context:Context, i:Int):Sheet {
+        val dataManager = PreferenceDataManager(context)
+        val sheetNameKey = "sheetName$i"
+        val sheetContentKey = "sheetContent$i"
+        val sheetIdKey = "sheetId$i"
+        val sheetTextSizeKey = "sheetTextSize$i"
+        return Sheet(dataManager.getString(sheetIdKey)?.toInt(),
+            dataManager.getString(sheetNameKey),
+            dataManager.getString(sheetContentKey),
+            dataManager.getFloat(sheetTextSizeKey))
+    }
+
+    fun getSheetCount(context:Context):Int {
+        val dataManager = PreferenceDataManager(context)
+        return dataManager.getInt("sheetCount")
+    }
+
+    fun getIdCount(context:Context):Int {
+        val dataManager = PreferenceDataManager(context)
+        return dataManager.getInt("sheetIdCount")
     }
 }
