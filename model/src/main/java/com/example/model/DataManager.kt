@@ -4,19 +4,27 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.telephony.TelephonyManager
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.common.MyNotification
+import com.example.common.WidgetProvider
 import com.example.model.data.History
 import com.example.model.data.Notice
 import com.example.model.data.Schedule
 import com.example.model.data.Sheet
 import com.google.firebase.database.*
 import java.lang.NullPointerException
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 object DataManager {
@@ -87,12 +95,85 @@ object DataManager {
         })
     }
 
+    fun get14daysSchedule(context:Context, id_list:String) {
+        val scheduleList = ArrayList<Schedule>()
+        val sortByAge:Query = FirebaseDatabase.getInstance().reference.child(id_list)
+        sortByAge.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.i("kongyi0414", "get14daysSchedule - onchanged")
+                scheduleList.clear()
+                var start = false
+                var cnt = 0
+                var str = ""
+                for(postSnapshot in snapshot.children) {
+                    if (!postSnapshot.exists()) {
+                        continue
+                    }
+                    for (postPostSnapshot in postSnapshot.children) {
+                        Log.i("kongyi1220", "key = " + postPostSnapshot.key.toString())
+                        val get = postPostSnapshot.getValue(FirebasePost::class.java)
+                        Log.i(
+                            "kongyi1220",
+                            "title = ${get?.title}, content = ${get?.content}, id = ${get?.id}"
+                        )
+
+                        get?.id?.let {
+                            if (!start) {
+                                val cal = Calendar.getInstance()
+                                cal.timeInMillis = System.currentTimeMillis()
+                                val dateOfToday = Utils.getDateFromCalToString(cal)
+
+                                if (get.date >= dateOfToday) {
+                                    start = true
+                                    Log.i("kongyi0414", "${get.date}/${dateOfToday}")
+                                }
+                            }
+                            if (start && cnt <= 14) {
+                                cnt ++
+                                str += Utils.convDBdateToShown(get.date.toString()) + " " + get.title + " " + get.content + "\n"
+                                scheduleList.add(
+                                    Schedule(
+                                        get.id,
+                                        get.date,
+                                        get.title,
+                                        get.content,
+                                        get.color
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+                Log.i("kongyi0414", "scheduleList = ${scheduleList}")
+
+//                val inflater: LayoutInflater = LayoutInflater.from(context)
+//                val view = inflater.inflate(R.layout.text_list_layout, null)
+//                val cv = view.findViewById<TextView>(R.id.textList)
+//                cv.text = scheduleList.toString()
+                val wp = WidgetProvider()
+                wp.update(context, str)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+
+    }
+
+    private fun getBitmapFromView(v: View): Bitmap {
+        val b = Bitmap.createBitmap(v.measuredWidth, v.measuredHeight, Bitmap.Config.ARGB_8888);
+        val c = Canvas(b);
+        v.draw(c);
+        return b;
+    }
+
     fun getAllHistoryData(context:Context) {
         val historyList = ArrayList<History>()
         val sortByAge:Query = FirebaseDatabase.getInstance().reference.child("history")
         sortByAge.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("kongyi1220", "onchanged")
+                Log.i("kongyi0414", "onchanged")
                 historyList.clear()
                 for(postSnapshot in snapshot.children) {
                     if (!postSnapshot.exists()) {

@@ -18,10 +18,12 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 
 import android.os.Bundle
 import android.text.style.LineBackgroundSpan
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +31,7 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.WidgetProvider
 import com.example.model.DataManager
 import com.example.sharedcalendar.R
 import com.example.model.Utils
@@ -64,7 +67,10 @@ class CalendarActivity : AppCompatActivity() {
         initializeDayListView(calView)
 
         mPhoneNumber = DataManager.getLineNumber(this, this)
+
+
     }
+
 
     private fun initializeCalendar(calView: MaterialCalendarView) {
         calView.setDateTextAppearance(1); // 날짜 선택했을 때, 날짜 text가 색깔이 검은 색이 되도록 함. 이거 안쓰면 흰색됨.
@@ -105,7 +111,7 @@ class CalendarActivity : AppCompatActivity() {
         builder.setPositiveButton("예") { dialog, which ->
             //                    Toast.makeText(applicationContext, "예를 선택했습니다.", Toast.LENGTH_LONG).show()
             if (mScheduleList != null) {
-                val dateString = date.year.toString()+"~"+date.month.toString()+"~"+date.day.toString()
+                val dateString = date.year.toString()+"~"+Utils.addFront0(date.month.toString())+"~"+Utils.addFront0(date.day.toString())
                 DataManager.removeDayAllSchedule("id_list", dateString)
                 refreshList(date)
             }
@@ -129,7 +135,7 @@ class CalendarActivity : AppCompatActivity() {
                 // 새로 입력 하는 것으로 수정 필요
                 val intent = Intent(this, DayActivity::class.java)
                 val day: CalendarDay = CalendarDay.from(date.year, date.month, date.day)
-                val schedule = Schedule("no_id","${date.year}~${date.month}~${date.day}", "", "", "")
+                val schedule = Schedule("no_id","${date.year}~${Utils.addFront0(date.month.toString())}~${Utils.addFront0(date.day.toString())}", "", "", "")
                 intent.putExtra("info", schedule)
                 startActivity(intent);
             }
@@ -142,7 +148,7 @@ class CalendarActivity : AppCompatActivity() {
         val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rvAdapter = DayListAdapter(
             mScheduleList!!,
-            date.year.toString() + "~" + date.month.toString() + "~" + date.day.toString()
+            date.year.toString() + "~" + Utils.addFront0(date.month.toString()) + "~" + Utils.addFront0(date.day.toString())
         )
         mRecyclerView.layoutManager = manager
         mRecyclerView.adapter = rvAdapter
@@ -249,6 +255,12 @@ class CalendarActivity : AppCompatActivity() {
         for (schedule in mScheduleList!!) {
             Log.i("kongyi1220B", "show schedule.date = " + schedule.date)
             day = Utils.getDateFromStringToCal(schedule.date)
+            // converting logic
+            if (!Utils.isMonth2Char(schedule.date) || !Utils.isDay2Char(schedule.date)) {
+                DataManager.removeSingleSchedule("id_list", schedule.date, schedule.id)
+                val date = day?.year.toString()+"~"+Utils.addFront0(day?.month.toString())+"~"+Utils.addFront0(day?.day.toString())
+                DataManager.putSingleSchedule("id_list", date, schedule.title, schedule.content, schedule.color, schedule.id)
+            }
             color = schedule.color
             if (day != null) {
                 if (current == null) {

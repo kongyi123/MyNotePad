@@ -125,8 +125,7 @@ class DayActivity : AppCompatActivity() {
     }
 
     private fun setInput() {
-        var date = "${dateView.year}~${dateView.month}~${dateView.dayOfMonth}"
-        Log.i("kongyi1220TT", "before id = " + mSchedule!!.id)
+        var date = "${dateView.year}~${Utils.addFront0(dateView.month.toString())}~${Utils.addFront0(dateView.dayOfMonth.toString())}"
         if (isNew) {
             mSchedule?.id = "no_id"
             DataManager.putSingleSchedule(

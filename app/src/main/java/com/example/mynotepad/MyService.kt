@@ -36,7 +36,7 @@ class MyService : Service() {
                 startOnGoingNotification()
             }
             DataManager.getAllHistoryData(this)
-
+            DataManager.get14daysSchedule(this, "id_list")
         } else {
             return Service.START_STICKY
         }

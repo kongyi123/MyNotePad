@@ -109,7 +109,7 @@ class DayActivity : AppCompatActivity() {
     }
 
     private fun setInput() {
-        val date = "${dateView.year}~${dateView.month}~${dateView.dayOfMonth}"
+        val date = "${dateView.year}~${Utils.addFront0(dateView.month.toString())}~${Utils.addFront0(dateView.dayOfMonth.toString())}"
         Log.i("kongyi1220TT", "before id = " + mSchedule!!.id)
         if (isNew) {
             mSchedule?.id = "no_id"

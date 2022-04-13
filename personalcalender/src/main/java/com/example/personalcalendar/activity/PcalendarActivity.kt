@@ -15,6 +15,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -55,6 +56,22 @@ class PcalendarActivity : AppCompatActivity() {
     }
     private fun initializeCalendar(calView: MaterialCalendarView) {
         calView.setDateTextAppearance(1); // 날짜 선택했을 때, 날짜 text가 색깔이 검은 색이 되도록 함. 이거 안쓰면 흰색됨.
+        calView.setOnDateChangedListener { widget, date, selected ->
+            Log.i("kongyitest", "hi")
+//            widget.
+        }
+        // get(0) -> 월/연도 view
+        calView.get(0).setOnClickListener {
+            Log.i("kongyitest", "0")
+        }
+        calView.get(1).setOnClickListener {
+            Log.i("kongyitest", "1")
+        }
+        calView.getChildAt(0).setOnClickListener { Log.i("kongyitest", "ch 0") }
+        calView.getChildAt(1).setOnClickListener { Log.i("kongyitest", "ch 1") }
+//        calView.getChildAt(2).setOnClickListener { Log.i("kongyitest", "ch 2") }
+//        calView.getChildAt(3).setOnClickListener { Log.i("kongyitest", "ch 3") }
+//        calView.getChildAt(4).setOnClickListener { Log.i("kongyitest", "ch 4") }
 
         calView.state().edit()
             .setFirstDayOfWeek(Calendar.SUNDAY)
@@ -129,7 +146,7 @@ class PcalendarActivity : AppCompatActivity() {
         val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rvAdapter = DayListAdapter(
             mScheduleList!!,
-            date.year.toString() + "~" + date.month.toString() + "~" + date.day.toString()
+            date.year.toString() + "~" + Utils.addFront0(date.month.toString()) + "~" + Utils.addFront0(date.day.toString())
         )
         mRecyclerView.layoutManager = manager
         mRecyclerView.adapter = rvAdapter
@@ -237,6 +254,12 @@ class PcalendarActivity : AppCompatActivity() {
         for (schedule in mScheduleList!!) {
             Log.i("kongyi1220B", "show schedule.date = " + schedule.date)
             day = Utils.getDateFromStringToCal(schedule.date)
+            // converting logic
+            if (!Utils.isMonth2Char(schedule.date) || !Utils.isDay2Char(schedule.date)) {
+                DataManager.removeSingleSchedule("pid_list", schedule.date, schedule.id)
+                val date = day?.year.toString()+"~"+Utils.addFront0(day?.month.toString())+"~"+Utils.addFront0(day?.day.toString())
+                DataManager.putSingleSchedule("pid_list", date, schedule.title, schedule.content, schedule.color, schedule.id)
+            }
             color = schedule.color
             if (day != null) {
                 if (current == null) {
@@ -263,7 +286,9 @@ class PcalendarActivity : AppCompatActivity() {
 
         for (day in dayList) {
             calView.addDecorators(
-                colorSetHash[day]?.let { EventDecorator(it, day, this) }
+                colorSetHash[day]?.let {
+                    EventDecorator(it, day, this)
+                }
             )
         }
     }

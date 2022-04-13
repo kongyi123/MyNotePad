@@ -35,6 +35,16 @@
         <entry key="..\:/MyNotePad/sharecalendar/src/main/res/layout/activity_setting.xml" value="0.23125" />
         <entry key="..\:/MyNotePad/sharecalendar/src/main/res/layout/list_item.xml" value="0.33" />
         <entry key="..\:/MyNotePad/sharecalendar/src/main/res/menu/menu_option.xml" value="0.23125" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/app/src/main/res/layout/activity_access.xml" value="0.184375" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/app/src/main/res/layout/activity_setting.xml" value="0.184375" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/app/src/main/res/layout/text_list_layout.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/app/src/main/res/layout/widget.xml" value="0.23020833333333332" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/common/src/main/res/layout/activity_access.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/common/src/main/res/layout/widget.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/model/src/main/res/layout/activity_access.xml" value="0.184375" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/mynotepad/src/main/res/layout/activity_access.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/personalcalender/src/main/res/layout/activity_day.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/kongy/Documents/MyNotePad/sharedcalendar/src/main/res/layout/activity_day.xml" value="0.18072916666666666" />
         <entry key="..\:/Users/kongyi123/MyNotePad/app/src/main/res/drawable/circle_black.xml" value="0.22083333333333333" />
         <entry key="..\:/Users/kongyi123/MyNotePad/app/src/main/res/layout/activity_access.xml" value="0.20104166666666667" />
         <entry key="..\:/Users/kongyi123/MyNotePad/app/src/main/res/layout/activity_history.xml" value="0.20104166666666667" />
@@ -61,7 +71,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
