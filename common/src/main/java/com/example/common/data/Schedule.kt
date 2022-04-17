@@ -1,4 +1,4 @@
-package com.example.model.data
+package com.example.common.data
 import java.io.Serializable
 
 data class Schedule (

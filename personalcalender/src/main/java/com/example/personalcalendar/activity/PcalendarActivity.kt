@@ -22,8 +22,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.model.DataManager
 import com.example.personalcalendar.R
 import com.example.personalcalendar.list.DayListAdapter
-import com.example.model.Utils
-import com.example.model.data.Schedule
+import com.example.common.Utils
+import com.example.common.data.Schedule
 import com.prolificinteractive.materialcalendarview.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -257,7 +257,7 @@ class PcalendarActivity : AppCompatActivity() {
             // converting logic
             if (!Utils.isMonth2Char(schedule.date) || !Utils.isDay2Char(schedule.date)) {
                 DataManager.removeSingleSchedule("pid_list", schedule.date, schedule.id)
-                val date = day?.year.toString()+"~"+Utils.addFront0(day?.month.toString())+"~"+Utils.addFront0(day?.day.toString())
+                val date = day?.year.toString()+"~"+ Utils.addFront0(day?.month.toString())+"~"+ Utils.addFront0(day?.day.toString())
                 DataManager.putSingleSchedule("pid_list", date, schedule.title, schedule.content, schedule.color, schedule.id)
             }
             color = schedule.color

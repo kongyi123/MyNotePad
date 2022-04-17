@@ -8,8 +8,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.model.DataManager
-import com.example.model.Utils
-import com.example.model.data.Schedule
+import com.example.common.Utils
+import com.example.common.data.Schedule
 import com.example.paperweight.list.WeightListAdapter
 import java.text.SimpleDateFormat
 import java.util.*

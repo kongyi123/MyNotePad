@@ -7,8 +7,8 @@ import android.widget.*
 import com.example.personalcalendar.R
 import com.example.model.DataManager
 import com.example.model.DataManager.putSingleHistory
-import com.example.model.Utils
-import com.example.model.data.Schedule
+import com.example.common.Utils
+import com.example.common.data.Schedule
 
 class DayActivity : AppCompatActivity() {
     private lateinit var inputButtonView: Button

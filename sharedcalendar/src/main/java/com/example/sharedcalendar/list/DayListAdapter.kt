@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.model.data.Schedule
+import com.example.common.data.Schedule
 import com.example.sharedcalendar.R
 import java.util.ArrayList
 

@@ -18,12 +18,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 
 import android.os.Bundle
 import android.text.style.LineBackgroundSpan
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -31,11 +29,10 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.common.WidgetProvider
 import com.example.model.DataManager
 import com.example.sharedcalendar.R
-import com.example.model.Utils
-import com.example.model.data.Schedule
+import com.example.common.Utils
+import com.example.common.data.Schedule
 import com.example.sharedcalendar.list.DayListAdapter
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import kotlin.collections.HashMap
@@ -111,7 +108,7 @@ class CalendarActivity : AppCompatActivity() {
         builder.setPositiveButton("예") { dialog, which ->
             //                    Toast.makeText(applicationContext, "예를 선택했습니다.", Toast.LENGTH_LONG).show()
             if (mScheduleList != null) {
-                val dateString = date.year.toString()+"~"+Utils.addFront0(date.month.toString())+"~"+Utils.addFront0(date.day.toString())
+                val dateString = date.year.toString()+"~"+ Utils.addFront0(date.month.toString())+"~"+ Utils.addFront0(date.day.toString())
                 DataManager.removeDayAllSchedule("id_list", dateString)
                 refreshList(date)
             }
@@ -258,7 +255,7 @@ class CalendarActivity : AppCompatActivity() {
             // converting logic
             if (!Utils.isMonth2Char(schedule.date) || !Utils.isDay2Char(schedule.date)) {
                 DataManager.removeSingleSchedule("id_list", schedule.date, schedule.id)
-                val date = day?.year.toString()+"~"+Utils.addFront0(day?.month.toString())+"~"+Utils.addFront0(day?.day.toString())
+                val date = day?.year.toString()+"~"+ Utils.addFront0(day?.month.toString())+"~"+ Utils.addFront0(day?.day.toString())
                 DataManager.putSingleSchedule("id_list", date, schedule.title, schedule.content, schedule.color, schedule.id)
             }
             color = schedule.color

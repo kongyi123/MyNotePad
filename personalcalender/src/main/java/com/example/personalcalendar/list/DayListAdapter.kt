@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.personalcalendar.R
-import com.example.model.data.Schedule
+import com.example.common.data.Schedule
 import java.util.ArrayList
 
 class DayListAdapter(scheduleList: ArrayList<Schedule>, date:String) : RecyclerView.Adapter<ViewHolder>() {

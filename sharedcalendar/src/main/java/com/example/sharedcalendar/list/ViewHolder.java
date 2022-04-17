@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharedcalendar.R;
 import com.example.sharedcalendar.activity.DayActivity;
-import com.example.model.data.Schedule;
+import com.example.common.data.Schedule;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
     TextView title;

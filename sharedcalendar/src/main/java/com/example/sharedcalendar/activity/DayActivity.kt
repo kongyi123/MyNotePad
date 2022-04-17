@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import com.example.model.DataManager
-import com.example.model.Utils
-import com.example.model.data.Schedule
+import com.example.common.Utils
+import com.example.common.data.Schedule
 import com.example.sharedcalendar.R
 
 class DayActivity : AppCompatActivity() {
