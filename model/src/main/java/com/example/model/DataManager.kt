@@ -3,6 +3,7 @@ package com.example.model
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -94,8 +95,8 @@ object DataManager {
         })
     }
 
-    fun get14daysSchedule(context:Context, id_list:String) {
-        val scheduleList = ArrayList<com.example.common.data.Schedule>()
+    fun get14daysSchedule(context: Context, id_list: String, intent: Intent) {
+        val scheduleList = ArrayList<Schedule>()
         val sortByAge:Query = FirebaseDatabase.getInstance().reference.child(id_list)
         sortByAge.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -148,7 +149,7 @@ object DataManager {
                 CoroutineScope(Dispatchers.Main).launch {
                     Log.i("kongyi1220aa", "view.post is called")
                     val wp = WidgetProvider()
-                    wp.update(context, scheduleList)
+                    wp.update(context, scheduleList, intent)
                 }
             }
 

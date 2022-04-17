@@ -1,7 +1,6 @@
 package com.example.mynotepad
 import android.annotation.SuppressLint
 import android.app.*
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -36,7 +35,8 @@ class MyService : Service() {
                 startOnGoingNotification()
             }
             DataManager.getAllHistoryData(this)
-            DataManager.get14daysSchedule(this, "id_list")
+            val intent = Intent(this, AccessActivity::class.java)
+            DataManager.get14daysSchedule(this, "id_list", intent)
         } else {
             return Service.START_STICKY
         }

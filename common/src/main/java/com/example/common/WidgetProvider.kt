@@ -1,9 +1,11 @@
 package com.example.common
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
@@ -57,57 +59,77 @@ class WidgetProvider : AppWidgetProvider() {
         var j = 0
         var str = ""
         fun setTextViewDayTextView(views: RemoteViews, list: ArrayList<Schedule>, id:Int) {
-            var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
-            if (currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && (
-                id == R.id.today_sunday ||
-                    id == R.id.week1_sunday ||
-                    id == R.id.week2_sunday)) {
-                j = i
+            if (list.size == 0) {
                 str = ""
-                while (i < list.size && list[i].date == list[j].date) {
-                    var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
-                    str += Utils.convDBdateToShown(list[i].date) + "(${dayString[currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK)]}) "  + list[i].title + " " + list[i++].content
-                    if (!(i < list.size && list[i].date == list[j].date)) {
-                        break
+            } else {
+                var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
+                if (currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && (
+                            id == R.id.today_sunday ||
+                                    id == R.id.week1_sunday ||
+                                    id == R.id.week2_sunday)
+                ) {
+                    j = i
+                    str = ""
+                    while (i < list.size && list[i].date == list[j].date) {
+                        var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
+                        str += Utils.convDBdateToShown(list[i].date) + "(${
+                            dayString[currentDayCal!!.calendar.get(
+                                Calendar.DAY_OF_WEEK
+                            )]
+                        }) " + list[i].title + " " + list[i++].content
+                        if (!(i < list.size && list[i].date == list[j].date)) {
+                            break
+                        }
+                        str += "\n"
                     }
-                    str += "\n"
-                }
-            } else if (currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && (
-                id == R.id.today_saturday ||
-                id == R.id.week1_saturday ||
-                id == R.id.week2_saturday)) {
-                j = i
-                str = ""
-                while (i < list.size && list[i].date == list[j].date) {
-                    var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
-                    str += Utils.convDBdateToShown(list[i].date) + "(${dayString[currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK)]}) "  + list[i].title + " " + list[i++].content
-                    if (!(i < list.size && list[i].date == list[j].date)) {
-                        break
+                } else if (currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && (
+                            id == R.id.today_saturday ||
+                                    id == R.id.week1_saturday ||
+                                    id == R.id.week2_saturday)
+                ) {
+                    j = i
+                    str = ""
+                    while (i < list.size && list[i].date == list[j].date) {
+                        var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
+                        str += Utils.convDBdateToShown(list[i].date) + "(${
+                            dayString[currentDayCal!!.calendar.get(
+                                Calendar.DAY_OF_WEEK
+                            )]
+                        }) " + list[i].title + " " + list[i++].content
+                        if (!(i < list.size && list[i].date == list[j].date)) {
+                            break
+                        }
+                        str += "\n"
                     }
-                    str += "\n"
-                }
-            }
-            else {
-                str = ""
-                val cal = Calendar.getInstance()
-                cal.timeInMillis = System.currentTimeMillis()
+                } else {
+                    str = ""
+                    val cal = Calendar.getInstance()
+                    cal.timeInMillis = System.currentTimeMillis()
 
-                if (i < list.size) {
-                    if (currentDayCal != null) {
-                        while (i < list.size &&
-                            currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY &&
-                            currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
-                        ) {
-                            str += Utils.convDBdateToShown(list[i].date) + "(${dayString[currentDayCal.calendar.get(Calendar.DAY_OF_WEEK)]}) " + list[i].title + " " + list[i++].content
-                            currentDayCal = Utils.getDateFromStringToCal(list[i].date)
-                            if (!(i < list.size && currentDayCal != null && currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY &&
-                                        currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY)) break
-                            str += "\n"
+                    if (i < list.size) {
+                        if (currentDayCal != null) {
+                            while (i < list.size &&
+                                currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY &&
+                                currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+                            ) {
+                                str += Utils.convDBdateToShown(list[i].date) + "(${
+                                    dayString[currentDayCal.calendar.get(
+                                        Calendar.DAY_OF_WEEK
+                                    )]
+                                }) " + list[i].title + " " + list[i++].content
+                                currentDayCal = Utils.getDateFromStringToCal(list[i].date)
+                                if (!(i < list.size && currentDayCal != null && currentDayCal!!.calendar.get(
+                                        Calendar.DAY_OF_WEEK
+                                    ) != Calendar.SUNDAY &&
+                                            currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY)
+                                ) break
+                                str += "\n"
+                            }
                         }
                     }
-                }
-           //     Log.i("kongyi1220BB", "day = ${day}, currentDay = $currentDay")
+                    //     Log.i("kongyi1220BB", "day = ${day}, currentDay = $currentDay")
 
+                }
             }
             views.setTextViewText(id, str)
             if (str == "") {
@@ -118,9 +140,7 @@ class WidgetProvider : AppWidgetProvider() {
         }
     }
 
-    fun update(context:Context?, list: ArrayList<Schedule>) {
-        // todo : 위젯 캐쉬가 초기화 되지 않는 경우는 앞으로 고쳐야 할 것
-
+    fun update(context: Context?, list: ArrayList<Schedule>, intent: Intent) {
         val cal = Calendar.getInstance()
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val testWidget = ComponentName(context!!, WidgetProvider::class.java)
@@ -130,32 +150,53 @@ class WidgetProvider : AppWidgetProvider() {
         val day = cal.get(Calendar.DAY_OF_WEEK)
 
         Log.i("kongyi1220BB", "day - ${day}")
-        if (day == Calendar.SATURDAY) {
-            Log.i("kongyi1220BB", "SATURDAY")
-            ViewSetter.setTextViewDayTextView(views, list, R.id.today_saturday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week1_sunday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week1_weekdays)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week1_saturday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_sunday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_weekdays)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_saturday)
-        } else if (day == Calendar.SUNDAY) {
-            Log.i("kongyi1220BB", "SUNDAY")
-            ViewSetter.setTextViewDayTextView(views, list, R.id.today_sunday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week1_weekdays)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week1_saturday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_sunday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_weekdays)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_saturday)
-        } else {
-            Log.i("kongyi1220BB", "weekday")
-            ViewSetter.setTextViewDayTextView(views, list, R.id.today_weekday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week1_saturday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_sunday)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_weekdays)
-            ViewSetter.setTextViewDayTextView(views, list, R.id.week2_saturday)
+        clearWidget(views)
+
+        when (day) {
+            Calendar.SATURDAY -> {
+                Log.i("kongyi1220BB", "SATURDAY")
+                ViewSetter.setTextViewDayTextView(views, list, R.id.today_saturday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week1_sunday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week1_weekdays)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week1_saturday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_sunday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_weekdays)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_saturday)
+            }
+            Calendar.SUNDAY -> {
+                Log.i("kongyi1220BB", "SUNDAY")
+                ViewSetter.setTextViewDayTextView(views, list, R.id.today_sunday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week1_weekdays)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week1_saturday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_sunday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_weekdays)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_saturday)
+            }
+            else -> {
+                Log.i("kongyi1220BB", "weekday")
+                ViewSetter.setTextViewDayTextView(views, list, R.id.today_weekday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week1_saturday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_sunday)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_weekdays)
+                ViewSetter.setTextViewDayTextView(views, list, R.id.week2_saturday)
+            }
         }
 
+        views.setOnClickPendingIntent(R.id.clickable_view,
+            PendingIntent.getActivity(context, 0, intent, 0))
         appWidgetManager.updateAppWidget(testWidget, views);
+    }
+
+    private fun clearWidget(views: RemoteViews) {
+        val blank = ArrayList<Schedule>()
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.today_sunday)
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.today_weekday)
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.today_saturday)
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.week1_sunday)
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.week1_weekdays)
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.week1_saturday)
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.week2_sunday)
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.week2_weekdays)
+        ViewSetter.setTextViewDayTextView(views, blank, R.id.week2_saturday)
     }
 }
