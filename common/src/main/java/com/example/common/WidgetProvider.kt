@@ -58,77 +58,88 @@ class WidgetProvider : AppWidgetProvider() {
         var i = 0
         var j = 0
         var str = ""
+
+        fun init() {
+            i = 0
+            j = 0
+            str = ""
+        }
+
         fun setTextViewDayTextView(views: RemoteViews, list: ArrayList<Schedule>, id:Int) {
             if (list.size == 0) {
                 str = ""
             } else {
-                var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
-                if (currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && (
-                            id == R.id.today_sunday ||
-                                    id == R.id.week1_sunday ||
-                                    id == R.id.week2_sunday)
-                ) {
-                    j = i
-                    str = ""
-                    while (i < list.size && list[i].date == list[j].date) {
-                        var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
-                        str += Utils.convDBdateToShown(list[i].date) + "(${
-                            dayString[currentDayCal!!.calendar.get(
-                                Calendar.DAY_OF_WEEK
-                            )]
-                        }) " + list[i].title + " " + list[i++].content
-                        if (!(i < list.size && list[i].date == list[j].date)) {
-                            break
+                if (i < list.size) {
+                    var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
+                    if (currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && (
+                                id == R.id.today_sunday ||
+                                        id == R.id.week1_sunday ||
+                                        id == R.id.week2_sunday)
+                    ) {
+                        j = i
+                        str = ""
+                        while (i < list.size && list[i].date == list[j].date) {
+                            var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
+                            str += Utils.convDBdateToShown(list[i].date) + "(${
+                                dayString[currentDayCal!!.calendar.get(
+                                    Calendar.DAY_OF_WEEK
+                                )]
+                            }) " + list[i].title + " " + list[i++].content
+                            if (!(i < list.size && list[i].date == list[j].date)) {
+                                break
+                            }
+                            str += "\n"
                         }
-                        str += "\n"
-                    }
-                } else if (currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && (
-                            id == R.id.today_saturday ||
-                                    id == R.id.week1_saturday ||
-                                    id == R.id.week2_saturday)
-                ) {
-                    j = i
-                    str = ""
-                    while (i < list.size && list[i].date == list[j].date) {
-                        var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
-                        str += Utils.convDBdateToShown(list[i].date) + "(${
-                            dayString[currentDayCal!!.calendar.get(
-                                Calendar.DAY_OF_WEEK
-                            )]
-                        }) " + list[i].title + " " + list[i++].content
-                        if (!(i < list.size && list[i].date == list[j].date)) {
-                            break
+                    } else if (currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && (
+                                id == R.id.today_saturday ||
+                                        id == R.id.week1_saturday ||
+                                        id == R.id.week2_saturday)
+                    ) {
+                        j = i
+                        str = ""
+                        while (i < list.size && list[i].date == list[j].date) {
+                            var currentDayCal = Utils.getDateFromStringToCal(list[i].date)
+                            str += Utils.convDBdateToShown(list[i].date) + "(${
+                                dayString[currentDayCal!!.calendar.get(
+                                    Calendar.DAY_OF_WEEK
+                                )]
+                            }) " + list[i].title + " " + list[i++].content
+                            if (!(i < list.size && list[i].date == list[j].date)) {
+                                break
+                            }
+                            str += "\n"
                         }
-                        str += "\n"
-                    }
-                } else {
-                    str = ""
-                    val cal = Calendar.getInstance()
-                    cal.timeInMillis = System.currentTimeMillis()
+                    } else {
+                        str = ""
+                        val cal = Calendar.getInstance()
+                        cal.timeInMillis = System.currentTimeMillis()
 
-                    if (i < list.size) {
-                        if (currentDayCal != null) {
-                            while (i < list.size &&
-                                currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY &&
-                                currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
-                            ) {
-                                str += Utils.convDBdateToShown(list[i].date) + "(${
-                                    dayString[currentDayCal.calendar.get(
-                                        Calendar.DAY_OF_WEEK
-                                    )]
-                                }) " + list[i].title + " " + list[i++].content
-                                currentDayCal = Utils.getDateFromStringToCal(list[i].date)
-                                if (!(i < list.size && currentDayCal != null && currentDayCal!!.calendar.get(
-                                        Calendar.DAY_OF_WEEK
-                                    ) != Calendar.SUNDAY &&
-                                            currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY)
-                                ) break
-                                str += "\n"
+                        if (i < list.size) {
+                            if (currentDayCal != null) {
+                                while (i < list.size &&
+                                    currentDayCal!!.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY &&
+                                    currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+                                ) {
+                                    str += Utils.convDBdateToShown(list[i].date) + "(${
+                                        dayString[currentDayCal.calendar.get(
+                                            Calendar.DAY_OF_WEEK
+                                        )]
+                                    }) " + list[i].title + " " + list[i++].content
+                                    if (i < list.size) {
+                                        currentDayCal = Utils.getDateFromStringToCal(list[i].date)
+                                        if (!(i < list.size && currentDayCal != null &&
+                                                    currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY &&
+                                                    currentDayCal.calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY)
+                                        )
+                                            break
+                                        str += "\n"
+                                    } else break
+                                }
                             }
                         }
-                    }
-                    //     Log.i("kongyi1220BB", "day = ${day}, currentDay = $currentDay")
+                        //     Log.i("kongyi1220BB", "day = ${day}, currentDay = $currentDay")
 
+                    }
                 }
             }
             views.setTextViewText(id, str)
@@ -151,6 +162,7 @@ class WidgetProvider : AppWidgetProvider() {
 
         Log.i("kongyi1220BB", "day - ${day}")
         clearWidget(views)
+        ViewSetter.init()
 
         when (day) {
             Calendar.SATURDAY -> {

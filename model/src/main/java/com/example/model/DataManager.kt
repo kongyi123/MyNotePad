@@ -112,33 +112,24 @@ object DataManager {
                     for (postPostSnapshot in postSnapshot.children) {
                         Log.i("kongyi1220", "key = " + postPostSnapshot.key.toString())
                         val get = postPostSnapshot.getValue(FirebasePost::class.java)
-                        Log.i(
-                            "kongyi1220",
-                            "title = ${get?.title}, content = ${get?.content}, id = ${get?.id}"
-                        )
+                        Log.i("kongyi1220", "title = ${get?.title}, content = ${get?.content}, id = ${get?.id}")
 
                         get?.id?.let {
                             if (!start) {
                                 val cal = Calendar.getInstance()
                                 cal.timeInMillis = System.currentTimeMillis()
                                 val dateOfToday = Utils.getDateFromCalToString(cal)
-
                                 if (get.date >= dateOfToday) {
                                     start = true
                                     Log.i("kongyi0414", "${get.date}/${dateOfToday}")
                                 }
                             }
                             if (start && cnt <= 14) {
+                                Log.i("kongyi0414", "in start && cnt <=14 date = ${get.date.toString()}")
                                 cnt ++
                                 str += Utils.convDBdateToShown(get.date.toString()) + " " + get.title + " " + get.content + "\n"
                                 scheduleList.add(
-                                    Schedule(
-                                        get.id,
-                                        get.date,
-                                        get.title,
-                                        get.content,
-                                        get.color
-                                    )
+                                    Schedule(get.id,get.date,get.title,get.content,get.color)
                                 )
                             }
                         }
