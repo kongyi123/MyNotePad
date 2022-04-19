@@ -19,6 +19,12 @@ import com.example.mynotepad.utility.SoftKeyboard
 import com.example.mynotepad.view.TabTextView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.model.DataManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.lang.Thread.sleep
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -35,7 +41,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var softKeyboard: SoftKeyboard? = null
     var rootLayout: ViewGroup? = null
     var controlManager: InputMethodManager? = null
-
+    var isReady:AtomicBoolean = AtomicBoolean(false)
 
     var items: MutableList<Sheet> = mutableListOf()
     val size: Int get() = items.size
@@ -51,10 +57,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Initialize
      */
-    fun initialize(context:Context, supportFragmentManager:FragmentManager):Boolean {
-        sheetSelectionTab = (context as AppCompatActivity).findViewById(R.id.tabInner)
+    suspend fun initialize(context:Context, supportFragmentManager:FragmentManager):Boolean {
         loadSheetData()
+        sheetSelectionTab = (context as AppCompatActivity).findViewById(R.id.tabInner)
         rootLayout = context.findViewById<LinearLayout>(R.id.root_layout)
+        while (!isReady.get()) {
+            delay(1000)
+            Log.i("kongyi0420", "retry...")
+        }
+        Log.i("kongyi0420", "start to make views")
         controlManager = context.getSystemService(Service.INPUT_METHOD_SERVICE) as InputMethodManager
         softKeyboard = SoftKeyboard(rootLayout, controlManager, context)
         softKeyboard!!.setSoftKeyboardCallback(object : SoftKeyboard.SoftKeyboardChanged {
@@ -103,58 +114,72 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 items[i-1].getName(),
                 items[i-1].getContent(),
                 items[i-1].getTextSize())
-            DataManager.setSingleSheet(context, i-1, bringTypeSheet)
+            DataManager.setSingleSheetOnRTDB(context, i-1, bringTypeSheet)
         }
-        DataManager.setSheetCount(context, items.size)
-        DataManager.setIdCount(context, sheetIdCount)
+        DataManager.setSheetCountOnRTDB(context, items.size)
+        DataManager.setIdCountOnRTDB(context, sheetIdCount)
         Toast.makeText(getApplication(), "saved", Toast.LENGTH_SHORT).show()
     }
 
     /** Load All of the Sheet data
      */
     private fun loadSheetData() {
+        Log.i("kongyi0420", "sheetSize = " + sheetSize)
         val context:Context = getApplication()
         isFirstStart = false
-        sheetSize = DataManager.getSheetCount(context)
-        sheetIdCount = DataManager.getIdCount(context)
-        if (sheetSize > 0) {
-            for (i in 1..sheetSize) {
-                val item:com.example.model.data.Sheet = DataManager.getSingleSheet(context, i)
-                var sheetName = item.getName()
-                var sheetContent = item.getContent()
-                var sheetId:String? = item.getId().toString()
-                var sheetTextSize:Float? = item.getTextSize()
-                if (sheetTextSize == -1.0f) {
-                    sheetTextSize = 10.0f
-                }
-                if (sheetId != null) {
-                    val textView = TabTextView(context.applicationContext);
-                    items?.add(Sheet(sheetId!!.toInt(), sheetName, sheetContent, textView, sheetTextSize))
-                    val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                    textView.layoutParams = params
-                    textView.text = sheetName
-                    textView.id = sheetId!!.toInt()
-                    textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
-                    sheetOrder?.set(textView.id, i - 1)
-                    textView.setOnClickListener {
-                        switchFocusSheetInTab(it)
-                        sheetOrder?.get((it as TextView).id)?.let { it1 ->
-//                                Toast.makeText(this, "it1 = " + it1, Toast.LENGTH_SHORT).show()
-                            vpPager?.setCurrentItem(it1, true)
-                            currentTabPosition = it1
+        CoroutineScope(Dispatchers.IO).launch {
+            sheetSize = DataManager.getSheetCountFromRTDB(context)
+            Log.i("kongyi0420", "sheetSize = " + sheetSize)
+            sheetIdCount = DataManager.getIdCountFromRTDB(context)
+            Log.i("kongyi0420", "sheetIdCount = " + sheetIdCount)
+
+            if (sheetSize > 0) {
+                for (i in 1..sheetSize) {
+                    val item:com.example.model.data.Sheet = DataManager.getSingleSheetFromRTDB(context, i)
+                    var sheetName = item.getName()
+                    var sheetContent = item.getContent()
+                    var sheetId:String? = item.getId().toString()
+                    var sheetTextSize:Float? = item.getTextSize()
+                    if (sheetTextSize == -1.0f) {
+                        sheetTextSize = 10.0f
+                    }
+                    if (sheetId != null) {
+                        val textView = TabTextView(context.applicationContext);
+                        items.add(Sheet(sheetId.toInt(), sheetName, sheetContent, textView, sheetTextSize))
+                        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                        textView.layoutParams = params
+                        textView.text = sheetName
+                        textView.id = sheetId.toInt()
+                        textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
+                        sheetOrder[textView.id] = i - 1
+                        textView.setOnClickListener {
+                            switchFocusSheetInTab(it)
+                            sheetOrder[(it as TextView).id]?.let { it1 ->
+    //                                Toast.makeText(this, "it1 = " + it1, Toast.LENGTH_SHORT).show()
+                                vpPager?.setCurrentItem(it1, true)
+                                currentTabPosition = it1
+                            }
+                        }
+                        CoroutineScope(Dispatchers.Main).launch {
+                            addShowingSheetInTab(textView)
                         }
                     }
-                    addShowingSheetInTab(textView)
+                }
+                currentTabTitleView = items?.get(0)?.getTabTitleView()
+                if (currentTabTitleView != null) {
+                    currentTabTitleView!!.setBackgroundColor(
+                        context.resources.getColor(
+                            R.color.colorActivatedSheet
+                        )
+                    )
+                }
+            } else {
+                CoroutineScope(Dispatchers.Main).launch {
+                    Toast.makeText(context, "저장된 데이터가 없습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
-            currentTabTitleView = items?.get(0)?.getTabTitleView()
-            if (currentTabTitleView != null) {
-                currentTabTitleView!!.setBackgroundColor(context.resources.getColor(
-                    R.color.colorActivatedSheet
-                ))
-            }
-        } else {
-            Toast.makeText(context, "저장된 데이터가 없습니다.", Toast.LENGTH_SHORT).show()
+            Log.i("kongyi0420", "isRead is true")
+            isReady.set(true)
         }
     }
 
@@ -183,6 +208,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * - If there is previous parent (linear layout) of view, it should be called removeView method.
      */
     private fun addShowingSheetInTab(view: View) {
+        Log.i("kongyi0420", "addShowingSheetInTab")
         if (view.parent != null) {
             ((view.parent) as ViewGroup).removeView(view)
         }

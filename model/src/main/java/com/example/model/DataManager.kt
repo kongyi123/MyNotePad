@@ -21,9 +21,12 @@ import com.example.common.data.Schedule
 import com.example.common.Utils
 import com.example.model.data.Sheet
 import com.google.firebase.database.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import java.util.*
 
 
@@ -467,14 +470,35 @@ object DataManager {
         pdm.setFloat(sheetTextSizeKey, item?.getTextSize()!!)
     }
 
+    fun setSingleSheetOnRTDB(context:Context, i:Int, item: Sheet?) {
+        val pdm = PreferenceDataManager(context)
+        val sheetNameKey = "sheetName$i"
+        val sheetContentKey = "sheetContent$i"
+        val sheetIdKey = "sheetId$i"
+        val sheetTextSizeKey = "sheetTextSize$i"
+
+        putStringAtPathOnRTDB(sheetNameKey, item?.getName()!!)
+        putStringAtPathOnRTDB(sheetContentKey, item?.getContent()!!)
+        putStringAtPathOnRTDB(sheetIdKey, item?.getId().toString())
+        putStringAtPathOnRTDB(sheetTextSizeKey, item?.getTextSize()!!.toString())
+    }
+
     fun setSheetCount(context:Context, size:Int) {
         val pdm = PreferenceDataManager(context)
         pdm.setInt("sheetCount", size)
     }
 
+    fun setSheetCountOnRTDB(context:Context, size:Int) {
+        putStringAtPathOnRTDB("sheetCount", size.toString())
+    }
+
     fun setIdCount(context:Context, count:Int) {
         val pdm = PreferenceDataManager(context)
         pdm.setInt("sheetIdCount", count)
+    }
+
+    fun setIdCountOnRTDB(context:Context, count:Int) {
+        putStringAtPathOnRTDB("sheetIdCount", count.toString())
     }
 
     fun getSingleSheet(context:Context, i:Int):Sheet {
@@ -489,9 +513,125 @@ object DataManager {
             pdm.getFloat(sheetTextSizeKey))
     }
 
+    suspend fun getSingleSheetFromRTDB(context:Context, i:Int):Sheet {
+        Log.i("kongyi0420", "getSingleSheetFromRTDB")
+
+//        val pdm = PreferenceDataManager(context)
+        val sheetNameKey = "sheetName${i-1}"
+        val sheetContentKey = "sheetContent${i-1}"
+        val sheetIdKey = "sheetId${i-1}"
+        val sheetTextSizeKey = "sheetTextSize${i-1}"
+        var sheetNameValue = ""
+        var sheetIdValue = "0"
+        var sheetContentValue = ""
+        var sheetTextSizeValue = 0f
+
+        getStringFromRTDB(sheetIdKey).take(1).collect {
+            Log.i("kongyi0420", "it = $it")
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetIdValue = it
+                Log.i("kongyi0420", "it = $it")
+            }
+        }
+        getStringFromRTDB(sheetNameKey).take(1).collect {
+            Log.i("kongyi0420", "it = $it")
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetNameValue = it
+                Log.i("kongyi0420", "it = $it")
+            }
+        }
+        getStringFromRTDB(sheetContentKey).take(1).collect {
+            Log.i("kongyi0420", "it = $it")
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetContentValue = it
+                Log.i("kongyi0420", "it = $it")
+            }
+        }
+        getStringFromRTDB(sheetTextSizeKey).take(1).collect {
+            Log.i("kongyi0420", "it = $it")
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetTextSizeValue = it.toFloat()
+                Log.i("kongyi0420", "it = $it")
+            }
+        }
+        return Sheet(sheetIdValue.toInt(),
+            sheetNameValue,
+            sheetContentValue,
+            sheetTextSizeValue)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun getStringFromRTDB(key:String): Flow<String> = callbackFlow {
+        val query:Query = FirebaseDatabase.getInstance().reference.child("$key")
+        Log.i("kongyi0420", "ref = ${query.ref}")
+        var str:String? = null
+        val valueListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                CoroutineScope(Dispatchers.Default).launch {
+                    val get = snapshot.value
+                    str = get.toString()
+                    Log.i("kongyi0420", "onDataChange : " + get)
+                    if (str == null) {
+                        send("fail")
+                    } else {
+                        send(str!!)
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                CoroutineScope(Dispatchers.Default).launch {
+                    send("fail")
+                }
+            }
+        }
+        query.addValueEventListener(valueListener)
+        awaitClose { query.removeEventListener(valueListener) }
+    }
+
+    private fun putStringAtPathOnRTDB(key:String, value: String) {
+        val mPostReference = FirebaseDatabase.getInstance().reference
+        val childUpdates: MutableMap<String, Any?> = HashMap()
+        childUpdates["/$key"] = value
+        mPostReference.updateChildren(childUpdates)
+    }
+
+    suspend fun getSheetCountFromRTDB(context:Context):Int {
+        var sheetCount = 0
+        getStringFromRTDB("sheetCount").take(1).collect {
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetCount = it.toInt()
+                Log.i("kongyi0420", "it = $it")
+            }
+        }
+        return sheetCount
+    }
+
     fun getSheetCount(context:Context):Int {
         val pdm = PreferenceDataManager(context)
         return pdm.getInt("sheetCount")
+    }
+
+    suspend fun getIdCountFromRTDB(context:Context):Int {
+        var sheetIdCount = 0
+        getStringFromRTDB("sheetIdCount").take(1).collect {
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi1220dd", "getting sheetNameKey is failed")
+            } else {
+                sheetIdCount = it.toInt()
+                Log.i("kongyi1220dd", "it = $it")
+            }
+        }
+        return sheetIdCount
     }
 
     fun getIdCount(context:Context):Int {

@@ -18,6 +18,9 @@ import com.example.mynotepad.R
 import com.example.model.PreferenceManager
 import com.example.mynotepad.utility.TTSpeech
 import com.example.mynotepad.view.SheetFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "kongyi123/MainActivity"
@@ -285,12 +288,15 @@ class MainActivity : AppCompatActivity() {
     * - e.g. sheetCount, sheetIdCount, Sheets, currentTextView
     */
     private fun initializeDataForTheFirstTime() {
-        Log.d(TAG, "initializeDataForTheFirstTime")
-        val result = modelView?.initialize(this, supportFragmentManager)
-        if (result == false) {
-            Toast.makeText(this, "데이터 초기화 실패", Toast.LENGTH_SHORT).show()
+        val mContext = this
+        CoroutineScope(Dispatchers.Main).launch {
+            Log.i("kongyi0420", "initializeDataForTheFirstTime")
+            val result = modelView?.initialize(mContext, supportFragmentManager)
+            if (result == false) {
+                Toast.makeText(mContext, "데이터 초기화 실패", Toast.LENGTH_SHORT).show()
+            }
+            modelView?.vpPager?.adapter = createViewPagerAdapter()
         }
-        modelView?.vpPager?.adapter = createViewPagerAdapter()
     }
 
     private fun showAllData(callingFunction: String) {
