@@ -13,7 +13,6 @@ import com.example.mynotepad.activity.MainActivity
 import com.example.paperweight.PaperWeightActivity
 import com.example.personalcalendar.activity.PcalendarActivity
 import com.example.sharedcalendar.activity.CalendarActivity
-import kotlin.properties.Delegates
 
 class AccessActivity : AppCompatActivity() {
     private lateinit var mPhoneNumber:String
