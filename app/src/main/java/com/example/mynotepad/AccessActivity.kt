@@ -1,5 +1,6 @@
 package com.example.mynotepad
 
+import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -52,6 +53,7 @@ class AccessActivity : AppCompatActivity() {
 
             if (!isHcntReady.get() || !isSheetListReady.get()) {
                 Log.i("kongyi0421", "DB link fail!!")
+                showDBLinkFailDialog()
             }
         }
 
@@ -75,6 +77,16 @@ class AccessActivity : AppCompatActivity() {
             || mPhoneNumber == "+821040052032") {
             isAdmin = true
         }
+    }
+
+    private fun showDBLinkFailDialog() {
+        val dlg: AlertDialog.Builder = AlertDialog.Builder(this)
+            .setTitle("DB link")
+            .setMessage("\nFail!!!")
+            .setPositiveButton("OK", null)
+        val ad: AlertDialog = dlg.create()
+//        ad.setView(view) // 메시지
+        ad.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
