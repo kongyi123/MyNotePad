@@ -1,4 +1,4 @@
-package com.example.mynotepad.view
+package com.example.model.view
 
 import android.os.Bundle
 import android.util.Log
@@ -8,26 +8,23 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.mynotepad.activity.MainViewModel
-import com.example.mynotepad.R
+import com.example.common.utility.SoftKeyboard
+import com.example.model.R
 
-
-class SheetFragment : Fragment() {
+class SheetFragment(private val softKeyboard: SoftKeyboard) : Fragment() {
     // Store instance variables
     private val TAG = "SheetFragment/kongyi123"
     var content: String? = null
     var textSize: Float? = null
     var editText:EditText? = null
     var idxOfSheetsArray: Int? = null
-    private var viewModel: MainViewModel? = null
 
     // Inflate the view for the fragment based on layout XML
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
         val view: View = inflater.inflate(R.layout.sheet_fragment, container, false)
-        viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         editText = view.findViewById(R.id.editText)
-        viewModel?.softKeyboard?.addEditText(editText)
+        softKeyboard.addEditText(editText)
         editText?.setText("$content")
         if (textSize != null) editText?.textSize = textSize!!
         return view

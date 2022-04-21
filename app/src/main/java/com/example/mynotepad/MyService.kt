@@ -5,10 +5,16 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.common.AlarmNotification
 import com.example.common.R
 import com.example.model.DataManager
+import com.example.mynotepad.activity.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 // Notification ID.
@@ -25,22 +31,31 @@ class MyService : Service() {
         Log.d("kyi123", "onStartCommand()")
 
         if (intent != null) {
-            if (DataManager.getNotificationState(this)) {
-                Log.i("kongyiAAA", "getNotiState is true")
-                createChannel(
-                    getString(R.string.notification_channel_id),
-                    getString(R.string.notification_channel_name)
-                )
-
-                startOnGoingNotification()
-            }
-            DataManager.getAllHistoryData(this)
-            val intent = Intent(this, AccessActivity::class.java)
-            DataManager.get14daysSchedule(this, "id_list", intent)
+            dataLoadForNotepad()
+            dataLoadForCalendar()
         } else {
             return Service.START_STICKY
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun dataLoadForCalendar() {
+        if (DataManager.getNotificationState(this)) {
+            Log.i("kongyiAAA", "getNotiState is true")
+            createChannel(
+                getString(R.string.notification_channel_id),
+                getString(R.string.notification_channel_name)
+            )
+
+            startOnGoingNotification()
+        }
+        DataManager.getAllHistoryData(this)
+        val intent = Intent(this, AccessActivity::class.java)
+        DataManager.get14daysSchedule(this, "id_list", intent)
+    }
+
+    private fun dataLoadForNotepad() {
+        DataManager.loadNotepadData(this)
     }
 
     private fun startOnGoingNotification() {

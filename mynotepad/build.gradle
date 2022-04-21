@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.2'
     implementation project(path: ':model')
+    implementation project(path: ':common')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

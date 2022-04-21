@@ -1,6 +1,7 @@
 package com.example.model
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,8 @@ import android.graphics.Canvas
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +23,7 @@ import com.example.model.data.Notice
 import com.example.common.data.Schedule
 import com.example.common.Utils
 import com.example.model.data.Sheet
+import com.example.model.view.TabTextView
 import com.google.firebase.database.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
@@ -35,22 +39,23 @@ object DataManager {
     var notice: MutableLiveData<String> = MutableLiveData()
     var hcnt: MutableLiveData<Long> = MutableLiveData()
     val hList: MutableLiveData<ArrayList<History>> = MutableLiveData()
-    var newCount = 0
+    val sheetList: MutableLiveData<MutableList<Sheet>> = MutableLiveData()
+
     private var lineNumber:String = ""
 
     const val TYPE_HISTORY:String = "HISTORY"
     const val TYPE_SCHEDULE:String = "SCHEDULE"
 
+    @SuppressLint("HardwareIds")
     fun getLineNumber(context:Context, tt:Activity):String {
         var result = "none"
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_PHONE_STATE) }
+        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_PHONE_STATE) }
             != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(tt, arrayOf(Manifest.permission.READ_PHONE_STATE),1004)
 
         } else {
             try {
-                result =
-                    (tt.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
+                result = (tt.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
             } catch (e:NullPointerException) {
                 e.printStackTrace()
             }
@@ -507,7 +512,7 @@ object DataManager {
         val sheetContentKey = "sheetContent$i"
         val sheetIdKey = "sheetId$i"
         val sheetTextSizeKey = "sheetTextSize$i"
-        return Sheet(pdm.getString(sheetIdKey)?.toInt(),
+        return Sheet(pdm.getString(sheetIdKey)?.toInt()!!,
             pdm.getString(sheetNameKey),
             pdm.getString(sheetContentKey),
             pdm.getFloat(sheetTextSizeKey))
@@ -624,7 +629,7 @@ object DataManager {
     suspend fun getIdCountFromRTDB(context:Context):Int {
         var sheetIdCount = 0
         getStringFromRTDB("sheetIdCount").take(1).collect {
-            if (it == "fail" || it == null || it == "null") {
+            if (it == "fail" || it == "null") {
                 Log.i("kongyi1220dd", "getting sheetNameKey is failed")
             } else {
                 sheetIdCount = it.toInt()
@@ -637,5 +642,37 @@ object DataManager {
     fun getIdCount(context:Context):Int {
         val pdm = PreferenceDataManager(context)
         return pdm.getInt("sheetIdCount")
+    }
+
+    fun loadNotepadData(context:Context) {
+        Log.i("kongyi0421", "loadNotepadData")
+
+        val items:MutableList<Sheet> = mutableListOf()
+        CoroutineScope(Dispatchers.IO).launch {
+            val sheetSize = getSheetCountFromRTDB(context)
+            Log.i("kongyi0421", "sheetSize : $sheetSize")
+
+            if (sheetSize > 0) {
+                for (i in 1..sheetSize) {
+                    val item:Sheet = getSingleSheetFromRTDB(context, i)
+                    val sheetName = item.getName()
+                    val sheetContent = item.getContent()
+                    val sheetId:String = item.getId().toString()
+                    var sheetTextSize:Float? = item.getTextSize()
+                    if (sheetTextSize == -1.0f) {
+                        sheetTextSize = 10.0f
+                    }
+                    val textView = TabTextView(context.applicationContext);
+                    Log.i("kongyi0421", "sheetName : $sheetName")
+                    items.add(Sheet(sheetId.toInt(), sheetName, sheetContent, textView, sheetTextSize))
+                    val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    textView.layoutParams = params
+                    textView.text = sheetName
+                    textView.id = sheetId.toInt()
+                    textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
+                }
+            } //sheetList
+            sheetList.postValue(items)
+        }
     }
 }

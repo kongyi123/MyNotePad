@@ -13,10 +13,17 @@ import com.example.mynotepad.activity.MainActivity
 import com.example.paperweight.PaperWeightActivity
 import com.example.personalcalendar.activity.PcalendarActivity
 import com.example.sharedcalendar.activity.CalendarActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 
 class AccessActivity : AppCompatActivity() {
     private lateinit var mPhoneNumber:String
     var isAdmin:Boolean = false
+    private var isHcntReady:AtomicBoolean = AtomicBoolean(false)
+    private var isSheetListReady:AtomicBoolean = AtomicBoolean(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +31,30 @@ class AccessActivity : AppCompatActivity() {
         DataManager.getNewNumberForHistory()
 //        DataManager.getAllHistoryData()
         DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
-            Log.i("kongyi3212", "hcnt is updated.")
-            init()
+            isHcntReady.set(true)
         })
+        DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
+            Log.i("kongyi0421", "sheetList.size = ${DataManager.sheetList.value?.size}")
+            isSheetListReady.set(true)
+        })
+
+        CoroutineScope(Dispatchers.Main).launch {
+            for (i in 1..10) {
+                if (isHcntReady.get() && isSheetListReady.get()) {
+                    Log.i("kongyi0421", "DB is ready")
+                    init()
+                    break
+                }
+                delay(500)
+                Log.i("kongyi0421", "DB is ready / isHcntReady = ${isHcntReady.get()}, isSheetListRead = ${isSheetListReady.get()}")
+                Log.i("kongyi0421", "getting data from DB....")
+            }
+
+            if (!isHcntReady.get() || !isSheetListReady.get()) {
+                Log.i("kongyi0421", "DB link fail!!")
+            }
+        }
+
 
         /*  From Google's docs on Android 8.0 behavior changes:
 
@@ -61,7 +89,7 @@ class AccessActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun init() {
+    private suspend fun init() {
         if (isAdmin) {
             findViewById<Button>(R.id.alarmNotiBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.myMemoBtn).visibility = View.VISIBLE
