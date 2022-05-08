@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">
         <TextView
             android:id="@+id/noticeView"
@@ -25,43 +26,13 @@
             android:background="@color/grey"/>
     </LinearLayout>
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:id="@+id/calendarView"
+    <com.example.mychartviewlibrary.calendar.MyCalendarView
+        android:id="@+id/myCalendarView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noticeViewFrame"
-        app:mcv_selectionColor="@color/light_yellow" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="vertical"
-        android:background="#44112233"
-        android:paddingVertical="5dp"
-        app:layout_constraintBottom_toTopOf="@id/calendar_button_layout"
-        app:layout_constraintLeft_toLeftOf="parent"/>
-
-    <LinearLayout
-        android:id="@+id/calendar_button_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <Button
-            android:id="@+id/deleteAllBtn"
-            android:text="당일 일정 모두 삭제"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
-        <Button
-            android:id="@+id/addScheduleBtn"
-            android:text="일정 추가"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
