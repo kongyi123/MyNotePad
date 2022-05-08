@@ -283,25 +283,10 @@ object DataManager {
         val sortByAge:Query = FirebaseDatabase.getInstance().reference.child(id_list)
         sortByAge.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("kongyi1220", "onchanged")
-                scheduleList.clear()
-                for(postSnapshot in snapshot.children) {
-                    if (!postSnapshot.exists()) {
-                        continue
-                    }
-                    for (postPostSnapshot in postSnapshot.children) {
-                        Log.i("kongyi1220", "key = " + postPostSnapshot.key.toString())
-                        val get = postPostSnapshot.getValue(FirebasePost::class.java)
-                        Log.i(
-                            "kongyi1220",
-                            "title = ${get?.title}, content = ${get?.content}, id = ${get?.id}"
-                        )
-                        get?.id?.let {
-                            scheduleList.add(Schedule(get.id, get.date, get.title, get.content, get.color))
-                        }
-                    }
+                Log.i("kongyi1220", "onChanged")
+                CoroutineScope(Dispatchers.Default).launch {
+                    updateDataList(scheduleList, snapshot)
                 }
-                dataList.value = scheduleList
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -310,6 +295,46 @@ object DataManager {
         })
 
     }
+
+    // debounce logic.
+    private var lastJob: Job? = null
+
+    private suspend fun updateDataList(
+        scheduleList: ArrayList<Schedule>,
+        snapshot: DataSnapshot
+    ) {
+        if (lastJob != null) {
+            lastJob!!.cancel()
+        }
+        lastJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(500)
+            doUpdate(scheduleList, snapshot)
+            lastJob = null
+        }
+    }
+
+    private fun doUpdate(
+        scheduleList: ArrayList<Schedule>,
+        snapshot: DataSnapshot
+    ) {
+        scheduleList.clear()
+        Log.i("kongyi0504", "scheduleList right after clear= {$scheduleList}")
+
+        for (postSnapshot in snapshot.children) {
+            if (!postSnapshot.exists()) {
+                continue
+            }
+            for (postPostSnapshot in postSnapshot.children) {
+                val get = postPostSnapshot.getValue(FirebasePost::class.java)
+                get?.id?.let {
+                    scheduleList.add(Schedule(get.id, get.date, get.title, get.content, get.color))
+                }
+            }
+        }
+        Log.i("kongyi0504", "scheduleList after adding = {$scheduleList}")
+        dataList.postValue(scheduleList) // similar with postValue
+    }
+
 
     fun getScheduleDataInDate(date:String): ArrayList<Schedule> {
         val list = ArrayList<Schedule>()
