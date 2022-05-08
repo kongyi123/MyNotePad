@@ -8,6 +8,11 @@
     android:gravity="center"
     tools:context="com.example.mynotepad.AccessActivity">
 
+    <ProgressBar
+        android:id="@+id/loadingIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/alarmNotiBtn"
         android:layout_width="300dp"

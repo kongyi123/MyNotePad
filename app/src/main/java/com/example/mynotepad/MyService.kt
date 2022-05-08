@@ -28,7 +28,7 @@ class MyService : Service() {
 
     // 서비스쪽으로 데이터를 전달하고 싶은경우 자주 사용
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("kyi123", "onStartCommand()")
+        Log.i("kongyi0509", "onStartCommand()")
 
         if (intent != null) {
             dataLoadForNotepad()

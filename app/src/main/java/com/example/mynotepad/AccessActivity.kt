@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import com.example.model.DataManager
 import com.example.mynotepad.activity.MainActivity
 import com.example.paperweight.PaperWeightActivity
@@ -42,19 +43,20 @@ class AccessActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 1..10) {
                 if (isHcntReady.get() && isSheetListReady.get()) {
-                    Log.i("kongyi0421", "DB is ready")
+                    Log.i("kongyi0509", "DB is ready")
                     init()
                     break
                 }
-                delay(500)
+                delay(1000)
                 Log.i("kongyi0421", "DB is ready / isHcntReady = ${isHcntReady.get()}, isSheetListRead = ${isSheetListReady.get()}")
-                Log.i("kongyi0421", "getting data from DB....")
+                Log.i("kongyi0509", "getting data from DB....")
             }
 
             if (!isHcntReady.get() || !isSheetListReady.get()) {
-                Log.i("kongyi0421", "DB link fail!!")
+                Log.i("kongyi0509", "DB link fail!! isHcntReady = $isHcntReady / isSheetListReady = $isSheetListReady")
                 showDBLinkFailDialog()
             }
+            findViewById<ProgressBar>(R.id.loadingIcon).visibility = View.GONE
         }
 
 

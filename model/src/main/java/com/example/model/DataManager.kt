@@ -670,12 +670,12 @@ object DataManager {
     }
 
     fun loadNotepadData(context:Context) {
-        Log.i("kongyi0421", "loadNotepadData")
+        Log.i("kongyi0509", "loadNotepadData")
 
         val items:MutableList<Sheet> = mutableListOf()
         CoroutineScope(Dispatchers.IO).launch {
             val sheetSize = getSheetCountFromRTDB(context)
-            Log.i("kongyi0421", "sheetSize : $sheetSize")
+            Log.i("kongyi0509", "sheetSize : $sheetSize")
 
             if (sheetSize > 0) {
                 for (i in 1..sheetSize) {
