@@ -95,7 +95,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val context:Context = getApplication()
         isFirstStart = false
         sheetSize = DataManager.sheetList.value!!.size
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             sheetIdCount = DataManager.getIdCountFromRTDB(context)
         }
 

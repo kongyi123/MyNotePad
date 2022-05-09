@@ -22,6 +22,7 @@ import com.example.model.view.TabTextView
 import com.example.mynotepad.utility.TTSpeech
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -53,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 
         if (modelView?.isFirstStart == true) {
             modelView?.loadSheetData()
-            initialTab()
             settingSIP(this)
             vpPager.adapter = createViewPagerAdapter()
         }
@@ -61,6 +61,22 @@ class MainActivity : AppCompatActivity() {
         tts?.initTTS()
         if (modelView?.sheetIdCount == 0) {
             modelView?.sheetIdCount = 15
+        }
+
+        DataManager.sheetList.observe(this) {
+            CoroutineScope(Dispatchers.Default).launch {
+                for (cnt in 0..10) {
+                    if (modelView?.isFirstStart == false) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            initialTab()
+                            vpPager.adapter = createViewPagerAdapter()
+                        }
+                        break
+                    }
+                    Log.i("kongyi0510", "loading... try count = $cnt")
+                    delay(1000)
+                }
+            }
         }
 
         vpPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
