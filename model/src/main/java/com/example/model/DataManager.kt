@@ -556,42 +556,51 @@ object DataManager {
         var sheetContentValue = ""
         var sheetTextSizeValue = 0f
 
-        getStringFromRTDB(sheetIdKey).take(1).collect {
-            Log.i("kongyi0420", "it = $it")
-            if (it == "fail" || it == null || it == "null") {
-                Log.i("kongyi0420", "getting sheetNameKey is failed")
-            } else {
-                sheetIdValue = it
+        var job = CoroutineScope(Dispatchers.IO).launch {
+            getStringFromRTDB(sheetIdKey).take(1).collect {
                 Log.i("kongyi0420", "it = $it")
+                if (it == "fail" || it == null || it == "null") {
+                    Log.i("kongyi0420", "getting sheetNameKey is failed")
+                } else {
+                    sheetIdValue = it
+                    Log.i("kongyi0420", "it = $it")
+                }
             }
         }
-        getStringFromRTDB(sheetNameKey).take(1).collect {
-            Log.i("kongyi0420", "it = $it")
-            if (it == "fail" || it == null || it == "null") {
-                Log.i("kongyi0420", "getting sheetNameKey is failed")
-            } else {
-                sheetNameValue = it
+        job = CoroutineScope(Dispatchers.IO + job).launch {
+            getStringFromRTDB(sheetNameKey).take(1).collect {
                 Log.i("kongyi0420", "it = $it")
+                if (it == "fail" || it == null || it == "null") {
+                    Log.i("kongyi0420", "getting sheetNameKey is failed")
+                } else {
+                    sheetNameValue = it
+                    Log.i("kongyi0420", "it = $it")
+                }
             }
         }
-        getStringFromRTDB(sheetContentKey).take(1).collect {
-            Log.i("kongyi0420", "it = $it")
-            if (it == "fail" || it == null || it == "null") {
-                Log.i("kongyi0420", "getting sheetNameKey is failed")
-            } else {
-                sheetContentValue = it
+        job = CoroutineScope(Dispatchers.IO + job).launch {
+            getStringFromRTDB(sheetContentKey).take(1).collect {
                 Log.i("kongyi0420", "it = $it")
+                if (it == "fail" || it == null || it == "null") {
+                    Log.i("kongyi0420", "getting sheetNameKey is failed")
+                } else {
+                    sheetContentValue = it
+                    Log.i("kongyi0420", "it = $it")
+                }
             }
         }
-        getStringFromRTDB(sheetTextSizeKey).take(1).collect {
-            Log.i("kongyi0420", "it = $it")
-            if (it == "fail" || it == null || it == "null") {
-                Log.i("kongyi0420", "getting sheetNameKey is failed")
-            } else {
-                sheetTextSizeValue = it.toFloat()
+        job = CoroutineScope(Dispatchers.IO + job).launch {
+            getStringFromRTDB(sheetTextSizeKey).take(1).collect {
                 Log.i("kongyi0420", "it = $it")
+                if (it == "fail" || it == null || it == "null") {
+                    Log.i("kongyi0420", "getting sheetNameKey is failed")
+                } else {
+                    sheetTextSizeValue = it.toFloat()
+                    Log.i("kongyi0420", "it = $it")
+                }
             }
         }
+        job.join()
         return Sheet(sheetIdValue.toInt(),
             sheetNameValue,
             sheetContentValue,
@@ -627,10 +636,12 @@ object DataManager {
     }
 
     private fun putStringAtPathOnRTDB(key:String, value: String) {
-        val mPostReference = FirebaseDatabase.getInstance().reference
-        val childUpdates: MutableMap<String, Any?> = HashMap()
-        childUpdates["/$key"] = value
-        mPostReference.updateChildren(childUpdates)
+        CoroutineScope(Dispatchers.IO).launch {
+            val mPostReference = FirebaseDatabase.getInstance().reference
+            val childUpdates: MutableMap<String, Any?> = HashMap()
+            childUpdates["/$key"] = value
+            mPostReference.updateChildren(childUpdates)
+        }
     }
 
     suspend fun getSheetCountFromRTDB(context:Context):Int {
