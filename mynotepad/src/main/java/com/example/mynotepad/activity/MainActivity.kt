@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         if (modelView?.isFirstStart == true) {
             modelView?.loadSheetData()
             settingSIP(this)
-            vpPager.adapter = createViewPagerAdapter()
+//            vpPager.adapter = createViewPagerAdapter()
         }
 
         tts?.initTTS()
