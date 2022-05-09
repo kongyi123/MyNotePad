@@ -1,6 +1,8 @@
 package com.example.mynotepad
 
+import android.app.ActivityManager
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -68,9 +70,11 @@ class AccessActivity : AppCompatActivity() {
             method within five seconds after the service is created.` */
 
         if (DataManager.getNotificationState(this)) {
-            val intent = Intent(applicationContext, MyService::class.java)
-            intent.putExtra("command", "show")
-            startForegroundService(intent) // foreground service 실행을 위해 이것만 있으면 됨. 윗줄의 startService(intent)는 필요 없음.
+            if (!isMyServiceRunning(MyService::class.java)) {
+                val intent = Intent(applicationContext, MyService::class.java)
+                intent.putExtra("command", "show")
+                startForegroundService(intent) // foreground service 실행을 위해 이것만 있으면 됨. 윗줄의 startService(intent)는 필요 없음.
+            }
         }
 
         mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
@@ -79,6 +83,17 @@ class AccessActivity : AppCompatActivity() {
             || mPhoneNumber == "+821040052032") {
             isAdmin = true
         }
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager: ActivityManager =
+            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun showDBLinkFailDialog() {
