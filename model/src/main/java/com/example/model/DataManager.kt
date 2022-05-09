@@ -556,51 +556,44 @@ object DataManager {
         var sheetContentValue = ""
         var sheetTextSizeValue = 0f
 
-        var job = CoroutineScope(Dispatchers.IO).launch {
-            getStringFromRTDB(sheetIdKey).take(1).collect {
+        getStringFromRTDB(sheetIdKey).take(1).collect {
+            Log.i("kongyi0420", "it = $it")
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetIdValue = it
                 Log.i("kongyi0420", "it = $it")
-                if (it == "fail" || it == null || it == "null") {
-                    Log.i("kongyi0420", "getting sheetNameKey is failed")
-                } else {
-                    sheetIdValue = it
-                    Log.i("kongyi0420", "it = $it")
-                }
             }
         }
-        job = CoroutineScope(Dispatchers.IO + job).launch {
-            getStringFromRTDB(sheetNameKey).take(1).collect {
+        getStringFromRTDB(sheetNameKey).take(1).collect {
+            Log.i("kongyi0420", "it = $it")
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetNameValue = it
                 Log.i("kongyi0420", "it = $it")
-                if (it == "fail" || it == null || it == "null") {
-                    Log.i("kongyi0420", "getting sheetNameKey is failed")
-                } else {
-                    sheetNameValue = it
-                    Log.i("kongyi0420", "it = $it")
-                }
             }
         }
-        job = CoroutineScope(Dispatchers.IO + job).launch {
-            getStringFromRTDB(sheetContentKey).take(1).collect {
+
+        getStringFromRTDB(sheetContentKey).take(1).collect {
+            Log.i("kongyi0420", "it = $it")
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetContentValue = it
                 Log.i("kongyi0420", "it = $it")
-                if (it == "fail" || it == null || it == "null") {
-                    Log.i("kongyi0420", "getting sheetNameKey is failed")
-                } else {
-                    sheetContentValue = it
-                    Log.i("kongyi0420", "it = $it")
-                }
             }
         }
-        job = CoroutineScope(Dispatchers.IO + job).launch {
-            getStringFromRTDB(sheetTextSizeKey).take(1).collect {
+
+        getStringFromRTDB(sheetTextSizeKey).take(1).collect {
+            Log.i("kongyi0420", "it = $it")
+            if (it == "fail" || it == null || it == "null") {
+                Log.i("kongyi0420", "getting sheetNameKey is failed")
+            } else {
+                sheetTextSizeValue = it.toFloat()
                 Log.i("kongyi0420", "it = $it")
-                if (it == "fail" || it == null || it == "null") {
-                    Log.i("kongyi0420", "getting sheetNameKey is failed")
-                } else {
-                    sheetTextSizeValue = it.toFloat()
-                    Log.i("kongyi0420", "it = $it")
-                }
             }
         }
-        job.join()
         return Sheet(sheetIdValue.toInt(),
             sheetNameValue,
             sheetContentValue,
