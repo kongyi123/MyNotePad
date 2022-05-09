@@ -63,10 +63,7 @@ object Utils {
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH)
         val day = cal.get(Calendar.DATE)
-        if (month < 10) {
-            return "$year~0$month~$day"
-        }
-        return "$year~$month~$day"
+        return "$year~${addFront0(month.toString())}~${addFront0(day.toString())}"
     }
 
     /**
