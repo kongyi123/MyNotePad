@@ -35,21 +35,28 @@ class MyCalendarView : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){
     }
 
-    private lateinit var mRecyclerView: RecyclerView
+    private var mRecyclerView: RecyclerView
     private val mMap = SparseArray<ArrayList<Schedule>>()
 
     private lateinit var mCalendarAdapter: RecyclerViewAdapterForCalendar
     var mCurrentDate:String? = null
     var mTitlePager: ViewPager2
-    var mCalendarPager: ViewPager2
+    private var mCalendarPager: ViewPager2
     var mCurrentPosition:Int? = null
     var mTodayPosition = 0
+
+    var isShownFilter = false
+
+    private val mColorFilter = ArrayList<String>()
+    private var mScheduleList = ArrayList<Schedule>()
+    private lateinit var mListener: OnScheduleItemClickListener
 
     init {
         ContextHolder.setContext(this.context)
         inflate(context, R.layout.my_calendar, this)
         mTitlePager = findViewById(R.id.calendar_title)
         mCalendarPager = findViewById(R.id.calendar_vpPager)
+        mRecyclerView = findViewById(R.id.calendar_recyclerView)
         initializeCalendar()
         findViewById<Button>(R.id.calendar_deleteAllBtn).setOnClickListener {
             mCurrentDate?.let {
@@ -71,17 +78,31 @@ class MyCalendarView : FrameLayout {
         builder.setTitle("※ 경고 ※")
         builder.setMessage("정말로 다 지우겠습니까?")
         builder.setPositiveButton("예") { dialog, which ->
-                DataManager.removeDayAllSchedule("id_list", date)
-                initializeCalendar()
-            }
+            DataManager.removeDayAllSchedule("id_list", date)
+            initializeCalendar()
+        }
         builder.setNegativeButton("아니오") { dialog, which ->}
         builder.show()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun refresh() {
+    fun refresh(scheduleList: ArrayList<Schedule>, scheduleItemClickListener: OnScheduleItemClickListener) {
         Log.i(TAG, "refresh()")
+        updateColorFilter()
         mCalendarPager.adapter?.notifyDataSetChanged()
+        if (mCurrentDate != null) {
+            loadDataAtList(scheduleList, mCurrentDate!!, scheduleItemClickListener)
+        }
+    }
+
+    private fun updateColorFilter() {
+        mColorFilter.clear()
+        if (findViewById<CheckBox>(R.id.check_red).isChecked) mColorFilter.add("red")
+        if (findViewById<CheckBox>(R.id.check_orange).isChecked) mColorFilter.add("orange")
+        if (findViewById<CheckBox>(R.id.check_yellow).isChecked) mColorFilter.add("yellow")
+        if (findViewById<CheckBox>(R.id.check_green).isChecked) mColorFilter.add("green")
+        if (findViewById<CheckBox>(R.id.check_blue).isChecked) mColorFilter.add("blue")
+        if (findViewById<CheckBox>(R.id.check_purple).isChecked) mColorFilter.add("purple")
     }
 
     private fun initializeCalendar() {
@@ -117,7 +138,8 @@ class MyCalendarView : FrameLayout {
             }
         }
 
-        mCalendarAdapter = RecyclerViewAdapterForCalendar(context, calendarData, mMap)
+        if (isShownFilter) updateColorFilter()
+        mCalendarAdapter = RecyclerViewAdapterForCalendar(context, calendarData, mMap, mColorFilter)
         mCalendarPager.adapter = mCalendarAdapter
         mCalendarPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         mCalendarPager.registerOnPageChangeCallback(onPageChangeCallbackForCalendar)
@@ -140,10 +162,20 @@ class MyCalendarView : FrameLayout {
                 mCalendarPager.setCurrentItem(current + 1, true)
             }
         }
+//        findViewById<Button>(R.id.search_button).setOnClickListener {
+//            refresh(mScheduleList, mListener)
+//        }
+        findViewById<CheckBox>(R.id.check_red).setOnClickListener { refresh(mScheduleList, mListener) }
+        findViewById<CheckBox>(R.id.check_orange).setOnClickListener { refresh(mScheduleList, mListener) }
+        findViewById<CheckBox>(R.id.check_yellow).setOnClickListener { refresh(mScheduleList, mListener) }
+        findViewById<CheckBox>(R.id.check_green).setOnClickListener { refresh(mScheduleList, mListener) }
+        findViewById<CheckBox>(R.id.check_blue).setOnClickListener { refresh(mScheduleList, mListener) }
+        findViewById<CheckBox>(R.id.check_purple).setOnClickListener { refresh(mScheduleList, mListener) }
     }
 
 
     fun setOnItemClickListener(mScheduleList: ArrayList<Schedule>?, listener: OnScheduleItemClickListener) {
+        mListener = listener
         mCalendarAdapter.listener = object : OnDateItemClickListener {
             override fun onItemClick(
                 holder: RecyclerViewAdapterForCalendar.ViewHolder,
@@ -164,9 +196,8 @@ class MyCalendarView : FrameLayout {
     fun loadDataAtList(mScheduleList: ArrayList<Schedule>?, selectedDate:String, listener:OnScheduleItemClickListener) {
         Log.i(TAG, "loadDataAtList()")
         val manager = LinearLayoutManager(ContextHolder.getContext(), LinearLayoutManager.VERTICAL, false)
-        mRecyclerView = findViewById(R.id.calendar_recyclerView)
         mRecyclerView.layoutManager = manager
-        mRecyclerView.adapter = DayListAdapter(mScheduleList!!, selectedDate, listener)
+        mRecyclerView.adapter = DayListAdapter(mScheduleList!!, selectedDate, listener, mColorFilter)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -174,6 +205,7 @@ class MyCalendarView : FrameLayout {
         Log.i(TAG, "setSchedules")
         mMap.clear()
         if (mScheduleList != null) {
+            this.mScheduleList = mScheduleList
             for (schedule in mScheduleList) {
                 Log.i(TAG, "schedule.title = ${schedule.title}")
 
@@ -222,4 +254,13 @@ class MyCalendarView : FrameLayout {
         return dates
     }
 
+    fun setFilterVisibility(flag:Boolean) {
+        if (flag) {
+            findViewById<LinearLayout>(R.id.filterLayout).visibility = View.VISIBLE
+            isShownFilter = true
+        } else {
+            findViewById<LinearLayout>(R.id.filterLayout).visibility = View.GONE
+            isShownFilter = false
+        }
+    }
 }

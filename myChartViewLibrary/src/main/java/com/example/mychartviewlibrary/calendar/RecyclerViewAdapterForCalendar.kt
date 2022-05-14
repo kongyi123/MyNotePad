@@ -26,7 +26,8 @@ import java.util.*
 // --> 리사이클러뷰의 재활용성 때문에, 화면에 표시하는 뷰를 다 갖고 있으려고 하면 안된다.
 class RecyclerViewAdapterForCalendar(private val context: Context,
                                      private var items: ArrayList<ArrayList<DateItem>>,
-                                     val map:SparseArray<ArrayList<Schedule>>) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
+                                     val map: SparseArray<ArrayList<Schedule>>,
+                                     private val colorFilter: ArrayList<String>) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
     private val TAG = "RecyclerViewAdapterForCalendar"
     val mContext = context
     var mSelectedView:View? = null
@@ -148,19 +149,31 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
         if (list != null) {
             Log.i(TAG, "addScheduleCircleAtDate list = {$list}")
             for (schedule in list) {
-                val img = ImageView(context)
-                img.background = context.getDrawable(R.drawable.circle_black)
-                img.layoutParams = LinearLayout.LayoutParams(Utils.convertDPtoPX(context, 5), Utils.convertDPtoPX(context, 5))
-                when {
-                    schedule.color == "blue" -> img.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.blue))
-                    schedule.color == "purple" -> img.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.purple))
-                    schedule.color == "green" -> img.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green))
-                    schedule.color == "black" -> img.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.black))
-                    schedule.color == "orange" -> img.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.orange))
-                    schedule.color == "yellow" -> img.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
-                    schedule.color == "red" -> img.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red))
+                if (schedule.color in colorFilter) {
+                    val img = ImageView(context)
+                    img.background = context.getDrawable(R.drawable.circle_black)
+                    img.layoutParams = LinearLayout.LayoutParams(
+                        Utils.convertDPtoPX(context, 5),
+                        Utils.convertDPtoPX(context, 5)
+                    )
+                    when {
+                        schedule.color == "blue" -> img.backgroundTintList =
+                            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.blue))
+                        schedule.color == "purple" -> img.backgroundTintList =
+                            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.purple))
+                        schedule.color == "green" -> img.backgroundTintList =
+                            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green))
+                        schedule.color == "black" -> img.backgroundTintList =
+                            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.black))
+                        schedule.color == "orange" -> img.backgroundTintList =
+                            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.orange))
+                        schedule.color == "yellow" -> img.backgroundTintList =
+                            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
+                        schedule.color == "red" -> img.backgroundTintList =
+                            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red))
+                    }
+                    linearLayout.addView(img)
                 }
-                linearLayout.addView(img)
             }
         }
     }

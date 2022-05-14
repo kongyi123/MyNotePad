@@ -12,6 +12,124 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/filterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:visibility="visible"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/keyword"/>
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"/>
+                <Button
+                    android:id="@+id/search_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="search"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/color_selection_in_filterLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <RadioGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/or_radio_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="33dp"
+                            android:layout_margin="3dp"
+                            android:text="OR" />
+
+                        <RadioButton
+                            android:id="@+id/and_radio_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="33dp"
+                            android:layout_margin="3dp"
+                            android:text="AND" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:gravity="end">
+
+                    <CheckBox
+                        android:id="@+id/check_red"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_red"
+                        android:checked="true"/>
+
+                    <CheckBox
+                        android:id="@+id/check_orange"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_orange"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/check_yellow"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_yellow"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/check_green"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_green"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/check_blue"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_blue"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/check_purple"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_purple"
+                        android:checked="true" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/calendar_controller"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,6 +178,7 @@
             android:id="@+id/calendar_recyclerView"
             android:layout_width="match_parent"
             android:layout_weight="1"
+            android:minHeight="150dp"
             android:layout_height="0dp"
             android:orientation="vertical"
             android:background="#44112233"

@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_item_edit_notice"
-        android:title="공지 수정"/>
+        android:id="@+id/menu_item_search"
+        android:title="Filter"
+        app:showAsAction="always" />>
 </menu>

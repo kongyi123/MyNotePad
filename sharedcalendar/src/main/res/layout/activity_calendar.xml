@@ -6,33 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".activity.CalendarActivity">
 
-    <LinearLayout
-        android:id="@+id/noticeViewFrame"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent">
-        <TextView
-            android:id="@+id/noticeView"
+        android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:padding="5dp">
-        </TextView>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey"/>
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/noticeViewFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/noticeView"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:padding="5dp">
+                </TextView>
 
-    <com.example.mychartviewlibrary.calendar.MyCalendarView
-        android:id="@+id/myCalendarView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey"/>
+            </LinearLayout>
 
+            <com.example.mychartviewlibrary.calendar.MyCalendarView
+                android:id="@+id/myCalendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

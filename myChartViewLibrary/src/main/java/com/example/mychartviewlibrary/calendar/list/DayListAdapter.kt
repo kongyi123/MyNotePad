@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.common.data.Schedule
 import com.example.mychartviewlibrary.R
 
-class DayListAdapter(scheduleList: ArrayList<Schedule>, date:String, private val listener: OnScheduleItemClickListener) : RecyclerView.Adapter<ViewHolder>() {
+class DayListAdapter(scheduleList: ArrayList<Schedule>,
+                     date:String,
+                     private val listener: OnScheduleItemClickListener,
+                     colorFilter: ArrayList<String>) : RecyclerView.Adapter<ViewHolder>() {
     private val mDayScheduleList = ArrayList<Schedule>()
     private var mContext: Context? = null
     init {
@@ -21,7 +24,9 @@ class DayListAdapter(scheduleList: ArrayList<Schedule>, date:String, private val
             Log.i("kongyi0508", "date = [${date}] / schedule.date = [${schedule.date}]")
             if (date.compareTo(schedule.date) == 0) {
                 Log.i("kongyi0508", "in adapter = " + schedule.title + " " + schedule.content)
-                mDayScheduleList.add(schedule)
+                if (schedule.color in colorFilter) {
+                    mDayScheduleList.add(schedule)
+                }
             }
         }
         Log.i("kongyi1220", "in adapter size = " + mDayScheduleList.size)
@@ -48,12 +53,18 @@ class DayListAdapter(scheduleList: ArrayList<Schedule>, date:String, private val
         holder.colorCircle.setBackgroundResource(R.drawable.circle_black)
         mContext?.let {
             when (holder.color.text) {
-                "red" -> holder.colorCircle.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.red))
-                "orange" -> holder.colorCircle.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.orange))
-                "yellow" -> holder.colorCircle.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.yellow))
-                "green" -> holder.colorCircle.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.green))
-                "blue" -> holder.colorCircle.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.blue))
-                "purple" -> holder.colorCircle.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.purple))
+                "red" -> holder.colorCircle.backgroundTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.red))
+                "orange" -> holder.colorCircle.backgroundTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.orange))
+                "yellow" -> holder.colorCircle.backgroundTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.yellow))
+                "green" -> holder.colorCircle.backgroundTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.green))
+                "blue" -> holder.colorCircle.backgroundTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.blue))
+                "purple" -> holder.colorCircle.backgroundTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(mContext!!, R.color.purple))
             }
         }
     }
