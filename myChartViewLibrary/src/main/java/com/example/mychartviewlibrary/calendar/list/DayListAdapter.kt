@@ -10,11 +10,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.data.Schedule
 import com.example.mychartviewlibrary.R
+import com.example.mychartviewlibrary.calendar.data.CalendarFilter
 
 class DayListAdapter(scheduleList: ArrayList<Schedule>,
                      date:String,
                      private val listener: OnScheduleItemClickListener,
-                     colorFilter: ArrayList<String>) : RecyclerView.Adapter<ViewHolder>() {
+                     filter: CalendarFilter
+) : RecyclerView.Adapter<ViewHolder>() {
     private val mDayScheduleList = ArrayList<Schedule>()
     private var mContext: Context? = null
     init {
@@ -24,7 +26,8 @@ class DayListAdapter(scheduleList: ArrayList<Schedule>,
             Log.i("kongyi0508", "date = [${date}] / schedule.date = [${schedule.date}]")
             if (date.compareTo(schedule.date) == 0) {
                 Log.i("kongyi0508", "in adapter = " + schedule.title + " " + schedule.content)
-                if (schedule.color in colorFilter) {
+                if (schedule.color in filter.colorFilter  &&
+                    (schedule.content.contains(filter.keyword[0]) || schedule.title.contains(filter.keyword[0]))) {
                     mDayScheduleList.add(schedule)
                 }
             }

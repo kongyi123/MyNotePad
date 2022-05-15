@@ -17,6 +17,7 @@ import com.example.common.ContextHolder
 import com.example.common.data.Schedule
 import com.example.model.DataManager
 import com.example.mychartviewlibrary.R
+import com.example.mychartviewlibrary.calendar.data.CalendarFilter
 import com.example.mychartviewlibrary.calendar.data.DateItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,7 @@ import java.util.*
 class RecyclerViewAdapterForCalendar(private val context: Context,
                                      private var items: ArrayList<ArrayList<DateItem>>,
                                      val map: SparseArray<ArrayList<Schedule>>,
-                                     private val colorFilter: ArrayList<String>) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
+                                     private val filter: CalendarFilter) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
     private val TAG = "RecyclerViewAdapterForCalendar"
     val mContext = context
     var mSelectedView:View? = null
@@ -147,9 +148,21 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
 //        Log.i("kongyi0508", "list = {$list}")
         linearLayout.removeAllViews()
         if (list != null) {
-            Log.i(TAG, "addScheduleCircleAtDate list = {$list}")
+            Log.i("kongyi0515", "addScheduleCircleAtDate list = {$list}")
+            Log.i("kongyi0515", "filter keyword = ${filter.keyword}")
+
             for (schedule in list) {
-                if (schedule.color in colorFilter) {
+                var condition: Boolean = if (filter.mode[0] == 1) {
+                    schedule.color in filter.colorFilter &&
+                            (schedule.content.contains(filter.keyword[0]) || schedule.title.contains(filter.keyword[0]))
+                } else {
+                    schedule.color in filter.colorFilter ||
+                            (schedule.content.contains(filter.keyword[0]) || schedule.title.contains(filter.keyword[0]))
+                }
+
+                Log.i("kongyi0515", "condition = $condition, mode = ${filter.mode[0]}")
+
+                if (condition) {
                     val img = ImageView(context)
                     img.background = context.getDrawable(R.drawable.circle_black)
                     img.layoutParams = LinearLayout.LayoutParams(

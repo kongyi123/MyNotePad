@@ -4,12 +4,18 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
 import android.util.SparseArray
+import android.view.KeyEvent
 import android.view.View
+import android.view.View.OnClickListener
+import android.view.View.OnKeyListener
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -17,10 +23,12 @@ import com.example.common.ContextHolder
 import com.example.common.data.Schedule
 import com.example.model.DataManager
 import com.example.mychartviewlibrary.R
+import com.example.mychartviewlibrary.calendar.data.CalendarFilter
 import com.example.mychartviewlibrary.calendar.data.DateItem
 import com.example.mychartviewlibrary.calendar.list.DayListAdapter
 import com.example.mychartviewlibrary.calendar.list.OnScheduleItemClickListener
 import java.util.*
+
 
 // 뷰를 두번 열면 점의 개수가 두배가 됨.
 // 오늘 날짜가 아니라 하루 전 날짜가 오늘 날짜로 보임
@@ -46,10 +54,12 @@ class MyCalendarView : FrameLayout {
     var mTodayPosition = 0
 
     var isShownFilter = false
-
-    private val mColorFilter = ArrayList<String>()
     private var mScheduleList = ArrayList<Schedule>()
     private lateinit var mListener: OnScheduleItemClickListener
+
+    private val mColorFilter = ArrayList<String>()
+    private var mKeyword = ArrayList<String>() // default
+    private val mSelectedMode = ArrayList<Int>()
 
     init {
         ContextHolder.setContext(this.context)
@@ -88,6 +98,15 @@ class MyCalendarView : FrameLayout {
     @SuppressLint("NotifyDataSetChanged")
     fun refresh(scheduleList: ArrayList<Schedule>, scheduleItemClickListener: OnScheduleItemClickListener) {
         Log.i(TAG, "refresh()")
+        mKeyword.clear()
+        mKeyword.add(findViewById<EditText>(R.id.edit_keyword).text.toString())
+        mSelectedMode.clear()
+        if (findViewById<RadioGroup>(R.id.mode_radio_group).checkedRadioButtonId == R.id.or_radio_button) {
+            mSelectedMode.add(0)
+        } else {
+            mSelectedMode.add(1)
+        }
+        Log.i("kongyi0515", "keyword = $mKeyword")
         updateColorFilter()
         mCalendarPager.adapter?.notifyDataSetChanged()
         if (mCurrentDate != null) {
@@ -112,7 +131,7 @@ class MyCalendarView : FrameLayout {
         var weight = 1
         val cal = Calendar.getInstance()
         cal.timeInMillis = System.currentTimeMillis()
-        for (year in 2022..2023) {
+        for (year in 2021..2023) {
             for (month in 1..12) {
                 mTodayPosition += weight
                 if (cal.get(Calendar.YEAR) == year &&
@@ -139,7 +158,9 @@ class MyCalendarView : FrameLayout {
         }
 
         if (isShownFilter) updateColorFilter()
-        mCalendarAdapter = RecyclerViewAdapterForCalendar(context, calendarData, mMap, mColorFilter)
+        Log.i("kongyi0515", "mColorFileter = $mColorFilter, mKeyword = $mKeyword")
+        val mFilter = CalendarFilter(mColorFilter, mKeyword, mSelectedMode)
+        mCalendarAdapter = RecyclerViewAdapterForCalendar(context, calendarData, mMap, mFilter)
         mCalendarPager.adapter = mCalendarAdapter
         mCalendarPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         mCalendarPager.registerOnPageChangeCallback(onPageChangeCallbackForCalendar)
@@ -162,16 +183,42 @@ class MyCalendarView : FrameLayout {
                 mCalendarPager.setCurrentItem(current + 1, true)
             }
         }
-//        findViewById<Button>(R.id.search_button).setOnClickListener {
-//            refresh(mScheduleList, mListener)
-//        }
         findViewById<CheckBox>(R.id.check_red).setOnClickListener { refresh(mScheduleList, mListener) }
         findViewById<CheckBox>(R.id.check_orange).setOnClickListener { refresh(mScheduleList, mListener) }
         findViewById<CheckBox>(R.id.check_yellow).setOnClickListener { refresh(mScheduleList, mListener) }
         findViewById<CheckBox>(R.id.check_green).setOnClickListener { refresh(mScheduleList, mListener) }
         findViewById<CheckBox>(R.id.check_blue).setOnClickListener { refresh(mScheduleList, mListener) }
         findViewById<CheckBox>(R.id.check_purple).setOnClickListener { refresh(mScheduleList, mListener) }
+
+        findViewById<RadioGroup>(R.id.mode_radio_group).setOnCheckedChangeListener { radioGroup, i ->
+            refresh(mScheduleList, mListener)
+        }
+
+
+
+        val watcher = object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                refresh(mScheduleList, mListener)
+            }
+        }
+        findViewById<EditText>(R.id.edit_keyword).addTextChangedListener(watcher)
+
+
+        findViewById<EditText>(R.id.edit_keyword).setOnKeyListener(object : OnKeyListener {
+            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
+                    Log.i("test", "keycode delete")
+                }
+                return false
+            }
+
+        })
+
+
     }
+
 
 
     fun setOnItemClickListener(mScheduleList: ArrayList<Schedule>?, listener: OnScheduleItemClickListener) {
@@ -197,7 +244,8 @@ class MyCalendarView : FrameLayout {
         Log.i(TAG, "loadDataAtList()")
         val manager = LinearLayoutManager(ContextHolder.getContext(), LinearLayoutManager.VERTICAL, false)
         mRecyclerView.layoutManager = manager
-        mRecyclerView.adapter = DayListAdapter(mScheduleList!!, selectedDate, listener, mColorFilter)
+        val mFilter = CalendarFilter(mColorFilter, mKeyword, mSelectedMode)
+        mRecyclerView.adapter = DayListAdapter(mScheduleList!!, selectedDate, listener, mFilter)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
