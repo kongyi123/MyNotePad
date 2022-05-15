@@ -15,24 +15,35 @@ import com.example.mychartviewlibrary.calendar.data.CalendarFilter
 class DayListAdapter(scheduleList: ArrayList<Schedule>,
                      date:String,
                      private val listener: OnScheduleItemClickListener,
-                     filter: CalendarFilter
+                     filter: ArrayList<CalendarFilter>
 ) : RecyclerView.Adapter<ViewHolder>() {
+    private val TAG = "DayListAdapter"
     private val mDayScheduleList = ArrayList<Schedule>()
     private var mContext: Context? = null
     init {
         mDayScheduleList.clear()
-        Log.i("kongyi0508", "date = [${date}]")
         for (schedule in scheduleList) {
-            Log.i("kongyi0508", "date = [${date}] / schedule.date = [${schedule.date}]")
             if (date.compareTo(schedule.date) == 0) {
-                Log.i("kongyi0508", "in adapter = " + schedule.title + " " + schedule.content)
-                if (schedule.color in filter.colorFilter  &&
-                    (schedule.content.contains(filter.keyword[0]) || schedule.title.contains(filter.keyword[0]))) {
+                var condition = true
+                if (filter.size > 0 && filter[0].mode.size > 0) {
+                    condition = if (filter[0].mode[0] == 1) {
+                        schedule.color in filter[0].colorFilter &&
+                                (schedule.content.contains(filter[0].keyword[0]) || schedule.title.contains(
+                                    filter[0].keyword[0]))
+                    } else {
+                        schedule.color in filter[0].colorFilter ||
+                                (schedule.content.contains(filter[0].keyword[0]) || schedule.title.contains(
+                                    filter[0].keyword[0]))
+                    }
+                } else {
+                    Log.i(TAG, "There is no filter mode value!!")
+                }
+
+                if (condition) {
                     mDayScheduleList.add(schedule)
                 }
             }
         }
-        Log.i("kongyi1220", "in adapter size = " + mDayScheduleList.size)
     }
 
     override fun onCreateViewHolder(
@@ -75,17 +86,4 @@ class DayListAdapter(scheduleList: ArrayList<Schedule>,
     override fun getItemCount(): Int {
         return mDayScheduleList.size
     }
-
-    // 뷰홀더 포지션을 받아 그 위치의 데이터를 삭제하고 notifyItemRemoved로 어댑터에 갱신명령을 전달
-    fun removeData(position: Int) {
-        mDayScheduleList.removeAt(position)
-        notifyItemRemoved(position)
-    }
-
-//    // 두 개의 뷰홀더 포지션을 받아 Collections.swap으로 첫번째 위치와 두번째 위치의 데이터를 교환
-//    fun swapData(fromPos: Int, toPos: Int) {
-//        Collections.swap(dataSet, fromPos, toPos)
-//        notifyItemMoved(fromPos, toPos)
-//    }
-
 }

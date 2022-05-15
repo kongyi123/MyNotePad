@@ -55,11 +55,12 @@ class MyCalendarView : FrameLayout {
 
     var isShownFilter = false
     private var mScheduleList = ArrayList<Schedule>()
-    private lateinit var mListener: OnScheduleItemClickListener
+    private var mListener: OnScheduleItemClickListener? = null
+    private var mDoingThings: DoingThingsListener? = null
 
-    private val mColorFilter = ArrayList<String>()
-    private var mKeyword = ArrayList<String>() // default
-    private val mSelectedMode = ArrayList<Int>()
+    var mColorFilter = ArrayList<String>()
+    var mKeyword = ArrayList<String>() // default
+    var mSelectedMode = ArrayList<Int>()
 
     init {
         ContextHolder.setContext(this.context)
@@ -72,6 +73,40 @@ class MyCalendarView : FrameLayout {
             mCurrentDate?.let {
                 showDialog(it)
             }
+        }
+    }
+
+    fun loadFilterInfo(calendarFilter: CalendarFilter) {
+        Log.i("kongyi0515-5", "loadFilterInfo")
+        this.mColorFilter = calendarFilter.colorFilter
+        this.mKeyword = calendarFilter.keyword
+        this.mSelectedMode = calendarFilter.mode
+
+        Log.i("kongyi0515-5", "mColorFilter = $mColorFilter")
+        Log.i("kongyi0515-5", "mKeyword = $mKeyword")
+        Log.i("kongyi0515-5", "mSelectedMode = $mSelectedMode")
+
+        findViewById<EditText>(R.id.edit_keyword).setText(mKeyword[0])
+        findViewById<CheckBox>(R.id.check_red).isChecked = false
+        findViewById<CheckBox>(R.id.check_orange).isChecked = false
+        findViewById<CheckBox>(R.id.check_yellow).isChecked = false
+        findViewById<CheckBox>(R.id.check_green).isChecked = false
+        findViewById<CheckBox>(R.id.check_blue).isChecked = false
+        findViewById<CheckBox>(R.id.check_purple).isChecked = false
+        for (color in mColorFilter) {
+            if (color == "red") findViewById<CheckBox>(R.id.check_red).isChecked = true
+            if (color == "orange") findViewById<CheckBox>(R.id.check_orange).isChecked = true
+            if (color == "yellow") findViewById<CheckBox>(R.id.check_yellow).isChecked = true
+            if (color == "green") findViewById<CheckBox>(R.id.check_green).isChecked = true
+            if (color == "blue") findViewById<CheckBox>(R.id.check_blue).isChecked = true
+            if (color == "purple") findViewById<CheckBox>(R.id.check_purple).isChecked = true
+        }
+        if (mSelectedMode[0] == 0) {
+            findViewById<RadioButton>(R.id.or_radio_button).isChecked = true
+            findViewById<RadioButton>(R.id.and_radio_button).isChecked = false
+        } else {
+            findViewById<RadioButton>(R.id.or_radio_button).isChecked = false
+            findViewById<RadioButton>(R.id.and_radio_button).isChecked = true
         }
     }
 
@@ -96,8 +131,9 @@ class MyCalendarView : FrameLayout {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun refresh(scheduleList: ArrayList<Schedule>, scheduleItemClickListener: OnScheduleItemClickListener) {
-        Log.i(TAG, "refresh()")
+    fun refresh(scheduleList: ArrayList<Schedule>, scheduleItemClickListener: OnScheduleItemClickListener?, doingThings:DoingThingsListener?) {
+        Log.i("kongyi0515-5", "refresh()")
+
         mKeyword.clear()
         mKeyword.add(findViewById<EditText>(R.id.edit_keyword).text.toString())
         mSelectedMode.clear()
@@ -106,10 +142,23 @@ class MyCalendarView : FrameLayout {
         } else {
             mSelectedMode.add(1)
         }
-        Log.i("kongyi0515", "keyword = $mKeyword")
         updateColorFilter()
+        if (doingThings != null) {
+            mDoingThings = doingThings
+            doingThings.runTask() // save filter information.
+        }
+
         mCalendarPager.adapter?.notifyDataSetChanged()
+        val mFilter = ArrayList<CalendarFilter>()
+        mFilter.add(CalendarFilter(mColorFilter, mKeyword, mSelectedMode))
+        (mCalendarPager.adapter as RecyclerViewAdapterForCalendar).setFilter(mFilter)
+        Log.i("kongyi0515-5", "refresh : keyword = $mKeyword")
+        Log.i("kongyi0515-5", "refresh : mSelectedMode = $mSelectedMode")
+        Log.i("kongyi0515-5", "refresh : mColorFilter = $mColorFilter")
+
+
         if (mCurrentDate != null) {
+            Log.i("kongyi0515-3", "mCurrentDate = $mCurrentDate")
             loadDataAtList(scheduleList, mCurrentDate!!, scheduleItemClickListener)
         }
     }
@@ -125,6 +174,7 @@ class MyCalendarView : FrameLayout {
     }
 
     private fun initializeCalendar() {
+        Log.i("kongyi0515-5", "initializeCalendar")
         val calendarData: ArrayList<ArrayList<DateItem>> = ArrayList()
         val titleData: ArrayList<String> = ArrayList()
         mTodayPosition = 0
@@ -158,8 +208,9 @@ class MyCalendarView : FrameLayout {
         }
 
         if (isShownFilter) updateColorFilter()
-        Log.i("kongyi0515", "mColorFileter = $mColorFilter, mKeyword = $mKeyword")
-        val mFilter = CalendarFilter(mColorFilter, mKeyword, mSelectedMode)
+        Log.i("kongyi0515-5", "mColorFilter = $mColorFilter, mKeyword = $mKeyword, mSelectedMode = $mSelectedMode")
+        val mFilter = ArrayList<CalendarFilter>()
+        mFilter.add(CalendarFilter(mColorFilter, mKeyword, mSelectedMode))
         mCalendarAdapter = RecyclerViewAdapterForCalendar(context, calendarData, mMap, mFilter)
         mCalendarPager.adapter = mCalendarAdapter
         mCalendarPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -183,43 +234,27 @@ class MyCalendarView : FrameLayout {
                 mCalendarPager.setCurrentItem(current + 1, true)
             }
         }
-        findViewById<CheckBox>(R.id.check_red).setOnClickListener { refresh(mScheduleList, mListener) }
-        findViewById<CheckBox>(R.id.check_orange).setOnClickListener { refresh(mScheduleList, mListener) }
-        findViewById<CheckBox>(R.id.check_yellow).setOnClickListener { refresh(mScheduleList, mListener) }
-        findViewById<CheckBox>(R.id.check_green).setOnClickListener { refresh(mScheduleList, mListener) }
-        findViewById<CheckBox>(R.id.check_blue).setOnClickListener { refresh(mScheduleList, mListener) }
-        findViewById<CheckBox>(R.id.check_purple).setOnClickListener { refresh(mScheduleList, mListener) }
+        findViewById<CheckBox>(R.id.check_red).setOnClickListener { refresh(mScheduleList, mListener, mDoingThings) }
+        findViewById<CheckBox>(R.id.check_orange).setOnClickListener { refresh(mScheduleList, mListener, mDoingThings) }
+        findViewById<CheckBox>(R.id.check_yellow).setOnClickListener { refresh(mScheduleList, mListener, mDoingThings) }
+        findViewById<CheckBox>(R.id.check_green).setOnClickListener { refresh(mScheduleList, mListener, mDoingThings) }
+        findViewById<CheckBox>(R.id.check_blue).setOnClickListener { refresh(mScheduleList, mListener, mDoingThings) }
+        findViewById<CheckBox>(R.id.check_purple).setOnClickListener { refresh(mScheduleList, mListener, mDoingThings) }
 
         findViewById<RadioGroup>(R.id.mode_radio_group).setOnCheckedChangeListener { radioGroup, i ->
-            refresh(mScheduleList, mListener)
+            refresh(mScheduleList, mListener, mDoingThings)
         }
 
-
-
-        val watcher = object : TextWatcher {
+        findViewById<EditText>(R.id.edit_keyword).addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
-                refresh(mScheduleList, mListener)
-            }
-        }
-        findViewById<EditText>(R.id.edit_keyword).addTextChangedListener(watcher)
-
-
-        findViewById<EditText>(R.id.edit_keyword).setOnKeyListener(object : OnKeyListener {
-            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
-                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
-                    Log.i("test", "keycode delete")
+                if (mDoingThings != null) {
+                    refresh(mScheduleList, mListener, mDoingThings)
                 }
-                return false
             }
-
         })
-
-
     }
-
-
 
     fun setOnItemClickListener(mScheduleList: ArrayList<Schedule>?, listener: OnScheduleItemClickListener) {
         mListener = listener
@@ -240,12 +275,16 @@ class MyCalendarView : FrameLayout {
         }
     }
 
-    fun loadDataAtList(mScheduleList: ArrayList<Schedule>?, selectedDate:String, listener:OnScheduleItemClickListener) {
+    fun loadDataAtList(mScheduleList: ArrayList<Schedule>?, selectedDate:String, listener:OnScheduleItemClickListener?) {
         Log.i(TAG, "loadDataAtList()")
         val manager = LinearLayoutManager(ContextHolder.getContext(), LinearLayoutManager.VERTICAL, false)
         mRecyclerView.layoutManager = manager
-        val mFilter = CalendarFilter(mColorFilter, mKeyword, mSelectedMode)
-        mRecyclerView.adapter = DayListAdapter(mScheduleList!!, selectedDate, listener, mFilter)
+        val mFilter = ArrayList<CalendarFilter>()
+        mFilter.add(CalendarFilter(mColorFilter, mKeyword, mSelectedMode))
+        Log.i("kongyi0515-5", "mFilter = ${mFilter[0]}")
+        listener?.let {
+            mRecyclerView.adapter = DayListAdapter(mScheduleList!!, selectedDate, listener, mFilter)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.S)

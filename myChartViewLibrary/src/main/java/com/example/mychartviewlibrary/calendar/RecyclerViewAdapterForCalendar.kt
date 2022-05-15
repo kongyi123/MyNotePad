@@ -28,26 +28,23 @@ import java.util.*
 class RecyclerViewAdapterForCalendar(private val context: Context,
                                      private var items: ArrayList<ArrayList<DateItem>>,
                                      val map: SparseArray<ArrayList<Schedule>>,
-                                     private val filter: CalendarFilter) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
+                                     private var filter: ArrayList<CalendarFilter>
+                                     ) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
     private val TAG = "RecyclerViewAdapterForCalendar"
     val mContext = context
     var mSelectedView:View? = null
     lateinit var listener: OnDateItemClickListener
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // 뷰홀더는 데이터의 개수만큼 만들어지는게 아니라.
-        // 몇개만 만들어지고 재활용된다.
+    fun setFilter(arr: ArrayList<CalendarFilter>) {
+        filter = arr
+    }
 
-        Log.i("kongyi1220", "onCreateViewHolder")
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.calendar_list_item, parent, false))
     }
 
     @SuppressLint("LongLogTag")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // 이 함수 화면을 보일 때, 항상 call 되기때문에
-        // 여기서 데이터를 씌어 주어야 한다. 그래야 재활용 되는 뷰 홀더에 적절한 값이 표시된다.
-
-        Log.i(TAG, "onBindViewHolder")
         holder.setData(position, items[position])
     }
 
@@ -56,6 +53,10 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         @SuppressLint("UseCompatLoadingForDrawables")
         fun setData(pos:Int, dataViewList: ArrayList<DateItem>) {
+            Log.i("kongyi0515-3", "setData()")
+            Log.i("kongyi0515-5", "filter.size = ${filter.size}")
+            Log.i("kongyi0515-5", "filter = ${filter[0]}")
+
             val frame = itemView.rootView as LinearLayout
             val frameChildCount = frame.childCount
             var cnt = 0
@@ -132,7 +133,6 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 textView.setTextColor(context.getColor(R.color.green_today))
                 textView.textSize = 20.0f
-//                textView.setBackgroundColor(context.getColor(R.color.green_today))
             }
         }
     }
@@ -145,22 +145,28 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
         linearLayout: LinearLayout
     ) {
         val list = map[arr[cnt].getKey()]
-//        Log.i("kongyi0508", "list = {$list}")
         linearLayout.removeAllViews()
         if (list != null) {
-            Log.i("kongyi0515", "addScheduleCircleAtDate list = {$list}")
-            Log.i("kongyi0515", "filter keyword = ${filter.keyword}")
+//
+//            Log.i("kongyi0515-5", "filter.size = ${filter.size}")
+//            Log.i("kongyi0515-5", "filter.mode.size = ${filter[0].mode.size}")
+//            Log.i("kongyi0515-5", "filter.colorFilter.size = ${filter[0].colorFilter.size}")
 
             for (schedule in list) {
-                var condition: Boolean = if (filter.mode[0] == 1) {
-                    schedule.color in filter.colorFilter &&
-                            (schedule.content.contains(filter.keyword[0]) || schedule.title.contains(filter.keyword[0]))
+                var condition = true
+                if (filter.size > 0 && filter[0].mode.size > 0) {
+                    condition = if (filter[0].mode[0] == 1) {
+                        schedule.color in filter[0].colorFilter &&
+                                (schedule.content.contains(filter[0].keyword[0]) || schedule.title.contains(
+                                    filter[0].keyword[0]))
+                    } else {
+                        schedule.color in filter[0].colorFilter ||
+                                (schedule.content.contains(filter[0].keyword[0]) || schedule.title.contains(
+                                    filter[0].keyword[0]))
+                    }
                 } else {
-                    schedule.color in filter.colorFilter ||
-                            (schedule.content.contains(filter.keyword[0]) || schedule.title.contains(filter.keyword[0]))
+                    Log.i("kongyi0515-5", "There is no filter mode value!!")
                 }
-
-                Log.i("kongyi0515", "condition = $condition, mode = ${filter.mode[0]}")
 
                 if (condition) {
                     val img = ImageView(context)
@@ -190,8 +196,6 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
             }
         }
     }
-
-
 
     inner class DragListener(private val targetDateItem: DateItem) : View.OnDragListener {
         @SuppressLint("UseCompatLoadingForDrawables")

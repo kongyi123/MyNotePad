@@ -22,6 +22,7 @@ import com.example.model.data.History
 import com.example.model.data.Notice
 import com.example.common.data.Schedule
 import com.example.common.Utils
+import com.example.model.data.CalendarFilter
 import com.example.model.data.Sheet
 import com.example.model.view.TabTextView
 import com.google.firebase.database.*
@@ -452,6 +453,9 @@ object DataManager {
         mPostReference.updateChildren(childUpdates)
     }
 
+    //---------------------------------------------------------------------------------------------------------------
+    // For Notification feature
+
     fun getNotificationState(context:Context):Boolean {
         val pdm = PreferenceDataManager(context)
         if (pdm.getInt("notification") == 1) {
@@ -469,6 +473,8 @@ object DataManager {
         }
     }
 
+    //---------------------------------------------------------------------------------------------------------------
+    // Regarding SharedPrefrence
 
     fun getUpdateState(context:Context):Boolean {
         val pdm = PreferenceDataManager(context)
@@ -486,6 +492,9 @@ object DataManager {
             pdm.setInt("updateEnable", 0)
         }
     }
+
+    //---------------------------------------------------------------------------------------------------------------
+    // Regarding NotePad
 
     fun setSingleSheet(context:Context, i:Int, item: Sheet?) {
         val pdm = PreferenceDataManager(context)
@@ -703,5 +712,15 @@ object DataManager {
             } //sheetList
             sheetList.postValue(items)
         }
+    }
+
+    fun getLastFilterSettingState(context: Context): CalendarFilter? {
+        val pdm = PreferenceDataManager(context)
+        return pdm.getCalendarFilter("calendarFilterState")
+    }
+
+    fun setUpdateFilterSettingState(context: Context, calendarFilter: CalendarFilter) {
+        val pdm = PreferenceDataManager(context)
+        pdm.setCalendarFilter("calendarFilterState", calendarFilter)
     }
 }

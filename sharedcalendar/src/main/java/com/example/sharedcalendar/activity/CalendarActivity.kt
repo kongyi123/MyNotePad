@@ -8,16 +8,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.common.ContextHolder
 import com.example.model.DataManager
 import com.example.sharedcalendar.R
 import com.example.common.data.Schedule
+import com.example.mychartviewlibrary.calendar.DoingThingsListener
 import com.example.mychartviewlibrary.calendar.MyCalendarView
 import com.example.mychartviewlibrary.calendar.OnAddBtnClickListener
+import com.example.mychartviewlibrary.calendar.data.CalendarFilter
 import com.example.mychartviewlibrary.calendar.list.OnScheduleItemClickListener
 
 
@@ -33,11 +33,19 @@ class CalendarActivity : AppCompatActivity() {
         setContentView(R.layout.activity_calendar)
         mContext = this
         DataManager.getAllScheduleData("id_list")
-
         mPhoneNumber = DataManager.getLineNumber(this, this)
         ContextHolder.setPhoneNumber(mPhoneNumber)
-
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
+        DataManager.getLastFilterSettingState(this)?.let { calendarFilterFromDB ->
+            val calendarFilter = CalendarFilter(
+                calendarFilterFromDB.colorFilter,
+                calendarFilterFromDB.keyword,
+                calendarFilterFromDB.mode
+            )
+            mCalendarView.loadFilterInfo(calendarFilter)
+            Log.i("kongyi0515-5", "loadComplete")
+        }
+
         DataManager.dataList.observe(this, androidx.lifecycle.Observer { scheduleList ->
             Log.i("kongyi0508", "dataList.observe")
 
@@ -49,9 +57,19 @@ class CalendarActivity : AppCompatActivity() {
                     startActivity(intent);
                 }
             }
+            val doingThings = object : DoingThingsListener {
+                override fun runTask() {
+                    Log.i("kongyi0515-2", "runTask() is called")
+                    val mFilter = com.example.model.data.CalendarFilter(
+                        mCalendarView.mColorFilter,
+                        mCalendarView.mKeyword,
+                        mCalendarView.mSelectedMode)
+                    DataManager.setUpdateFilterSettingState(this@CalendarActivity, mFilter)
+                }
+            }
             mCalendarView.setOnItemClickListener(scheduleList, scheduleItemClickListener)
             mCalendarView.setSchedules(scheduleList)
-            mCalendarView.refresh(scheduleList, scheduleItemClickListener) // it is needed
+            mCalendarView.refresh(scheduleList, scheduleItemClickListener, doingThings) // it is needed
             mCalendarView.mCurrentDate?.let {
                 mCalendarView.loadDataAtList(
                     scheduleList,
