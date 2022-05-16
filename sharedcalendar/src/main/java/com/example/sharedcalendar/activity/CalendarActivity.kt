@@ -36,6 +36,10 @@ class CalendarActivity : AppCompatActivity() {
         mPhoneNumber = DataManager.getLineNumber(this, this)
         ContextHolder.setPhoneNumber(mPhoneNumber)
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
+
+        mCalendarView.setDateRange(2021, 2023)
+        mCalendarView.initializeCalendar()
+
         DataManager.getLastFilterSettingState(this)?.let { calendarFilterFromDB ->
             val calendarFilter = CalendarFilter(
                 calendarFilterFromDB.colorFilter,
@@ -43,11 +47,11 @@ class CalendarActivity : AppCompatActivity() {
                 calendarFilterFromDB.mode
             )
             mCalendarView.loadFilterInfo(calendarFilter)
-            Log.i("kongyi0515-5", "loadComplete")
+            Log.i("kongyi0516", "loadComplete")
         }
 
         DataManager.dataList.observe(this, androidx.lifecycle.Observer { scheduleList ->
-            Log.i("kongyi0508", "dataList.observe")
+            Log.i("kongyi0516", "dataList.observe")
 
             val scheduleItemClickListener = object : OnScheduleItemClickListener {
                 override fun onItemClick(schedule: Schedule) {
@@ -87,7 +91,7 @@ class CalendarActivity : AppCompatActivity() {
                 }
             }
             mCalendarView.setAddScheduleBtn(addBtnListener)
-            Log.i("kongyi0507", "observe complete time = ${System.currentTimeMillis()}")
+            Log.i("kongyi0516", "observe complete time = ${System.currentTimeMillis()}")
         })
     }
 

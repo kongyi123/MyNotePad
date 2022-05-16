@@ -26,14 +26,20 @@ import java.util.*
 
 // --> 리사이클러뷰의 재활용성 때문에, 화면에 표시하는 뷰를 다 갖고 있으려고 하면 안된다.
 class RecyclerViewAdapterForCalendar(private val context: Context,
-                                     private var items: ArrayList<ArrayList<DateItem>>,
                                      val map: SparseArray<ArrayList<Schedule>>,
-                                     private var filter: ArrayList<CalendarFilter>
-                                     ) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
+                                     private var filter: ArrayList<CalendarFilter>,
+                                     val startYear: Int) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
     private val TAG = "RecyclerViewAdapterForCalendar"
     val mContext = context
     var mSelectedView:View? = null
     lateinit var listener: OnDateItemClickListener
+    private var items = ArrayList<ArrayList<DateItem>>()
+
+    init {
+        for (i in 1..100) {
+            items.add(ArrayList<DateItem>())
+        }
+    }
 
     fun setFilter(arr: ArrayList<CalendarFilter>) {
         filter = arr
@@ -45,6 +51,10 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
 
     @SuppressLint("LongLogTag")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (items[position].size == 0) {
+            Log.i("kongyi0516", "onBindViewHolder position = $position")
+            items[position] = initMonthView(2021 + position/12, position%12 + 1)
+        }
         holder.setData(position, items[position])
     }
 
@@ -282,5 +292,36 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
             }
         }
     }
+
+    fun initMonthView(year: Int, month: Int): ArrayList<DateItem> {
+        val monthForCalendarLib = month - 1
+        return getMonthData(year, monthForCalendarLib)
+    }
+
+    // 뷰를 넣어야함...
+    private fun getMonthData(year:Int, month:Int): ArrayList<DateItem> {
+        val cal = Calendar.getInstance()
+        cal.set(year, month, 1)
+        val dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)
+        val dayOfMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val dates = arrayListOf(
+            DateItem(text = "일"), DateItem(text = "월"), DateItem(text = "화"), DateItem(text = "수"),
+            DateItem(text = "목"), DateItem(text = "금"), DateItem(text = "토"))
+
+        for (i in 1 until dayOfWeek) {
+            dates.add(DateItem(text = ""))
+        }
+        var cnt = 0
+        for (i in 1..dayOfMonth) {
+            cnt++
+            dates.add(DateItem(year, month, cnt, 1, cnt.toString()))
+        }
+        for (i in 0..30) {
+            dates.add(DateItem(text = ""))
+        }
+
+        return dates
+    }
+
 }
 

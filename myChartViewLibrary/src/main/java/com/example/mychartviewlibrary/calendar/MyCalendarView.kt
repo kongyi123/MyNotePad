@@ -9,13 +9,10 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
 import android.util.SparseArray
-import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.View.OnKeyListener
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -34,7 +31,10 @@ import java.util.*
 // 오늘 날짜가 아니라 하루 전 날짜가 오늘 날짜로 보임
 
 class MyCalendarView : FrameLayout {
-    val TAG = "MyCalendarView"
+    private val TAG = "MyCalendarView"
+    private var calendarMaxPage = 0
+    private var startYear = 0
+    private var endYear = 0
 
     constructor(context: Context) : super(context){
     }
@@ -68,12 +68,12 @@ class MyCalendarView : FrameLayout {
         mTitlePager = findViewById(R.id.calendar_title)
         mCalendarPager = findViewById(R.id.calendar_vpPager)
         mRecyclerView = findViewById(R.id.calendar_recyclerView)
-        initializeCalendar()
-        findViewById<Button>(R.id.calendar_deleteAllBtn).setOnClickListener {
-            mCurrentDate?.let {
-                showDialog(it)
-            }
-        }
+    }
+
+    fun setDateRange(startYear: Int, endYear: Int) {
+        this.startYear = startYear
+        this.endYear = endYear
+        this.calendarMaxPage = (endYear-startYear+1)*12
     }
 
     fun loadFilterInfo(calendarFilter: CalendarFilter) {
@@ -173,15 +173,13 @@ class MyCalendarView : FrameLayout {
         if (findViewById<CheckBox>(R.id.check_purple).isChecked) mColorFilter.add("purple")
     }
 
-    private fun initializeCalendar() {
+    fun initializeCalendar() {
         Log.i("kongyi0515-5", "initializeCalendar")
-        val calendarData: ArrayList<ArrayList<DateItem>> = ArrayList()
-        val titleData: ArrayList<String> = ArrayList()
         mTodayPosition = 0
         var weight = 1
         val cal = Calendar.getInstance()
         cal.timeInMillis = System.currentTimeMillis()
-        for (year in 2021..2023) {
+        for (year in startYear..endYear) {
             for (month in 1..12) {
                 mTodayPosition += weight
                 if (cal.get(Calendar.YEAR) == year &&
@@ -189,11 +187,9 @@ class MyCalendarView : FrameLayout {
                 ) {
                     weight = 0
                 }
-                val monthForCalendarLib = month - 1
-                calendarData.add(getMonthData(year, monthForCalendarLib))
-                titleData.add("${month}월 $year")
             }
         }
+
         if (mCurrentPosition != null) {
             mTodayPosition = mCurrentPosition!!
         }
@@ -211,14 +207,15 @@ class MyCalendarView : FrameLayout {
         Log.i("kongyi0515-5", "mColorFilter = $mColorFilter, mKeyword = $mKeyword, mSelectedMode = $mSelectedMode")
         val mFilter = ArrayList<CalendarFilter>()
         mFilter.add(CalendarFilter(mColorFilter, mKeyword, mSelectedMode))
-        mCalendarAdapter = RecyclerViewAdapterForCalendar(context, calendarData, mMap, mFilter)
+        mCalendarAdapter = RecyclerViewAdapterForCalendar(context, mMap, mFilter, startYear)
         mCalendarPager.adapter = mCalendarAdapter
         mCalendarPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         mCalendarPager.registerOnPageChangeCallback(onPageChangeCallbackForCalendar)
         Log.i("kongyi0505", "mTodayPosition = ${mTodayPosition}")
         mCalendarPager.setCurrentItem(mTodayPosition, false)
 
-        mTitlePager.adapter = RecyclerViewAdapterForTitle(titleData)
+
+        mTitlePager.adapter = RecyclerViewAdapterForTitle(startYear, endYear)
         mTitlePager.orientation = ViewPager2.ORIENTATION_VERTICAL
         mTitlePager.setCurrentItem(mTodayPosition, false)
 
@@ -230,7 +227,7 @@ class MyCalendarView : FrameLayout {
         }
         findViewById<TextView>(R.id.calendar_next).setOnClickListener {
             val current = mCalendarPager.currentItem
-            if (current < calendarData.size) {
+            if (current < calendarMaxPage) {
                 mCalendarPager.setCurrentItem(current + 1, true)
             }
         }
@@ -254,6 +251,12 @@ class MyCalendarView : FrameLayout {
                 }
             }
         })
+
+        findViewById<Button>(R.id.calendar_deleteAllBtn).setOnClickListener {
+            mCurrentDate?.let {
+                showDialog(it)
+            }
+        }
     }
 
     fun setOnItemClickListener(mScheduleList: ArrayList<Schedule>?, listener: OnScheduleItemClickListener) {
@@ -315,30 +318,6 @@ class MyCalendarView : FrameLayout {
     override fun onViewRemoved(child: View?) {
         super.onViewRemoved(child)
         ContextHolder.setContext(null)
-    }
-    // 뷰를 넣어야함...
-    private fun getMonthData(year:Int, month:Int): ArrayList<DateItem> {
-        val cal = Calendar.getInstance()
-        cal.set(year, month, 1)
-        val dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)
-        val dayOfMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val dates = arrayListOf(
-            DateItem(text = "일"), DateItem(text = "월"), DateItem(text = "화"), DateItem(text = "수"),
-            DateItem(text = "목"), DateItem(text = "금"), DateItem(text = "토"))
-
-        for (i in 1 until dayOfWeek) {
-            dates.add(DateItem(text = ""))
-        }
-        var cnt = 0
-        for (i in 1..dayOfMonth) {
-            cnt++
-            dates.add(DateItem(year, month, cnt, 1, cnt.toString()))
-        }
-        for (i in 0..30) {
-            dates.add(DateItem(text = ""))
-        }
-
-        return dates
     }
 
     fun setFilterVisibility(flag:Boolean) {
