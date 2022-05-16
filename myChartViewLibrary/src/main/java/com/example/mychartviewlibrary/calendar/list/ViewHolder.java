@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.common.data.Schedule;
 import com.example.mychartviewlibrary.R;
+import com.example.mychartviewlibrary.calendar.RecyclerViewAdapterForCalendar;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
     TextView title;
@@ -21,7 +22,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     ImageView colorCircle;
 //    ConstraintLayout item_layout;
 
-    public ViewHolder(@NonNull View itemView, OnScheduleItemClickListener listener) {
+    public ViewHolder(@NonNull View itemView, OnScheduleItemClickListener listener, RecyclerViewAdapterForCalendar rvafc) {
         super(itemView);
 
         title = itemView.findViewById(R.id.item_title);
@@ -39,10 +40,10 @@ public class ViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        initializeDragAndDropView(itemView);
+        initializeDragAndDropView(itemView, rvafc);
     }
 
-    void initializeDragAndDropView(@NonNull View itemView) {
+    void initializeDragAndDropView(@NonNull View itemView, RecyclerViewAdapterForCalendar rvafc) {
         itemView.setOnLongClickListener(view -> {
             Log.i("kongyi0424", "setOnLongClickListener");
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
@@ -51,6 +52,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
             }
 
             view.setVisibility(View.INVISIBLE);
+            rvafc.setDropState(false);
             return true;
         });
     }

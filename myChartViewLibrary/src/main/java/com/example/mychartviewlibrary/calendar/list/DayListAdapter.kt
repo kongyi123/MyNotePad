@@ -10,12 +10,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.data.Schedule
 import com.example.mychartviewlibrary.R
+import com.example.mychartviewlibrary.calendar.RecyclerViewAdapterForCalendar
 import com.example.mychartviewlibrary.calendar.data.CalendarFilter
 
 class DayListAdapter(scheduleList: ArrayList<Schedule>,
                      date:String,
                      private val listener: OnScheduleItemClickListener,
-                     filter: ArrayList<CalendarFilter>
+                     filter: ArrayList<CalendarFilter>,
+                     private val rvafc: RecyclerViewAdapterForCalendar
 ) : RecyclerView.Adapter<ViewHolder>() {
     private val TAG = "DayListAdapter"
     private val mDayScheduleList = ArrayList<Schedule>()
@@ -55,7 +57,7 @@ class DayListAdapter(scheduleList: ArrayList<Schedule>,
         val inflater =
             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view: View = inflater.inflate(R.layout.calendar_schedule_list_item, parent, false)
-        return ViewHolder(view, listener)
+        return ViewHolder(view, listener, rvafc)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

@@ -210,6 +210,12 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
         }
     }
 
+    var isDropped: Boolean = false
+
+    fun setDropState(state:Boolean) {
+        isDropped = state
+    }
+
     inner class DragListener(private val targetDateItem: DateItem) : View.OnDragListener {
         @SuppressLint("UseCompatLoadingForDrawables")
         private var mPreviousBackground: Drawable? = null
@@ -252,7 +258,8 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
                     }
                 }
                 DragEvent.ACTION_DROP -> {
-                    Log.i("kongyi0508", "ACTION_DROP")
+                    isDropped = true
+                    Log.i("kongyi0517", "ACTION_DROP")
 //                    val itemViewFromList = event.localState as View
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         v.setBackgroundColor(0)
@@ -262,7 +269,12 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
 //                    val positionAtList = itemViewParent.indexOfChild(itemViewFromList)
                 }
                 DragEvent.ACTION_DRAG_ENDED -> { // 각 리스너의 드래그 앤 드롭 종료 상태 (3번 call됨)
-                    Log.i("kongyi0424", "ACTION_DRAG_ENDED")
+                    Log.i("kongyi0517", "ACTION_DRAG_ENDED | dropCount = $isDropped")
+                    if (isDropped) {
+                        itemViewFromList.visibility = View.INVISIBLE
+                    } else {
+                        itemViewFromList.visibility = View.VISIBLE
+                    }
                 }
             }
             return true
