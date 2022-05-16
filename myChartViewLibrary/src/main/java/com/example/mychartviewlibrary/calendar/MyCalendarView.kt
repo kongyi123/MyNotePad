@@ -207,7 +207,7 @@ class MyCalendarView : FrameLayout {
         Log.i("kongyi0515-5", "mColorFilter = $mColorFilter, mKeyword = $mKeyword, mSelectedMode = $mSelectedMode")
         val mFilter = ArrayList<CalendarFilter>()
         mFilter.add(CalendarFilter(mColorFilter, mKeyword, mSelectedMode))
-        mCalendarAdapter = RecyclerViewAdapterForCalendar(context, mMap, mFilter, startYear)
+        mCalendarAdapter = RecyclerViewAdapterForCalendar(context, mMap, mFilter, startYear, endYear)
         mCalendarPager.adapter = mCalendarAdapter
         mCalendarPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         mCalendarPager.registerOnPageChangeCallback(onPageChangeCallbackForCalendar)

@@ -28,7 +28,8 @@ import java.util.*
 class RecyclerViewAdapterForCalendar(private val context: Context,
                                      val map: SparseArray<ArrayList<Schedule>>,
                                      private var filter: ArrayList<CalendarFilter>,
-                                     val startYear: Int) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
+                                     private val startYear: Int,
+                                     private val endYear: Int) : RecyclerView.Adapter<RecyclerViewAdapterForCalendar.ViewHolder>() {
     private val TAG = "RecyclerViewAdapterForCalendar"
     val mContext = context
     var mSelectedView:View? = null
@@ -36,8 +37,10 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
     private var items = ArrayList<ArrayList<DateItem>>()
 
     init {
-        for (i in 1..100) {
-            items.add(ArrayList<DateItem>())
+        for (i in startYear..endYear) {
+            for (j in 1..12) {
+                items.add(ArrayList<DateItem>())
+            }
         }
     }
 
@@ -53,7 +56,7 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (items[position].size == 0) {
             Log.i("kongyi0516", "onBindViewHolder position = $position")
-            items[position] = initMonthView(2021 + position/12, position%12 + 1)
+            items[position] = initMonthView(startYear + position/12, position%12 + 1)
         }
         holder.setData(position, items[position])
     }
