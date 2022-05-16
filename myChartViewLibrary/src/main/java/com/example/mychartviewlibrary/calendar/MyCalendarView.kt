@@ -287,6 +287,7 @@ class MyCalendarView : FrameLayout {
         Log.i("kongyi0515-5", "mFilter = ${mFilter[0]}")
         listener?.let {
             mRecyclerView.adapter = DayListAdapter(mScheduleList!!, selectedDate, listener, mFilter)
+            (mRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 0)
         }
     }
 
