@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.example.common.ContextHolder
 import com.example.model.DataManager
 import com.example.sharedcalendar.R
@@ -18,6 +20,7 @@ import com.example.mychartviewlibrary.calendar.DoingThingsListener
 import com.example.mychartviewlibrary.calendar.MyCalendarView
 import com.example.mychartviewlibrary.calendar.OnAddBtnClickListener
 import com.example.mychartviewlibrary.calendar.data.CalendarFilter
+import com.example.mychartviewlibrary.calendar.list.ITask
 import com.example.mychartviewlibrary.calendar.list.OnScheduleItemClickListener
 
 
@@ -26,6 +29,18 @@ class CalendarActivity : AppCompatActivity() {
     private lateinit var mContext: Context
     private lateinit var mPhoneNumber: String
     private lateinit var mCalendarView: MyCalendarView
+
+    val iTask = object : ITask {
+        override fun doTaskOnSwiped(viewHolder: RecyclerView.ViewHolder) {
+            val date = viewHolder.itemView.findViewById<TextView>(com.example.mychartviewlibrary.R.id.item_date).text.toString()
+            val id = viewHolder.itemView.findViewById<TextView>(com.example.mychartviewlibrary.R.id.item_id).text.toString()
+            val title = viewHolder.itemView.findViewById<TextView>(com.example.mychartviewlibrary.R.id.item_title).text.toString()
+            val content = viewHolder.itemView.findViewById<TextView>(com.example.mychartviewlibrary.R.id.item_content).text.toString()
+            val color = viewHolder.itemView.findViewById<TextView>(com.example.mychartviewlibrary.R.id.item_color).text.toString()
+            DataManager.removeSingleSchedule("id_list", date, id)
+            DataManager.putSingleHistory(mContext, "cal-schedule-remove", "content: id = ${id}, date = ${date}, title=$title, content=$content, color=$color}", mPhoneNumber)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +53,7 @@ class CalendarActivity : AppCompatActivity() {
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
 
         mCalendarView.setDateRange(2021, 2023)
-        mCalendarView.initializeCalendar()
+        mCalendarView.initializeCalendar(iTask)
 
         DataManager.getLastFilterSettingState(this)?.let { calendarFilterFromDB ->
             val calendarFilter = CalendarFilter(

@@ -3,6 +3,7 @@ package com.example.mychartviewlibrary.calendar
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.*
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -23,6 +25,7 @@ import com.example.mychartviewlibrary.R
 import com.example.mychartviewlibrary.calendar.data.CalendarFilter
 import com.example.mychartviewlibrary.calendar.data.DateItem
 import com.example.mychartviewlibrary.calendar.list.DayListAdapter
+import com.example.mychartviewlibrary.calendar.list.ITask
 import com.example.mychartviewlibrary.calendar.list.OnScheduleItemClickListener
 import java.util.*
 
@@ -44,6 +47,7 @@ class MyCalendarView : FrameLayout {
     }
 
     private var mRecyclerView: RecyclerView
+    private var mListAdapter: DayListAdapter? = null
     private val mMap = SparseArray<ArrayList<Schedule>>()
 
     private lateinit var mCalendarAdapter: RecyclerViewAdapterForCalendar
@@ -118,13 +122,13 @@ class MyCalendarView : FrameLayout {
         })
     }
 
-    private fun showDialog(date:String) {
+    private fun showDialog(date:String, iTask: ITask) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder.setTitle("※ 경고 ※")
         builder.setMessage("정말로 다 지우겠습니까?")
         builder.setPositiveButton("예") { dialog, which ->
             DataManager.removeDayAllSchedule("id_list", date)
-            initializeCalendar()
+            initializeCalendar(iTask)
         }
         builder.setNegativeButton("아니오") { dialog, which ->}
         builder.show()
@@ -173,7 +177,7 @@ class MyCalendarView : FrameLayout {
         if (findViewById<CheckBox>(R.id.check_purple).isChecked) mColorFilter.add("purple")
     }
 
-    fun initializeCalendar() {
+    fun initializeCalendar(iTask: ITask) {
         Log.i("kongyi0515-5", "initializeCalendar")
         mTodayPosition = 0
         var weight = 1
@@ -254,10 +258,76 @@ class MyCalendarView : FrameLayout {
 
         findViewById<Button>(R.id.calendar_deleteAllBtn).setOnClickListener {
             mCurrentDate?.let {
-                showDialog(it)
+                showDialog(it, iTask)
             }
         }
+        setSwipeToRecyclerView(iTask)
     }
+
+
+    private fun setSwipeToRecyclerView(iTask: ITask) {
+        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                mListAdapter?.removeData(viewHolder.layoutPosition)
+                mRecyclerView.adapter?.notifyDataSetChanged()
+                iTask.doTaskOnSwiped(viewHolder)
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val icon: Bitmap
+                // actionState가 SWIPE 동작일 때 배경을 빨간색으로 칠하는 작업을 수행하도록 함
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    val itemView = viewHolder.itemView
+                    val height = (itemView.bottom - itemView.top).toFloat()
+                    val width = height / 4
+                    val paint = Paint()
+                    if (dX < 0 || dX > 0) {  // 왼쪽으로 스와이프하는지 확인
+                        // 뷰홀더의 백그라운드에 깔아줄 사각형의 크기와 색상을 지정
+                        paint.color = Color.parseColor("#22ff0000")
+                        val backgroundRight = RectF(
+                            itemView.right.toFloat() + dX,
+                            itemView.top.toFloat(),
+                            itemView.right.toFloat(),
+                            itemView.bottom.toFloat()
+                        )
+                        val backgroundLeft = RectF(
+                            itemView.left.toFloat() + dX,
+                            itemView.top.toFloat(),
+                            itemView.left.toFloat(),
+                            itemView.bottom.toFloat()
+                        )
+                        c.drawRect(backgroundRight, paint)
+                        c.drawRect(backgroundLeft, paint)
+                    }
+                }
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+
+        }
+
+        ItemTouchHelper(itemTouchCallback).attachToRecyclerView(mRecyclerView)
+    }
+
 
     fun setOnItemClickListener(mScheduleList: ArrayList<Schedule>?, listener: OnScheduleItemClickListener) {
         mListener = listener
@@ -286,7 +356,8 @@ class MyCalendarView : FrameLayout {
         mFilter.add(CalendarFilter(mColorFilter, mKeyword, mSelectedMode))
         Log.i("kongyi0515-5", "mFilter = ${mFilter[0]}")
         listener?.let {
-            mRecyclerView.adapter = DayListAdapter(mScheduleList!!, selectedDate, listener, mFilter, mCalendarAdapter)
+            mListAdapter = DayListAdapter(mScheduleList!!, selectedDate, listener, mFilter, mCalendarAdapter)
+            mRecyclerView.adapter = mListAdapter
             (mRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 0)
         }
     }
