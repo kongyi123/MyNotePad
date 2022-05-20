@@ -31,6 +31,7 @@ class PaperWeightActivity : AppCompatActivity() {
 
         DataManager.getAllScheduleData("pid_list")
         DataManager.dataList.observe(this, {
+            Log.i("kongyi0521", "PaperWeightActivity observe")
             initOthers()
             initRecycler()
         })

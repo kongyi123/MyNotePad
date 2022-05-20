@@ -47,7 +47,6 @@ class CalendarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
         mContext = this
-        DataManager.getAllScheduleData("id_list")
         mPhoneNumber = DataManager.getLineNumber(this, this)
         ContextHolder.setPhoneNumber(mPhoneNumber)
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
@@ -65,6 +64,7 @@ class CalendarActivity : AppCompatActivity() {
             Log.i("kongyi0516", "loadComplete")
         }
 
+        Log.i("kongyi0521", "hi")
         DataManager.dataList.observe(this, androidx.lifecycle.Observer { scheduleList ->
             Log.i("kongyi0516", "dataList.observe")
 

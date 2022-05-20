@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
+import com.example.common.ContextHolder
 import com.example.common.MyNotification
 import com.example.common.WidgetProvider
 import com.example.model.data.History
@@ -284,7 +285,7 @@ object DataManager {
         val sortByAge:Query = FirebaseDatabase.getInstance().reference.child(id_list)
         sortByAge.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("kongyi1220", "onChanged")
+                Log.i("kongyi0521", "onChanged")
                 CoroutineScope(Dispatchers.Default).launch {
                     updateDataList(scheduleList, snapshot)
                 }
@@ -298,19 +299,19 @@ object DataManager {
     }
 
     // debounce logic.
-    private var lastJob: Job? = null
-
     private suspend fun updateDataList(
         scheduleList: ArrayList<Schedule>,
         snapshot: DataSnapshot
     ) {
-        if (lastJob != null) {
-            lastJob!!.cancel()
+        Log.i("kongyi0521", "updateDataList")
+        if (ContextHolder.lastJob != null) {
+            Log.i("kongyi0521", "lastJob Canceled")
+            ContextHolder.lastJob!!.cancel()
         }
-        lastJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(500)
+        ContextHolder.lastJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(2000)
             doUpdate(scheduleList, snapshot)
-            lastJob = null
+            ContextHolder.lastJob = null
         }
     }
 
@@ -319,7 +320,7 @@ object DataManager {
         snapshot: DataSnapshot
     ) {
         scheduleList.clear()
-        Log.i("kongyi0504", "scheduleList right after clear= {$scheduleList}")
+        Log.i("kongyi0521", "scheduleList right after clear= {$scheduleList}")
 
         for (postSnapshot in snapshot.children) {
             if (!postSnapshot.exists()) {

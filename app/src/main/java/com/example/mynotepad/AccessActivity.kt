@@ -33,6 +33,8 @@ class AccessActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_access)
         DataManager.getNewNumberForHistory()
+        DataManager.getAllScheduleData("id_list")
+
 //        DataManager.getAllHistoryData()
         DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
             isHcntReady.set(true)

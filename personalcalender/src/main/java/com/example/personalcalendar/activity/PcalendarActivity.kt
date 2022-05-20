@@ -81,6 +81,7 @@ class PcalendarActivity : AppCompatActivity() {
             .commit()
 
         DataManager.dataList.observe(this, androidx.lifecycle.Observer {
+            Log.i("kongyi0521", "PCalendarActivity observe")
             mScheduleList = it
             putDataOnCalendar()
             if (mCurrentDate != null) {
