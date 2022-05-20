@@ -15,7 +15,8 @@
         <activity
             android:name=".AccessActivity"
             android:exported="true"
-            android:label="Toy Project">
+            android:label="Toy Project"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
