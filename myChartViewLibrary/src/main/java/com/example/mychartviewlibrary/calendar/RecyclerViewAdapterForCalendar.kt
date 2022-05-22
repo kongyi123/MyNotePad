@@ -33,7 +33,7 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
     private val TAG = "RecyclerViewAdapterForCalendar"
     val mContext = context
     var mSelectedView:View? = null
-    lateinit var listener: OnDateItemClickListener
+    var listener: OnDateItemClickListener? = null
     private var items = ArrayList<ArrayList<DateItem>>()
 
     init {
@@ -110,7 +110,7 @@ class RecyclerViewAdapterForCalendar(private val context: Context,
                             val position = adapterPosition
                             if (listener != null) {
                                 Log.i("kongyi0505", "arr[cnt] = [${value}]")
-                                listener.onItemClick(this, it, position, value)
+                                listener!!.onItemClick(this, it, position, value)
                             }
                             it.background = mContext.getDrawable(R.drawable.circle_light_yellow)
                         }

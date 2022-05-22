@@ -24,7 +24,8 @@
         android:id="@+id/myMemoBtn"
         android:layout_width="300dp"
         android:layout_height="50dp"
-        android:text="myMemo" />
+        android:text="myMemo"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/shareCalendarBtn"

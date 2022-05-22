@@ -34,15 +34,26 @@ class AccessActivity : AppCompatActivity() {
         setContentView(R.layout.activity_access)
         DataManager.getNewNumberForHistory()
         DataManager.getAllScheduleData("id_list")
+        mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
+        // onCreate 이전에는 null이다.
+        if (mPhoneNumber == "+821027740931"
+            || mPhoneNumber == "+821040052032") {
+            isAdmin = true
+        }
 
+        if (isAdmin) {
 //        DataManager.getAllHistoryData()
-        DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
+            DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
+                isHcntReady.set(true)
+            })
+            DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
+                Log.i("kongyi0421", "sheetList.size = ${DataManager.sheetList.value?.size}")
+                isSheetListReady.set(true)
+            })
+        } else {
             isHcntReady.set(true)
-        })
-        DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
-            Log.i("kongyi0421", "sheetList.size = ${DataManager.sheetList.value?.size}")
             isSheetListReady.set(true)
-        })
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 1..10) {
@@ -79,12 +90,7 @@ class AccessActivity : AppCompatActivity() {
             }
         }
 
-        mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
-        // onCreate 이전에는 null이다.
-        if (mPhoneNumber == "+821027740931"
-            || mPhoneNumber == "+821040052032") {
-            isAdmin = true
-        }
+
     }
 
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
