@@ -42,19 +42,7 @@ class AccessActivity : AppCompatActivity() {
             isAdmin = true
         }
 
-        if (isAdmin) {
-//        DataManager.getAllHistoryData()
-            DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
-                isHcntReady.set(true)
-            })
-            DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
-                Log.i("kongyi0421", "sheetList.size = ${DataManager.sheetList.value?.size}")
-                isSheetListReady.set(true)
-            })
-        } else {
-            isHcntReady.set(true)
-            isSheetListReady.set(true)
-        }
+
 
         makeDBReady()
 
@@ -78,6 +66,21 @@ class AccessActivity : AppCompatActivity() {
     }
 
     private fun makeDBReady() {
+
+        DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
+            isHcntReady.set(true)
+        })
+
+        if (isAdmin) {
+//        DataManager.getAllHistoryData()
+            DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
+                Log.i("kongyi0421", "sheetList.size = ${DataManager.sheetList.value?.size}")
+                isSheetListReady.set(true)
+            })
+        } else {
+            isSheetListReady.set(true)
+        }
+
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 1..100) {
                 if (isHcntReady.get() && isSheetListReady.get()) {
