@@ -3,6 +3,7 @@ package com.example.mynotepad
 import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -33,8 +34,6 @@ class AccessActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_access)
-        DataManager.getNewNumberForHistory()
-        DataManager.getAllScheduleData("id_list")
         mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
         // onCreate 이전에는 null이다.
         if (mPhoneNumber == "+821027740931"
@@ -66,6 +65,8 @@ class AccessActivity : AppCompatActivity() {
     }
 
     private fun makeDBReady() {
+        DataManager.getNewNumberForHistory()
+        DataManager.getAllScheduleData("id_list")
 
         DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
             isHcntReady.set(true)
@@ -82,7 +83,7 @@ class AccessActivity : AppCompatActivity() {
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            for (i in 1..100) {
+            for (i in 1..15) {
                 if (isHcntReady.get() && isSheetListReady.get()) {
                     Log.i("kongyi0509", "DB is ready")
                     init()
@@ -102,6 +103,8 @@ class AccessActivity : AppCompatActivity() {
                     "DB link fail!! isHcntReady = $isHcntReady / isSheetListReady = $isSheetListReady"
                 )
                 showDBLinkFailDialog()
+                //makeDBReady()
+                return@launch
             } else {
                 isDBReady.set(true)
             }
@@ -129,10 +132,13 @@ class AccessActivity : AppCompatActivity() {
     }
 
     private fun showDBLinkFailDialog() {
+        val onClickListener = DialogInterface.OnClickListener { _,_ ->
+            makeDBReady()
+        }
         val dlg: AlertDialog.Builder = AlertDialog.Builder(this)
             .setTitle("DB link")
-            .setMessage("\nFail!!!")
-            .setPositiveButton("OK", null)
+            .setMessage("\nFail!!! Network may not be connected.")
+            .setPositiveButton("Retry", onClickListener)
         val ad: AlertDialog = dlg.create()
 //        ad.setView(view) // 메시지
         ad.show()
