@@ -28,6 +28,7 @@ class AccessActivity : AppCompatActivity() {
     var isAdmin:Boolean = false
     private var isHcntReady:AtomicBoolean = AtomicBoolean(false)
     private var isSheetListReady:AtomicBoolean = AtomicBoolean(false)
+    private val isDBReady:AtomicBoolean = AtomicBoolean(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,24 +56,7 @@ class AccessActivity : AppCompatActivity() {
             isSheetListReady.set(true)
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
-            for (i in 1..10) {
-                if (isHcntReady.get() && isSheetListReady.get()) {
-                    Log.i("kongyi0509", "DB is ready")
-                    init()
-                    break
-                }
-                delay(1000)
-                Log.i("kongyi0421", "DB is ready / isHcntReady = ${isHcntReady.get()}, isSheetListRead = ${isSheetListReady.get()}")
-                Log.i("kongyi0509", "getting data from DB....")
-            }
-
-            if (!isHcntReady.get() || !isSheetListReady.get()) {
-                Log.i("kongyi0509", "DB link fail!! isHcntReady = $isHcntReady / isSheetListReady = $isSheetListReady")
-                showDBLinkFailDialog()
-            }
-            findViewById<ProgressBar>(R.id.loadingIcon).visibility = View.GONE
-        }
+        makeDBReady()
 
 
         /*  From Google's docs on Android 8.0 behavior changes:
@@ -91,6 +75,43 @@ class AccessActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun makeDBReady() {
+        CoroutineScope(Dispatchers.Main).launch {
+            for (i in 1..100) {
+                if (isHcntReady.get() && isSheetListReady.get()) {
+                    Log.i("kongyi0509", "DB is ready")
+                    init()
+                    break
+                }
+                delay(1000)
+                Log.i(
+                    "kongyi0421",
+                    "DB is ready / isHcntReady = ${isHcntReady.get()}, isSheetListRead = ${isSheetListReady.get()}"
+                )
+                Log.i("kongyi0509", "getting data from DB....")
+            }
+
+            if (!isHcntReady.get() || !isSheetListReady.get()) {
+                Log.i(
+                    "kongyi0509",
+                    "DB link fail!! isHcntReady = $isHcntReady / isSheetListReady = $isSheetListReady"
+                )
+                showDBLinkFailDialog()
+            } else {
+                isDBReady.set(true)
+            }
+            findViewById<ProgressBar>(R.id.loadingIcon).visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!isDBReady.get()) {
+            makeDBReady()
+        }
     }
 
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
