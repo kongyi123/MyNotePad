@@ -12,17 +12,6 @@ object MyNotification {
     private const val NOTIFICATION_ID = 1
 
     fun doNotify(context: Context, content:String, arg1:String = "") {
-        // sub noti
-//        val contentIntent = Intent(
-//            context,
-//            PaperWeightActivity::class.java
-//        )
-//        val contentPendingIntent = PendingIntent.getActivity(
-//            context,
-//            NOTIFICATION_ID,
-//            contentIntent,
-//            PendingIntent.FLAG_IMMUTABLE
-//        )
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(
             context,
             context.getString(R.string.notification_channel_id)

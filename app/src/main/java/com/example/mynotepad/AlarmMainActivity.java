@@ -78,44 +78,27 @@ public class AlarmMainActivity extends AppCompatActivity {
     // 일일 알림 상세
     public void diaryAlarm() {
         Boolean dailyNotify = true; // 무조건 알람을 사용
-
         PackageManager pm = this.getPackageManager();
         ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         alarmIntent.putExtra("state","alarm on");
-
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
         // 알람 Broadcast Intent를 만든다. -> alarmManager를 통해 특정시각에 broadcast 날리도록 예약할것이다.
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         // 사용자가 매일 알람을 허용했다면
-
         EditText et = findViewById(com.example.common.R.id.edit_text_millisecond);
         String text = et.getText().toString();
         Long sec = Long.parseLong(text);
-
         if (dailyNotify) {
             if (alarmManager != null) {
                 //alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent); // 예약
                 Log.d("kyi123", "sec = " + sec);
-                // 동일 sec 간격으로 진동울리게.
-//                alarmManager.setInexactRepeating(
-//                        AlarmManager.ELAPSED_REALTIME_WAKEUP,
-//                        SystemClock.elapsedRealtime(),
-//                        sec,
-//                        pendingIntent);
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(System.currentTimeMillis());
-                //cal.set(Calendar.YEAR, 2022);
-                //cal.set(Calendar.MONTH, 1);
-                //cal.set(Calendar.DAY_OF_MONTH, 12);
 
                 cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(et_hour.getText().toString()));
                 cal.set(Calendar.MINUTE, Integer.parseInt(et_min.getText().toString()));
                 cal.set(Calendar.SECOND, Integer.parseInt(et_sec.getText().toString()));
-//                alarmManager.setExactAndAllowWhileIdle(
-//                        AlarmManager.RTC_WAKEUP,
-//                        cal.getTimeInMillis(),
-//                        pendingIntent);
 
                 alarmManager.setInexactRepeating(
                         AlarmManager.RTC_WAKEUP,

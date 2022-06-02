@@ -20,28 +20,7 @@ class WidgetProvider : AppWidgetProvider() {
         appWidgetIds: IntArray?
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-//        appWidgetIds?.forEach {
-//            val views: RemoteViews = addViews(context)
-//            appWidgetManager?.updateAppWidget(it, views)
-//        }
     }
-
-//    private fun addViews(context: Context?): RemoteViews {
-//        val views = RemoteViews(context?.packageName, R.layout.widget)
-//        // make bitmap file to background of view.
-//        val bitmapFromFile = BitmapFactory.decodeResource(context?.resources, R.drawable.aaa)
-//        val bd = BitmapDrawable(context?.resources, bitmapFromFile)
-//        views.setImageViewBitmap(R.id.imageView, bd.bitmap)
-//        return views
-//    }
-
-//    fun update(context:Context?, bm: Bitmap) {
-//        val appWidgetManager = AppWidgetManager.getInstance(context)
-//        val testWidge = ComponentName(context!!, WidgetProvider::class.java)
-//        val views = RemoteViews(context.packageName, R.layout.widget)
-//        views.setImageViewBitmap(R.id.imageView, bm)
-//        appWidgetManager.updateAppWidget(testWidge, views);
-//    }
 
     object ViewSetter {
         private val dayString = Array<String>(8) { "" }

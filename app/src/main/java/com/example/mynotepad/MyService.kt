@@ -25,11 +25,9 @@ class MyService : Service() {
     override fun onBind(intent: Intent): IBinder {
         TODO("Return the communication channel to the service.")
     }
-
     // 서비스쪽으로 데이터를 전달하고 싶은경우 자주 사용
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("kongyi0509", "onStartCommand()")
-
         if (intent != null) {
             dataLoadForNotepad()
             dataLoadForCalendar()
@@ -38,7 +36,6 @@ class MyService : Service() {
         }
         return super.onStartCommand(intent, flags, startId)
     }
-
     private fun dataLoadForCalendar() {
         if (DataManager.getNotificationState(this)) {
             Log.i("kongyiAAA", "getNotiState is true")
@@ -46,18 +43,15 @@ class MyService : Service() {
                 getString(R.string.notification_channel_id),
                 getString(R.string.notification_channel_name)
             )
-
             startOnGoingNotification()
         }
         DataManager.getAllHistoryData(this)
         val intent = Intent(this, AccessActivity::class.java)
         DataManager.get14daysSchedule(this, "id_list", intent)
     }
-
     private fun dataLoadForNotepad() {
         DataManager.loadNotepadData(this)
     }
-
     private fun startOnGoingNotification() {
         Log.d("kyi123", "startForegroundService()")
         val intent = Intent(this, AccessActivity::class.java)
@@ -65,7 +59,6 @@ class MyService : Service() {
         val notification = AlarmNotification.createNotification(this, intent) // foreground Noti
         startForeground(NOTIFICATION_ID, notification)
     }
-
     override fun onCreate() {
         super.onCreate()
         Log.d("kyi123", "onCreate")
