@@ -2,6 +2,7 @@ package com.example.mynotepad
 
 import android.app.ActivityManager
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -67,6 +68,7 @@ class AccessActivity : AppCompatActivity() {
     private fun makeDBReady() {
         DataManager.getNewNumberForHistory()
         DataManager.getAllScheduleData("id_list")
+        DataManager.loadNotepadData(this)
 
         DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
             isHcntReady.set(true)

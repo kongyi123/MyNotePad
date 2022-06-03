@@ -29,7 +29,7 @@ class MyService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("kongyi0509", "onStartCommand()")
         if (intent != null) {
-            dataLoadForNotepad()
+            //dataLoadForNotepad()
             dataLoadForCalendar()
         } else {
             return Service.START_STICKY
