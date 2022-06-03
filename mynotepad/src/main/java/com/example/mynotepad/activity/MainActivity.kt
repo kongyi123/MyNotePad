@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         val items = modelView
         return object : FragmentStateAdapter(this) {
             override fun createFragment(position: Int): SheetFragment {
-                val sheetFragment = SheetFragment(softKeyboard!!)
+                val sheetFragment = SheetFragment(softKeyboard!!, this@MainActivity, modelView!!.sheetIdCount)
                 sheetFragment.initialize(DataManager.sheetList.value!![position].getContent()!!, DataManager.sheetList.value!![position].getTextSize()!!, position)
                 DataManager.sheetList.value!![position].setSheetFragment(sheetFragment)
                 return sheetFragment

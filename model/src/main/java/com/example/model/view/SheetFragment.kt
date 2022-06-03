@@ -1,17 +1,25 @@
 package com.example.model.view
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.common.utility.SoftKeyboard
+import com.example.model.DataManager
 import com.example.model.R
+import com.example.model.data.Sheet
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class SheetFragment(private val softKeyboard: SoftKeyboard) : Fragment() {
+class SheetFragment(private val softKeyboard: SoftKeyboard, private val mContext: Context, private val sheetIdCount:Int) : Fragment() {
     // Store instance variables
     private val TAG = "SheetFragment/kongyi123"
     var content: String? = null
@@ -27,6 +35,10 @@ class SheetFragment(private val softKeyboard: SoftKeyboard) : Fragment() {
         softKeyboard.addEditText(editText)
         editText?.setText("$content")
         if (textSize != null) editText?.textSize = textSize!!
+        editText?.doOnTextChanged { text, start, before, count ->
+            Log.i("kongyi0603", "input changing...")
+            saveAllIntoDB()
+        }
         return view
     }
 
@@ -35,5 +47,36 @@ class SheetFragment(private val softKeyboard: SoftKeyboard) : Fragment() {
         this.content = content
         this.textSize = textSize
         this.idxOfSheetsArray = idxOfSheets
+    }
+
+    private fun saveAllIntoDB() {
+        CoroutineScope(Dispatchers.IO).launch {
+            // 현재 프레그 먼트 덩어리에 있는 것을 저장하여 올림
+            updateFragmentToSheets()
+            for (i in 1..DataManager.sheetList.value!!.size) {
+                val bringTypeSheet = Sheet(
+                    DataManager.sheetList.value!![i-1].getId(),
+                    DataManager.sheetList.value!![i-1].getName(),
+                    DataManager.sheetList.value!![i-1].getContent(),
+                    DataManager.sheetList.value!![i-1].getTextSize())
+                DataManager.setSingleSheetOnRTDB(mContext, i-1, bringTypeSheet)
+            }
+            DataManager.setSheetCountOnRTDB(mContext, DataManager.sheetList.value!!.size)
+            DataManager.setIdCountOnRTDB(mContext, sheetIdCount)
+        }
+    }
+
+    private fun updateFragmentToSheets() {
+        for (i in 1..DataManager.sheetList.value!!.size) {
+            if (DataManager.sheetList.value!![i-1].getSheetFragment() != null) {
+                val content:String = DataManager.sheetList.value!![i-1].getSheetFragment()?.editText?.text.toString()
+                if (content == "null") {
+                    Log.d(TAG, "content is null!!")
+                } else {
+                    DataManager.sheetList.value!![i - 1].setContent(content)
+                }
+                DataManager.sheetList.value!![i-1].setTextSize(DataManager.sheetList.value!![i-1].getTextSize()!!)
+            }
+        }
     }
 }
