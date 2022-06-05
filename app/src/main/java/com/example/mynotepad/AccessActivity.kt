@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.ProgressBar
 import com.example.model.DataManager
 import com.example.mynotepad.activity.MainActivity
+import com.example.mynotesheet.NoteSheetActivity
 import com.example.paperweight.PaperWeightActivity
 import com.example.personalcalendar.activity.PcalendarActivity
 import com.example.sharedcalendar.activity.CalendarActivity
@@ -29,7 +30,6 @@ class AccessActivity : AppCompatActivity() {
     private lateinit var mPhoneNumber:String
     var isAdmin:Boolean = false
     private var isHcntReady:AtomicBoolean = AtomicBoolean(false)
-    private var isSheetListReady:AtomicBoolean = AtomicBoolean(false)
     private val isDBReady:AtomicBoolean = AtomicBoolean(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,10 +42,7 @@ class AccessActivity : AppCompatActivity() {
             isAdmin = true
         }
 
-
-
         makeDBReady()
-
 
         /*  From Google's docs on Android 8.0 behavior changes:
 
@@ -68,42 +65,25 @@ class AccessActivity : AppCompatActivity() {
     private fun makeDBReady() {
         DataManager.getNewNumberForHistory()
         DataManager.getAllScheduleData("id_list")
-        DataManager.loadNotepadData(this)
+//        DataManager.getAllSheetData("sheet_list", this)
+        //DataManager.loadNotepadData(this)
 
         DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
             isHcntReady.set(true)
         })
 
-        if (isAdmin) {
-//        DataManager.getAllHistoryData()
-            DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
-                Log.i("kongyi0421", "sheetList.size = ${DataManager.sheetList.value?.size}")
-                isSheetListReady.set(true)
-            })
-        } else {
-            isSheetListReady.set(true)
-        }
-
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 1..15) {
-                if (isHcntReady.get() && isSheetListReady.get()) {
+                if (isHcntReady.get()) {
                     Log.i("kongyi0509", "DB is ready")
                     init()
                     break
                 }
                 delay(1000)
-                Log.i(
-                    "kongyi0421",
-                    "DB is ready / isHcntReady = ${isHcntReady.get()}, isSheetListRead = ${isSheetListReady.get()}"
-                )
                 Log.i("kongyi0509", "getting data from DB....")
             }
 
-            if (!isHcntReady.get() || !isSheetListReady.get()) {
-                Log.i(
-                    "kongyi0509",
-                    "DB link fail!! isHcntReady = $isHcntReady / isSheetListReady = $isSheetListReady"
-                )
+            if (!isHcntReady.get()) {
                 showDBLinkFailDialog()
                 //makeDBReady()
                 return@launch
@@ -166,6 +146,7 @@ class AccessActivity : AppCompatActivity() {
             findViewById<Button>(R.id.personalCalendarBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.historyManagerBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.paperWeightBtn).visibility = View.VISIBLE
+            findViewById<Button>(R.id.noteSheettBtn).visibility = View.VISIBLE
         }
 
         findViewById<Button>(R.id.alarmNotiBtn).setOnClickListener {
@@ -190,6 +171,10 @@ class AccessActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.paperWeightBtn).setOnClickListener {
             startActivity(Intent(this, PaperWeightActivity::class.java))
+            DataManager.putSingleHistory(this, "access", "historyManager", mPhoneNumber)
+        }
+        findViewById<Button>(R.id.noteSheettBtn).setOnClickListener {
+            startActivity(Intent(this, NoteSheetActivity::class.java))
             DataManager.putSingleHistory(this, "access", "historyManager", mPhoneNumber)
         }
     }

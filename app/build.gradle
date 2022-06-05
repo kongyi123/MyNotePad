@@ -48,6 +48,7 @@ dependencies {
     implementation project(path: ':sharedcalendar')
     implementation project(path: ':personalcalender')
     implementation project(path: ':paperweight')
+    implementation project(path: ':mynotesheet')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

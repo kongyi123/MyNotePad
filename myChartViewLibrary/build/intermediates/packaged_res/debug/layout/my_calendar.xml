@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/filterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:visibility="visible"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/keyword"/>
+                <EditText
+                    android:id="@+id/edit_keyword"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:singleLine="true"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/color_selection_in_filterLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <RadioGroup
+                        android:id="@+id/mode_radio_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/or_radio_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="33dp"
+                            android:layout_margin="3dp"
+                            android:checked="true"
+                            android:text="OR" />
+
+                        <RadioButton
+                            android:id="@+id/and_radio_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="33dp"
+                            android:layout_margin="3dp"
+                            android:text="AND" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:gravity="end">
+
+                    <CheckBox
+                        android:id="@+id/check_red"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_red"
+                        android:checked="true"/>
+
+                    <CheckBox
+                        android:id="@+id/check_orange"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_orange"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/check_yellow"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_yellow"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/check_green"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_green"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/check_blue"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_blue"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/check_purple"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/circle_purple"
+                        android:checked="true" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/calendar_controller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/calendar_previous"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="◀"
+                android:textSize="14dp" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/calendar_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <TextView
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/calendar_next"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="▶"
+                android:textSize="14dp" />
+        </LinearLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/calendar_vpPager"
+            android:layout_width="match_parent"
+            android:layout_height="430dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/calendar_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="150dp"
+                    android:orientation="vertical"
+                    android:background="#44112233"
+                    android:paddingVertical="5dp"/>
+
+                <LinearLayout
+                    android:id="@+id/calendar_button_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <Button
+                        android:id="@+id/calendar_deleteAllBtn"
+                        android:text="당일 일정 모두 삭제"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+                    <Button
+                        android:id="@+id/calendar_addScheduleBtn"
+                        android:text="일정 추가"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints">
+    <LinearLayout
+        android:id="@+id/view1"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:textSize="20dp"
+        android:text="TextView"
+        android:background="@color/red"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendar"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:backgroundTint="@color/blue"
+            android:src="@drawable/circle_black" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view2"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@color/orange"
+        android:text="TextView"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+    <LinearLayout
+        android:id="@+id/view3"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@color/yellow"
+        android:text="TextView"
+        android:textSize="20dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+

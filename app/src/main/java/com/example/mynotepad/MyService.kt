@@ -29,7 +29,6 @@ class MyService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("kongyi0509", "onStartCommand()")
         if (intent != null) {
-            //dataLoadForNotepad()
             dataLoadForCalendar()
         } else {
             return Service.START_STICKY
@@ -49,9 +48,7 @@ class MyService : Service() {
         val intent = Intent(this, AccessActivity::class.java)
         DataManager.get14daysSchedule(this, "id_list", intent)
     }
-    private fun dataLoadForNotepad() {
-        DataManager.loadNotepadData(this)
-    }
+
     private fun startOnGoingNotification() {
         Log.d("kyi123", "startForegroundService()")
         val intent = Intent(this, AccessActivity::class.java)

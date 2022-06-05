@@ -56,6 +56,10 @@ class Sheet {
         return this.tabTitleView
     }
 
+    fun setTabTitleView(textView: TextView?) {
+        this.tabTitleView = textView
+    }
+
     fun setName(text: String) {
         this.name = text
     }
