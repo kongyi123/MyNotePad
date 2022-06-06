@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.viewpager2.widget.ViewPager2
 import com.example.model.DataManager
 import com.example.model.data.Sheet
+import java.util.concurrent.atomic.AtomicBoolean
 
 /*
     1. 탭 기능
@@ -17,6 +18,7 @@ import com.example.model.data.Sheet
  */
 
 class NoteSheetActivity : AppCompatActivity() {
+    private val TAG = "NoteSheetActivity"
     private lateinit var mCalendarPager: ViewPager2
     private lateinit var mCalendarAdapter: RecyclerViewAdapterForNoteSheet
     private var sheetSelectionTab: LinearLayout? = null
@@ -24,6 +26,7 @@ class NoteSheetActivity : AppCompatActivity() {
     private lateinit var tabOuter:LinearLayout
     var currentTabPosition:Int = 0
     var sheetLastId:Int = 0
+    private val isTabClicked = AtomicBoolean(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +39,13 @@ class NoteSheetActivity : AppCompatActivity() {
         val onPageChangeCallbackForCalendar = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-//                mCurrentPosition = position
-//                mTitlePager.setCurrentItem(position, true)
+                DataManager.sheetList.value?.get(position)?.let {
+                    if (isTabClicked.get()) {
+                        isTabClicked.set(false)
+                    } else {
+                        switchFocusSheetInTab(it.getTabTitleView()!!)
+                    }
+                }
             }
         }
         sheetSelectionTab = findViewById(R.id.tabInner)
@@ -45,6 +53,11 @@ class NoteSheetActivity : AppCompatActivity() {
 
         mCalendarPager.registerOnPageChangeCallback(onPageChangeCallbackForCalendar)
         mCalendarPager.setCurrentItem(0, false)
+
+
+        DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
+            initialTab()
+        })
     }
 
     private fun getLastSheetId(sheetList: MutableList<Sheet>):Int {
@@ -58,32 +71,34 @@ class NoteSheetActivity : AppCompatActivity() {
     }
 
     private fun initialTab() {
-        Log.i("kongyi0605", "initialTab()")
-       val sheetSize = DataManager.sheetList.value!!.size
-        for (i in 0 until DataManager.sheetList.value!!.size) {
-            Log.i("kongyi0605", "i = $i")
-
+        Log.i("kongyi0606", "initialTab()")
+        val sheetSize = DataManager.sheetList.value!!.size
+        sheetOrder.clear()
+        sheetSelectionTab?.removeAllViews()
+        for (i in 0 until sheetSize) {
             val textView = DataManager.sheetList.value!![i].getTabTitleView()
+            Log.i("kongyi0606", "textview = $textView")
             textView?.let {
-                sheetOrder?.set(textView.id, i)
+                sheetOrder[textView.id] = i
                 textView.setOnClickListener {
-                    //switchFocusSheetInTab(it)
-                    sheetOrder?.get((it as TextView).id)?.let { it1 ->
-                        //                                Toast.makeText(this, "it1 = " + it1, Toast.LENGTH_SHORT).show()
+                    Log.i("kongyi0606", "currentTabPosition = ${currentTabPosition}")
+                    isTabClicked.set(true)
+                    switchFocusSheetInTab(it)
+                    sheetOrder[(it as TextView).id]?.let { it1 ->
                         mCalendarPager.setCurrentItem(it1, true)
                     }
                 }
                 textView.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
 
                 if (textView != null) {
-                    Log.i("kongyi0605", "addShowingSheetInTab will be called soon")
+                    Log.i("kongyi0606", "addShowingSheetInTab will be called soon")
                     addShowingSheetInTab(textView)
                 }
             }
         }
         if (sheetSize > 0) {
-            val currentTabTitleView = DataManager.sheetList.value!![0].getTabTitleView()
-            Log.i("kongyi0421", "currentTabTitleView = " + currentTabTitleView)
+            val currentTabTitleView = DataManager.sheetList.value!![currentTabPosition].getTabTitleView()
+            Log.i("kongyi0606", "currentTabTitleView = " + currentTabTitleView)
             currentTabTitleView?.setBackgroundColor(
                 resources.getColor(
                     R.color.colorActivatedSheet
@@ -137,12 +152,24 @@ class NoteSheetActivity : AppCompatActivity() {
 //        }
 //    }
 //
-//    private fun switchFocusSheetInTab(position: Int) {
-//        modelView?.switchFocusSheetInTab(position)
-//        modelView?.updateFragmentToSheets()
-//        tabOuter.requestFocus()
-//        //showAllData("switchFocusSheetInTab")
-//    }
+
+    private fun switchFocusSheetInTab(it:View) {
+        Log.d(TAG, "switchFocusSheetInTab")
+        Log.i("kongyi0606", "from = $currentTabPosition, to = ${it.id}")
+        val targetTextView = it as TextView
+        val currentTabTitleView = DataManager.sheetList.value!![currentTabPosition].getTabTitleView()
+
+        if (targetTextView.id == currentTabTitleView?.id) return
+
+        val sourceTextView = currentTabTitleView
+        Log.i("kongyi0606", "sourceTextView = $sourceTextView")
+        sourceTextView?.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
+        targetTextView.setBackgroundColor(resources.getColor(R.color.colorActivatedSheet))
+
+        // StateVariable update
+        currentTabPosition = targetTextView.id
+        tabOuter.requestFocus()
+    }
 
     fun onClickPlusIcon(view: View) {
 
@@ -153,6 +180,9 @@ class NoteSheetActivity : AppCompatActivity() {
     private fun contentTextSizeIncrease() {
         val currentContentTextSize = DataManager.sheetList.value!![currentTabPosition].getTextSize()!! + 1
         DataManager.sheetList.value!![currentTabPosition].setTextSize(currentContentTextSize)
+        Log.i("kongyi0606", "currentContentTextSize = $currentContentTextSize")
+        //saveSingleSheetIntoDB(currentTabPosition, DataManager.sheetList.value!![currentTabPosition])
+        mCalendarAdapter.notifyDataSetChanged()
     }
 
     /** Decrease text size of the text content in current text screen
@@ -160,6 +190,9 @@ class NoteSheetActivity : AppCompatActivity() {
     private fun contentTextSizeDecrease() {
         val currentContentTextSize = DataManager.sheetList.value!![currentTabPosition].getTextSize()!! - 1
         DataManager.sheetList.value!![currentTabPosition].setTextSize(currentContentTextSize)
+        Log.i("kongyi0606", "currentContentTextSize = $currentContentTextSize")
+        //saveSingleSheetIntoDB(currentTabPosition, DataManager.sheetList.value!![currentTabPosition])
+        mCalendarAdapter.notifyDataSetChanged()
     }
 
 
@@ -176,6 +209,10 @@ class NoteSheetActivity : AppCompatActivity() {
             R.id.menuTextSizeDecreaseBtn-> contentTextSizeDecrease()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun saveSingleSheetIntoDB(position: Int, sheetInfo: Sheet) {
+        DataManager.setSingleSheetOnRTDB(this, position, sheetInfo, -1, -1)
     }
 
 //
@@ -201,21 +238,4 @@ class NoteSheetActivity : AppCompatActivity() {
 //        ad.show()
 //    }
 
-
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        saveAllIntoDB()
-    }
-
-    private fun saveAllIntoDB() {
-        Log.i("kongyi0605", "saveAllIntoDB")
-        val sheetList = DataManager.sheetList.value
-        val size = sheetList!!.size
-        for (i in 0 until size) {
-            val sheetInfo = sheetList[i]
-            DataManager.setSingleSheetOnRTDB(this, i, sheetInfo, -1, -1)
-        }
-        DataManager.setIdCount(this, sheetLastId)
-    }
 }

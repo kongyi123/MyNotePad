@@ -59,15 +59,14 @@ class RecyclerViewAdapterForNoteSheet(
     }
 
     // debounce logic.
-    private suspend fun update(text:String, pos:Int, sheetInfo:Sheet) {
-        Mutex().withLock {
-            if (ContextHolder.lastJobForRecyclerView != null) {
-                Log.i("kongyi0605", "lastJobForRecyclerView Canceled")
-                ContextHolder.lastJobForRecyclerView!!.cancel()
-            }
+    @Synchronized private suspend fun update(text:String, pos:Int, sheetInfo:Sheet) {
+        if (ContextHolder.lastJobForRecyclerView != null) {
+            Log.i("kongyi0605", "lastJobForRecyclerView Canceled")
+            ContextHolder.lastJobForRecyclerView!!.cancel()
         }
+
         ContextHolder.lastJobForRecyclerView = CoroutineScope(Dispatchers.Default).launch {
-            delay(2000)
+            delay(500)
             Log.i("kongyi0605", "lastJobForRecyclerView update completed.")
             sheetInfo.setContent(text.toString())
             saveSingleSheetIntoDB(pos, sheetInfo)
@@ -78,8 +77,10 @@ class RecyclerViewAdapterForNoteSheet(
     private fun saveSingleSheetIntoDB(position: Int, sheetInfo: Sheet) {
         Log.i("kongyi0605", "position = ${position}")
         Log.i("kongyi0605", "items = ${items.toString()}")
-        items[position] = sheetInfo
-        DataManager.setSingleSheetOnRTDB(mContext, position, sheetInfo, -1, -1)
+        if (items != null && items.size > 0) {
+            items[position] = sheetInfo
+            DataManager.setSingleSheetOnRTDB(mContext, position, sheetInfo, -1, -1)
+        }
     }
 }
 

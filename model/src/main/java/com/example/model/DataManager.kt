@@ -313,7 +313,7 @@ object DataManager {
             }
         }
         ContextHolder.lastJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(2000)
+            delay(500)
             doUpdate(scheduleList, snapshot)
             ContextHolder.lastJob = null
         }
@@ -504,7 +504,7 @@ object DataManager {
         val sortByAge:Query = FirebaseDatabase.getInstance().reference.child(sheet_list)
         sortByAge.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("kongyi0605", "onChanged")
+                Log.i("kongyi0606", "onChanged!!!!!! here!!!! watch it!!")
                 CoroutineScope(Dispatchers.Default).launch {
                     updateSheetList(sheetList, snapshot, context)
                 }
@@ -532,7 +532,7 @@ object DataManager {
             }
         }
         ContextHolder.lastJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(2000)
+            delay(1000)
             doSheetUpdate(sheetList, snapshot, context)
             ContextHolder.lastJob = null
         }
@@ -544,7 +544,7 @@ object DataManager {
         context: Context
     ) {
         sheetList.clear()
-        Log.i("kongyi0605", "sheetList right after clear= {$sheetList}")
+        Log.i("kongyi0606", "sheetList right after clear= {$sheetList}")
 
         for (postSnapshot in snapshot.children) {
             if (!postSnapshot.exists()) {
@@ -566,7 +566,7 @@ object DataManager {
             }
         }
 
-        Log.i("kongyi0605", "!!!!!!!!!!!sheetList after adding = {$sheetList}")
+        Log.i("kongyi0606", "!!!!!!!!!!!sheetList after adding ")
         this.sheetList.postValue(sheetList)
     }
 
