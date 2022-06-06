@@ -65,8 +65,7 @@ class AccessActivity : AppCompatActivity() {
     private fun makeDBReady() {
         DataManager.getNewNumberForHistory()
         DataManager.getAllScheduleData("id_list")
-//        DataManager.getAllSheetData("sheet_list", this)
-        //DataManager.loadNotepadData(this)
+        DataManager.getAllSheetData("sheet_list", this)
 
         DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
             isHcntReady.set(true)

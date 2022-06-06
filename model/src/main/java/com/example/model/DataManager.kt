@@ -33,6 +33,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.*
 
 
@@ -304,9 +306,11 @@ object DataManager {
         snapshot: DataSnapshot
     ) {
         Log.i("kongyi0521", "updateDataList")
-        if (ContextHolder.lastJob != null) {
-            Log.i("kongyi0521", "lastJob Canceled")
-            ContextHolder.lastJob!!.cancel()
+        Mutex().withLock {
+            if (ContextHolder.lastJob != null) {
+                Log.i("kongyi0521", "lastJob Canceled")
+                ContextHolder.lastJob!!.cancel()
+            }
         }
         ContextHolder.lastJob = CoroutineScope(Dispatchers.Default).launch {
             delay(2000)
@@ -520,9 +524,12 @@ object DataManager {
         context: Context
     ) {
         Log.i("kongyi0605", "updateDataList")
-        if (ContextHolder.lastJob != null) {
-            Log.i("kongyi0605", "lastJob Canceled")
-            ContextHolder.lastJob!!.cancel()
+
+        Mutex().withLock {
+            if (ContextHolder.lastJob != null) {
+                Log.i("kongyi0605", "lastJob Canceled")
+                ContextHolder.lastJob!!.cancel()
+            }
         }
         ContextHolder.lastJob = CoroutineScope(Dispatchers.Default).launch {
             delay(2000)
@@ -559,7 +566,7 @@ object DataManager {
             }
         }
 
-        Log.i("kongyi0604", "sheetList after adding = {$sheetList}")
+        Log.i("kongyi0605", "!!!!!!!!!!!sheetList after adding = {$sheetList}")
         this.sheetList.postValue(sheetList)
     }
 

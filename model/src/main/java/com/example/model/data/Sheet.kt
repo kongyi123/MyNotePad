@@ -8,10 +8,10 @@ class Sheet {
     private var content: String? = null
     private var id: Int? = null
     private var tabTitleView: TextView? = null
-    private var textSize: Float? = null
+    private var textSize: Float = 10.0f
     private var sheetFragment: SheetFragment? = null
 
-    constructor(id: Int, name: String?, content: String?, textView: TextView?, textSize: Float?) {
+    constructor(id: Int, name: String?, content: String?, textView: TextView?, textSize: Float) {
         this.id = id
         this.name = name
         this.content = content
@@ -19,7 +19,7 @@ class Sheet {
         this.textSize = textSize
     }
 
-    constructor(id: Int?, name: String?, content: String?, textSize: Float?) {
+    constructor(id: Int?, name: String?, content: String?, textSize: Float) {
         this.id = id
         this.name = name
         this.content = content
@@ -64,7 +64,7 @@ class Sheet {
         this.name = text
     }
 
-    fun getTextSize(): Float? {
+    fun getTextSize(): Float {
         return this.textSize
     }
 

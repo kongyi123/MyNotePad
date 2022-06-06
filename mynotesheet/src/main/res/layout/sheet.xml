@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:overScrollMode="ifContentScrolls">
+                <EditText
+                    android:id="@+id/editText"
+                    android:textStyle="normal"
+                    android:textSize="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="600dp"
+                    android:paddingVertical="10dp"
+                    android:paddingHorizontal="20dp"
+                    android:ems="10"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:gravity="top|start"
+                    android:background="@null"
+                    android:lineSpacingExtra="5dp"
+                    android:textCursorDrawable="@drawable/text_cursor"
+                    android:nestedScrollingEnabled="false"/>
+        </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
