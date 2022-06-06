@@ -18,10 +18,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class NoteSheetActivity : AppCompatActivity() {
     private val TAG = "NoteSheetActivity"
-    private lateinit var mCalendarPager: ViewPager2
-    private lateinit var mCalendarAdapter: RecyclerViewAdapterForNoteSheet
+    private lateinit var mMemoPager: ViewPager2
+    private lateinit var mMemoAdapter: RecyclerViewAdapterForNoteSheet
     private var sheetSelectionTab: LinearLayout? = null
-    val sheetOrder: MutableMap<Int, Int> = mutableMapOf<Int, Int>()
     private lateinit var tabOuter:LinearLayout
     var currentTabPosition:Int = 0
     var sheetLastId:Int = 0
@@ -30,11 +29,11 @@ class NoteSheetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_sheet)
-        mCalendarPager = findViewById(R.id.vpPager)
-        mCalendarAdapter = RecyclerViewAdapterForNoteSheet(this, DataManager.sheetList.value ?: ArrayList<Sheet>())
+        mMemoPager = findViewById(R.id.vpPager)
+        mMemoAdapter = RecyclerViewAdapterForNoteSheet(this, DataManager.sheetList.value ?: ArrayList<Sheet>())
         sheetLastId = getLastSheetId(DataManager.sheetList.value ?: ArrayList<Sheet>())
-        mCalendarPager.adapter = mCalendarAdapter
-        mCalendarPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        mMemoPager.adapter = mMemoAdapter
+        mMemoPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         val onPageChangeCallbackForCalendar = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -50,8 +49,8 @@ class NoteSheetActivity : AppCompatActivity() {
         sheetSelectionTab = findViewById(R.id.tabInner)
         tabOuter = findViewById(R.id.tabOuter)
 
-        mCalendarPager.registerOnPageChangeCallback(onPageChangeCallbackForCalendar)
-        mCalendarPager.setCurrentItem(0, false)
+        mMemoPager.registerOnPageChangeCallback(onPageChangeCallbackForCalendar)
+        mMemoPager.setCurrentItem(0, false)
 
 
         DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
@@ -72,20 +71,16 @@ class NoteSheetActivity : AppCompatActivity() {
     private fun initialTab() {
         Log.i("kongyi0606", "initialTab()")
         val sheetSize = DataManager.sheetList.value!!.size
-        sheetOrder.clear()
         sheetSelectionTab?.removeAllViews()
         for (i in 0 until sheetSize) {
             val textView = DataManager.sheetList.value!![i].getTabTitleView()
-            Log.i("kongyi0606", "textview = $textView")
+            Log.i("kongyi0606_", "textview.id = ${textView?.id}")
             textView?.let {
-                sheetOrder[textView.id] = i
                 textView.setOnClickListener {
                     Log.i("kongyi0606", "currentTabPosition = ${currentTabPosition}")
                     isTabClicked.set(true)
                     switchFocusSheetInTab(it)
-                    sheetOrder[(it as TextView).id]?.let { it1 ->
-                        mCalendarPager.setCurrentItem(it1, true)
-                    }
+                    mMemoPager.setCurrentItem(it.id, true)
                 }
                 textView.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
 
@@ -118,43 +113,17 @@ class NoteSheetActivity : AppCompatActivity() {
         sheetSelectionTab?.addView(view)
     }
 
-//
-//    private fun deleteCurrentSheet() {
-//        if (DataManager.sheetList.value!!.size <= 0) return
-//        for (i in 0 until DataManager.sheetList.value!!.size) {
-//            val textViewId: Int = DataManager.sheetList.value?.get(i)?.getId()!!
-//            val order = sheetOrder?.get(textViewId)
-//            if (order != null && order >= currentTabPosition!!) {
-//                sheetOrder?.set(textViewId, order-1)
-//            }
-//        }
-//        val target = currentTabPosition!!
-//        val idsOld = modelView?.createIdSnapshot()
-//        modelView?.removeAt(target)
-//        val idsNew = modelView?.createIdSnapshot()
-//        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-//            override fun getOldListSize(): Int = idsOld!!.size
-//            override fun getNewListSize(): Int = idsNew!!.size
-//            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-//                idsOld!![oldItemPosition] == idsNew!![newItemPosition]
-//            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-//                areItemsTheSame(oldItemPosition, newItemPosition)
-//        }, true).dispatchUpdatesTo(mCalendarPager.adapter!!)
-//
-//        modelView?.removeShowingSheetInTab(modelView?.currentTabTitleView as View)
-//        if (isTargetLastElement(target)) {
-//            if (DataManager.sheetList.value!!.size > 1) {
-//                switchFocusSheetInTab(target - 1)
-//            }
-//        } else {
-//            switchFocusSheetInTab(target)
-//        }
-//    }
-//
+
+    private fun deleteCurrentSheet() {
+        if (DataManager.sheetList.value!!.size <= 0) return
+
+    }
+
 
     private fun switchFocusSheetInTab(it:View) {
         Log.d(TAG, "switchFocusSheetInTab")
-        Log.i("kongyi0606", "from = $currentTabPosition, to = ${it.id}")
+        Log.i("kongyi0606_", "from = $currentTabPosition, to = ${it.id}")
+        Log.i("kongyi0606_", "sheetList = ${DataManager.sheetList.value.toString()}")
         val targetTextView = it as TextView
         val currentTabTitleView = DataManager.sheetList.value!![currentTabPosition].getTabTitleView()
 
@@ -171,9 +140,7 @@ class NoteSheetActivity : AppCompatActivity() {
     }
 
     fun onClickPlusIcon(view: View) {
-        val sheetInfo = Sheet(-1, "newSheet", "new", 10.0f)
-        val sheetSize = DataManager.sheetList.value?.size
-        DataManager.setSingleSheetOnRTDB(this, -1, sheetInfo, sheetSize!!+1, ++ sheetLastId)
+
     }
 
     /** Increase text size of the text content in current text screen
@@ -182,7 +149,7 @@ class NoteSheetActivity : AppCompatActivity() {
         val currentContentTextSize = DataManager.sheetList.value!![currentTabPosition].getTextSize()!! + 1
         DataManager.sheetList.value!![currentTabPosition].setTextSize(currentContentTextSize)
         Log.i("kongyi0606", "currentContentTextSize = $currentContentTextSize")
-        mCalendarAdapter.notifyDataSetChanged()
+        mMemoAdapter.notifyDataSetChanged()
     }
 
     /** Decrease text size of the text content in current text screen
@@ -191,7 +158,7 @@ class NoteSheetActivity : AppCompatActivity() {
         val currentContentTextSize = DataManager.sheetList.value!![currentTabPosition].getTextSize()!! - 1
         DataManager.sheetList.value!![currentTabPosition].setTextSize(currentContentTextSize)
         Log.i("kongyi0606", "currentContentTextSize = $currentContentTextSize")
-        mCalendarAdapter.notifyDataSetChanged()
+        mMemoAdapter.notifyDataSetChanged()
     }
 
 
@@ -203,7 +170,7 @@ class NoteSheetActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.menuEditSheetNameBtn-> makeDialogAndEditSheetName()
-         //   R.id.menuDeleteSheetBtn-> deleteCurrentSheet()
+            R.id.menuDeleteSheetBtn-> deleteCurrentSheet()
             R.id.menuTextSizeIncreaseBtn-> contentTextSizeIncrease()
             R.id.menuTextSizeDecreaseBtn-> contentTextSizeDecrease()
         }
@@ -220,11 +187,7 @@ class NoteSheetActivity : AppCompatActivity() {
         ad.setView(view) // 메시지
         // set New Sheet Name if the confirm button is clicked.
         view.findViewById<Button>(R.id.dialogConfirmBtn).setOnClickListener {
-            val changedTitle = view.findViewById<EditText>(R.id.dialogEditBox).text.toString()
-            val sheetInfo = DataManager.sheetList.value?.get(currentTabPosition)!!
-            sheetInfo.setName(changedTitle)
-            DataManager.setSingleSheetOnRTDB(this, currentTabPosition, sheetInfo, -1, -1)
-            ad.dismiss()
+
         }
         ad.show()
     }
