@@ -632,14 +632,7 @@ object DataManager {
     }
 
     fun setSingleSheetOnRTDB(context:Context, i:Int, item: Sheet?, nextSheetSize:Int, nextSheetLastCount:Int) {
-        val pdm = PreferenceDataManager(context)
-        val sheetNameKey = "sheetName$i"
-        val sheetContentKey = "sheetContent$i"
-        val sheetIdKey = "sheetId$i"
-        val sheetTextSizeKey = "sheetTextSize$i"
-
         putSingleSheet("sheet_list", i, item?.getName()!!, item.getContent()!!, item.getTextSize()!!,  nextSheetSize, nextSheetLastCount)
-
     }
 
     fun setSheetCount(context:Context, size:Int) {

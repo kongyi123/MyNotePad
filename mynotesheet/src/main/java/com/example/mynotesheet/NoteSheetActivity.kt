@@ -11,10 +11,8 @@ import com.example.model.data.Sheet
 import java.util.concurrent.atomic.AtomicBoolean
 
 /*
-    1. 탭 기능
-    2. 시트 새로 만듦 기능
     3. 삭제 기능
-
+    4. 시트명 편집 기능
  */
 
 class NoteSheetActivity : AppCompatActivity() {
@@ -172,7 +170,9 @@ class NoteSheetActivity : AppCompatActivity() {
     }
 
     fun onClickPlusIcon(view: View) {
-
+        val sheetInfo = Sheet(-1, "newSheet", "new", 10.0f)
+        val sheetSize = DataManager.sheetList.value?.size
+        DataManager.setSingleSheetOnRTDB(this, -1, sheetInfo, sheetSize!!+1, ++ sheetLastId)
     }
 
     /** Increase text size of the text content in current text screen
@@ -181,7 +181,6 @@ class NoteSheetActivity : AppCompatActivity() {
         val currentContentTextSize = DataManager.sheetList.value!![currentTabPosition].getTextSize()!! + 1
         DataManager.sheetList.value!![currentTabPosition].setTextSize(currentContentTextSize)
         Log.i("kongyi0606", "currentContentTextSize = $currentContentTextSize")
-        //saveSingleSheetIntoDB(currentTabPosition, DataManager.sheetList.value!![currentTabPosition])
         mCalendarAdapter.notifyDataSetChanged()
     }
 
@@ -191,7 +190,6 @@ class NoteSheetActivity : AppCompatActivity() {
         val currentContentTextSize = DataManager.sheetList.value!![currentTabPosition].getTextSize()!! - 1
         DataManager.sheetList.value!![currentTabPosition].setTextSize(currentContentTextSize)
         Log.i("kongyi0606", "currentContentTextSize = $currentContentTextSize")
-        //saveSingleSheetIntoDB(currentTabPosition, DataManager.sheetList.value!![currentTabPosition])
         mCalendarAdapter.notifyDataSetChanged()
     }
 
@@ -211,9 +209,6 @@ class NoteSheetActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun saveSingleSheetIntoDB(position: Int, sheetInfo: Sheet) {
-        DataManager.setSingleSheetOnRTDB(this, position, sheetInfo, -1, -1)
-    }
 
 //
 //    private fun makeDialogAndEditSheetName() {
