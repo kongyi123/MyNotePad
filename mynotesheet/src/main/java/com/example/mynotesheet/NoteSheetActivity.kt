@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.viewpager2.widget.ViewPager2
 import com.example.model.DataManager
 import com.example.model.data.Sheet
@@ -201,7 +202,7 @@ class NoteSheetActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-         //   R.id.menuEditSheetNameBtn-> makeDialogAndEditSheetName()
+            R.id.menuEditSheetNameBtn-> makeDialogAndEditSheetName()
          //   R.id.menuDeleteSheetBtn-> deleteCurrentSheet()
             R.id.menuTextSizeIncreaseBtn-> contentTextSizeIncrease()
             R.id.menuTextSizeDecreaseBtn-> contentTextSizeDecrease()
@@ -209,28 +210,23 @@ class NoteSheetActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-
-//
-//    private fun makeDialogAndEditSheetName() {
-//        // make Dialog
-//        val dlg: AlertDialog.Builder = AlertDialog.Builder(this)
-//        val ad: AlertDialog = dlg.create()
-//        ad.setTitle("Edit Name") //제목
-//        val inflater: LayoutInflater = LayoutInflater.from(applicationContext)
-//        val view = inflater.inflate(R.layout.dialog, findViewById(R.id.root_layout), false)
-//        ad.setView(view) // 메시지
-//        // set New Sheet Name if the confirm button is clicked.
-//        view.findViewById<Button>(R.id.dialogConfirmBtn).setOnClickListener {
-//            for (i in 1..DataManager.sheetList.value!!.size) {
-//                if (modelView?.currentTabTitleView?.id == DataManager.sheetList.value!!.get(i - 1)?.getId()) {
-//                    DataManager.sheetList.value!!.get(i - 1)?.getTabTitleView()?.text = view.findViewById<EditText>(R.id.dialogEditBox).text
-//                    DataManager.sheetList.value!!.get(i - 1)?.setName(view.findViewById<EditText>(R.id.dialogEditBox).text.toString())
-//                    break
-//                }
-//            }
-//            ad.dismiss()
-//        }
-//        ad.show()
-//    }
+    private fun makeDialogAndEditSheetName() {
+        // make Dialog
+        val dlg: AlertDialog.Builder = AlertDialog.Builder(this)
+        val ad: AlertDialog = dlg.create()
+        ad.setTitle("Edit Name") //제목
+        val inflater: LayoutInflater = LayoutInflater.from(applicationContext)
+        val view = inflater.inflate(R.layout.dialog, findViewById(R.id.root_layout), false)
+        ad.setView(view) // 메시지
+        // set New Sheet Name if the confirm button is clicked.
+        view.findViewById<Button>(R.id.dialogConfirmBtn).setOnClickListener {
+            val changedTitle = view.findViewById<EditText>(R.id.dialogEditBox).text.toString()
+            val sheetInfo = DataManager.sheetList.value?.get(currentTabPosition)!!
+            sheetInfo.setName(changedTitle)
+            DataManager.setSingleSheetOnRTDB(this, currentTabPosition, sheetInfo, -1, -1)
+            ad.dismiss()
+        }
+        ad.show()
+    }
 
 }
