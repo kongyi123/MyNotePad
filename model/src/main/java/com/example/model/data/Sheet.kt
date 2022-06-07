@@ -1,5 +1,6 @@
 package com.example.model.data
 
+import android.widget.EditText
 import android.widget.TextView
 import com.example.model.view.SheetFragment
 
@@ -10,6 +11,16 @@ class Sheet {
     private var tabTitleView: TextView? = null
     private var textSize: Float = 10.0f
     private var sheetFragment: SheetFragment? = null
+    private var editTextView: EditText? = null
+
+    constructor(id: Int, name: String?, content: String?, textView: TextView?, textSize: Float, editTextView: EditText?) {
+        this.id = id
+        this.name = name
+        this.content = content
+        this.tabTitleView = textView
+        this.textSize = textSize
+        this.editTextView = editTextView
+    }
 
     constructor(id: Int, name: String?, content: String?, textView: TextView?, textSize: Float) {
         this.id = id
@@ -58,6 +69,14 @@ class Sheet {
 
     fun setTabTitleView(textView: TextView?) {
         this.tabTitleView = textView
+    }
+
+    fun getEditTextView(): EditText? {
+        return this.editTextView
+    }
+
+    fun setEditTextView(editTextView: EditText?) {
+        this.tabTitleView = editTextView
     }
 
     fun setName(text: String) {

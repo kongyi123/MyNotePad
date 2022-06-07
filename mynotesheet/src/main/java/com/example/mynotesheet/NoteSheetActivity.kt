@@ -1,5 +1,6 @@
 package com.example.mynotesheet
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -25,19 +26,35 @@ class NoteSheetActivity : AppCompatActivity() {
     var currentTabPosition:Int = 0
     var sheetLastId:Int = 0
     private val isTabClicked = AtomicBoolean(false)
+    private var isFirst = true
+    private val sheetList = ArrayList<Sheet>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_sheet)
+        DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
+            if (isFirst) {
+                isFirst = false
+                initialization()
+            }
+        })
+    }
+
+    private fun initialization() {
+        for (sheet in DataManager.sheetList.value!!) {
+            sheetList.add(Sheet(sheet.getId()!!, sheet.getName(), sheet.getContent(), sheet.getTabTitleView(), sheet.getTextSize(), sheet.getEditTextView()))
+        }
+
         mMemoPager = findViewById(R.id.vpPager)
-        mMemoAdapter = RecyclerViewAdapterForNoteSheet(this, DataManager.sheetList.value ?: ArrayList<Sheet>())
-        sheetLastId = getLastSheetId(DataManager.sheetList.value ?: ArrayList<Sheet>())
+        mMemoAdapter =
+            RecyclerViewAdapterForNoteSheet(this, sheetList)
+        sheetLastId = getLastSheetId(sheetList)
         mMemoPager.adapter = mMemoAdapter
         mMemoPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         val onPageChangeCallbackForCalendar = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                DataManager.sheetList.value?.get(position)?.let {
+                sheetList[position].let {
                     if (isTabClicked.get()) {
                         isTabClicked.set(false)
                     } else {
@@ -51,11 +68,7 @@ class NoteSheetActivity : AppCompatActivity() {
 
         mMemoPager.registerOnPageChangeCallback(onPageChangeCallbackForCalendar)
         mMemoPager.setCurrentItem(0, false)
-
-
-        DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
-            initialTab()
-        })
+        initialTab()
     }
 
     private fun getLastSheetId(sheetList: MutableList<Sheet>):Int {
@@ -70,10 +83,10 @@ class NoteSheetActivity : AppCompatActivity() {
 
     private fun initialTab() {
         Log.i("kongyi0606", "initialTab()")
-        val sheetSize = DataManager.sheetList.value!!.size
+        val sheetSize = sheetList.size
         sheetSelectionTab?.removeAllViews()
         for (i in 0 until sheetSize) {
-            val textView = DataManager.sheetList.value!![i].getTabTitleView()
+            val textView = sheetList[i].getTabTitleView()
             Log.i("kongyi0606_", "textview.id = ${textView?.id}")
             textView?.let {
                 textView.setOnClickListener {
@@ -91,7 +104,7 @@ class NoteSheetActivity : AppCompatActivity() {
             }
         }
         if (sheetSize > 0) {
-            val currentTabTitleView = DataManager.sheetList.value!![currentTabPosition].getTabTitleView()
+            val currentTabTitleView = sheetList[currentTabPosition].getTabTitleView()
             Log.i("kongyi0606", "currentTabTitleView = " + currentTabTitleView)
             currentTabTitleView?.setBackgroundColor(
                 resources.getColor(
@@ -115,17 +128,24 @@ class NoteSheetActivity : AppCompatActivity() {
 
 
     private fun deleteCurrentSheet() {
-        if (DataManager.sheetList.value!!.size <= 0) return
+        if (sheetList.size <= 0) return
 
+    }
+
+    private fun printAll() {
+        Log.i("kongyi0607", "-------------------------\n")
+        for (sheet in sheetList) {
+            Log.i("kongyi0607", "id = ${sheet.getId()} name = ${sheet.getName()} content = ${sheet.getContent()}")
+        }
     }
 
 
     private fun switchFocusSheetInTab(it:View) {
         Log.d(TAG, "switchFocusSheetInTab")
         Log.i("kongyi0606_", "from = $currentTabPosition, to = ${it.id}")
-        Log.i("kongyi0606_", "sheetList = ${DataManager.sheetList.value.toString()}")
+//        printAll()
         val targetTextView = it as TextView
-        val currentTabTitleView = DataManager.sheetList.value!![currentTabPosition].getTabTitleView()
+        val currentTabTitleView = sheetList[currentTabPosition].getTabTitleView()
 
         if (targetTextView.id == currentTabTitleView?.id) return
 
@@ -145,18 +165,20 @@ class NoteSheetActivity : AppCompatActivity() {
 
     /** Increase text size of the text content in current text screen
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun contentTextSizeIncrease() {
-        val currentContentTextSize = DataManager.sheetList.value!![currentTabPosition].getTextSize()!! + 1
-        DataManager.sheetList.value!![currentTabPosition].setTextSize(currentContentTextSize)
+        val currentContentTextSize = sheetList[currentTabPosition].getTextSize()!! + 1
+        sheetList[currentTabPosition].setTextSize(currentContentTextSize)
         Log.i("kongyi0606", "currentContentTextSize = $currentContentTextSize")
         mMemoAdapter.notifyDataSetChanged()
     }
 
     /** Decrease text size of the text content in current text screen
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun contentTextSizeDecrease() {
-        val currentContentTextSize = DataManager.sheetList.value!![currentTabPosition].getTextSize()!! - 1
-        DataManager.sheetList.value!![currentTabPosition].setTextSize(currentContentTextSize)
+        val currentContentTextSize = sheetList[currentTabPosition].getTextSize()!! - 1
+        sheetList[currentTabPosition].setTextSize(currentContentTextSize)
         Log.i("kongyi0606", "currentContentTextSize = $currentContentTextSize")
         mMemoAdapter.notifyDataSetChanged()
     }

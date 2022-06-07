@@ -8,10 +8,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Typeface
+import android.os.Build
 import android.telephony.TelephonyManager
+import android.text.InputType
 import android.util.Log
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -555,13 +561,27 @@ object DataManager {
                 get?.id?.let {
                     val sheetName = get.name
                     val sheetId:String = get.id
-                    val textView = TabTextView(context.applicationContext);
+                    val textView = TabTextView(context.applicationContext)
                     val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     textView.layoutParams = params
                     textView.text = sheetName
                     textView.id = sheetId.toInt()
                     textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
-                    sheetList.add(Sheet(get.id.toInt(), get.name, get.content, textView, get.textSize.toFloat()))
+                    val editTextView = EditText(context.applicationContext)
+                    editTextView.layoutParams = params
+                    editTextView.setText(get.content)
+                    editTextView.setPadding(20, 10, 20, 10)
+                    editTextView.setEms(10)
+                    editTextView.gravity = Gravity.TOP
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        editTextView.textCursorDrawable = context.getDrawable(R.drawable.text_cursor)
+                    }
+                    editTextView.setBackgroundResource(0)
+                    editTextView.setTypeface(null, Typeface.NORMAL);
+                    editTextView.isNestedScrollingEnabled = false
+                    editTextView.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    editTextView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,  context.resources.displayMetrics), 1.0f);
+                    sheetList.add(Sheet(get.id.toInt(), get.name, get.content, textView, get.textSize.toFloat(), editTextView))
                 }
             }
         }

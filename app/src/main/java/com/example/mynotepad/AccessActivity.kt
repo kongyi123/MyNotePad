@@ -30,7 +30,6 @@ class AccessActivity : AppCompatActivity() {
     private lateinit var mPhoneNumber:String
     var isAdmin:Boolean = false
     private var isHcntReady:AtomicBoolean = AtomicBoolean(false)
-    private var isSheetListReady:AtomicBoolean = AtomicBoolean(false)
 
     private val isDBReady:AtomicBoolean = AtomicBoolean(false)
 
@@ -73,13 +72,10 @@ class AccessActivity : AppCompatActivity() {
             isHcntReady.set(true)
         })
 
-        DataManager.sheetList.observe(this, androidx.lifecycle.Observer {
-            isSheetListReady.set(true)
-        })
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 1..15) {
-                if (isHcntReady.get() && isSheetListReady.get()) {
+                if (isHcntReady.get()) {
                     Log.i("kongyi0509", "DB is ready")
                     init()
                     break
@@ -88,7 +84,7 @@ class AccessActivity : AppCompatActivity() {
                 Log.i("kongyi0509", "getting data from DB....")
             }
 
-            if (!isHcntReady.get() && !isSheetListReady.get()) {
+            if (!isHcntReady.get()) {
                 showDBLinkFailDialog()
                 //makeDBReady()
                 return@launch
