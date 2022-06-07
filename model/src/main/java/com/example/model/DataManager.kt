@@ -568,18 +568,19 @@ object DataManager {
                     textView.id = sheetId.toInt()
                     textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
                     val editTextView = EditText(context.applicationContext)
-                    editTextView.layoutParams = params
+                    val params2 = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    editTextView.layoutParams = params2
                     editTextView.setText(get.content)
                     editTextView.setPadding(20, 10, 20, 10)
-                    editTextView.setEms(10)
+                   editTextView.setEms(10)
                     editTextView.gravity = Gravity.TOP
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         editTextView.textCursorDrawable = context.getDrawable(R.drawable.text_cursor)
                     }
                     editTextView.setBackgroundResource(0)
-                    editTextView.setTypeface(null, Typeface.NORMAL);
+                    //editTextView.setTypeface(null, Typeface.NORMAL);
+                    editTextView.canScrollHorizontally(- 1)
                     editTextView.isNestedScrollingEnabled = false
-                    editTextView.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
                     editTextView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,  context.resources.displayMetrics), 1.0f);
                     sheetList.add(Sheet(get.id.toInt(), get.name, get.content, textView, get.textSize.toFloat(), editTextView))
                 }
