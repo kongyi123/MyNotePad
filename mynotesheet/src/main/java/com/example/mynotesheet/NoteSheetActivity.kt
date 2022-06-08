@@ -1,9 +1,12 @@
 package com.example.mynotesheet
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.example.model.DataManager
 import com.example.model.data.Sheet
+import com.example.model.view.TabTextView
 import java.util.concurrent.atomic.AtomicBoolean
 
 /*
@@ -97,8 +101,8 @@ class NoteSheetActivity : AppCompatActivity() {
                 textView.setOnClickListener {
                     Log.i("kongyi0606", "currentTabPosition = ${currentTabPosition}")
                     isTabClicked.set(true)
-                    switchFocusSheetInTab(it.id, false)
-                    mMemoPager.setCurrentItem(it.id, true)
+                    switchFocusSheetInTab(sheetOrder[it.id]!!, false)
+                    mMemoPager.setCurrentItem(sheetOrder[it.id]!!, true)
                 }
                 textView.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
 
@@ -160,8 +164,10 @@ class NoteSheetActivity : AppCompatActivity() {
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
                 areItemsTheSame(oldItemPosition, newItemPosition)
         }, true).dispatchUpdatesTo(mMemoPager.adapter!!)
+        mMemoAdapter.notifyDataSetChanged()
 
         if (lastPosOfOriginalList == target) {
+            Log.i("kongyi0609", "removed last one")
             switchFocusSheetInTab(sheetList.size-1, true)
         } else {
             switchFocusSheetInTab(target, true)
@@ -176,7 +182,7 @@ class NoteSheetActivity : AppCompatActivity() {
 
     private fun switchFocusSheetInTab(target: Int, isFromDelete:Boolean) {
         Log.d(TAG, "switchFocusSheetInTab")
-        Log.i("kongyi0608", "from = $currentTabPosition to = $target")
+        Log.i("kongyi0609", "from = $currentTabPosition to = $target")
         val targetTextView = sheetList[target].getTabTitleView() as TextView
 
         if (!isFromDelete) {
@@ -199,8 +205,50 @@ class NoteSheetActivity : AppCompatActivity() {
     }
 
     fun onClickPlusIcon(view: View) {
+        // 액티비디 단에서 만들어서 보여주고
+        // 별도로 모델 단에 추가해줄 것.
+        val newSheetId = ++sheetLastId
+        val context: Context = application
+        val textView = TabTextView(context.applicationContext)
+        val sheetId = newSheetId
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        textView.layoutParams = params
+        textView.text = "newSheet"
+        textView.id = sheetId // 동적 생성시 default는 무조건 0이 됨.
+        textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
+        val editTextView = EditText(context.applicationContext)
+        val params2 = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        editTextView.layoutParams = params2
+        editTextView.setText("new")
+        editTextView.setPadding(20, 10, 20, 10)
+        editTextView.setEms(10)
+        editTextView.gravity = Gravity.TOP
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            editTextView.textCursorDrawable = context.getDrawable(R.drawable.text_cursor)
+        }
+        editTextView.setBackgroundResource(0)
+        //editTextView.setTypeface(null, Typeface.NORMAL);
+        editTextView.canScrollHorizontally(- 1)
+        editTextView.isNestedScrollingEnabled = false
+        editTextView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,  context.resources.displayMetrics), 1.0f);
+        val newSheet = Sheet(newSheetId, "newSheet", "new", textView, 10.0f, editTextView)
+        sheetList.add(newSheet)
+        mMemoPager.adapter!!.notifyDataSetChanged()
+        val newSheetPos = sheetList.size-1
+        mMemoPager.setCurrentItem(newSheetPos, true)
+        addShowingSheetInTab(textView)
+        sheetOrder[textView.id] = newSheetPos
+        textView.setOnClickListener {
+            isTabClicked.set(true)
+            switchFocusSheetInTab(sheetOrder[textView.id]!!, false)
+            mMemoPager.setCurrentItem(sheetOrder[textView.id]!!, true)
+        }
+        switchFocusSheetInTab(sheetOrder[textView.id]!!, false)
 
+        // DB에 추가
+        DataManager.setSingleSheetOnRTDB(this, -1, newSheet, newSheetId)
     }
+
 
     /** Increase text size of the text content in current text screen
      */
@@ -256,10 +304,11 @@ class NoteSheetActivity : AppCompatActivity() {
                 sheetList[currentTabPosition].getName(),
                 sheetList[currentTabPosition].getContent(),
                 sheetList[currentTabPosition].getTextSize())
-            DataManager.setSingleSheetOnRTDB(this, currentTabPosition, bringTypeSheet, -1, -1)
+            DataManager.setSingleSheetOnRTDB(this, currentTabPosition, bringTypeSheet, -1)
             ad.dismiss()
         }
         ad.show()
     }
+
 
 }

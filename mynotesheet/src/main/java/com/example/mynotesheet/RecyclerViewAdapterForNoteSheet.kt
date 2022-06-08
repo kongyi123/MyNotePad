@@ -59,22 +59,20 @@ class RecyclerViewAdapterForNoteSheet(
                     CoroutineScope(Dispatchers.Default).launch {
                         Log.i("kongyi0607", "input changing...")
                         Log.i("kongyi0607", "position = $position, text = ${text.toString()}")
-                        sheetList[position].setContent(text.toString())
-                        //  printAll()
-                        //sheetInfo.setTextSize(textSize)
-                        update(text.toString(), pos, sheetInfo)
+                        if (position < sheetList.size) {
+                            sheetList[position].setContent(text.toString())
+                            //  printAll()
+                            //sheetInfo.setTextSize(textSize)
+                            update(text.toString(), pos, sheetInfo)
+                        } else {
+                            Log.i("kongyi1220", "삭제 직후 이 분기문 안쓰면 FATAL 나는데, 왜 그런지? 나중에 면밀히 볼 것")
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun printAll() {
-        Log.i("kongyi0607", "-------------------------\n")
-        for (sheet in sheetList) {
-            Log.i("kongyi0607", "id = ${sheet.getId()} name = ${sheet.getName()} content = ${sheet.getContent()}")
-        }
-    }
     // debounce logic.
     @Synchronized private suspend fun update(text:String, pos:Int, sheetInfo:Sheet) {
         if (ContextHolder.lastJobForRecyclerView != null) {
@@ -92,11 +90,9 @@ class RecyclerViewAdapterForNoteSheet(
     }
 
     private fun saveSingleSheetIntoDB(position: Int, sheetInfo: Sheet) {
-        Log.i("kongyi0605", "position = ${position}")
-        Log.i("kongyi0605", "items = ${sheetList.toString()}")
         if (sheetList != null && sheetList.size > 0) {
             sheetList[position] = sheetInfo
-            DataManager.setSingleSheetOnRTDB(mContext, position, sheetInfo, -1, -1)
+            DataManager.setSingleSheetOnRTDB(mContext, position, sheetInfo, -1)
         }
     }
 }

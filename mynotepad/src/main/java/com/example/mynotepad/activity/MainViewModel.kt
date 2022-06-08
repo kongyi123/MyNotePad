@@ -83,7 +83,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 DataManager.sheetList.value!![i-1].getName(),
                 DataManager.sheetList.value!![i-1].getContent(),
                 DataManager.sheetList.value!![i-1].getTextSize())
-            DataManager.setSingleSheetOnRTDB(context, i-1, bringTypeSheet, DataManager.sheetList.value!!.size, sheetLastId)
+            DataManager.setSingleSheetOnRTDB(context, i-1, bringTypeSheet, sheetLastId)
         }
         DataManager.setSheetCountOnRTDB(context, DataManager.sheetList.value!!.size)
         DataManager.setIdCountOnRTDB(context, sheetLastId)

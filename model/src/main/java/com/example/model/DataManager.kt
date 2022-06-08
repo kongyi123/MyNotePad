@@ -596,12 +596,11 @@ object DataManager {
         ref.child("/$sheet_list/sheetId$id").removeValue()
     }
 
-    fun putSingleSheet(sheet_list:String, id:Int, name:String, content:String, textSize:Float, nextSheetCount:Int, nextSheetIdCount:Int) {
+    fun putSingleSheet(sheet_list:String, id:Int, name:String, content:String, textSize:Float, nextSheetIdCount:Int) {
         Log.i("kongyi1220A", "id = " + id)
         if (id == -1) {
             val newId = nextSheetIdCount
             postFirebaseDatabaseForPutSheet(sheet_list, true, newId, name, content, textSize)
-            postFirebaseDatabaseForPutSheetCount(sheet_list, nextSheetCount)
             postFirebaseDatabaseForPutSheetIdCount(sheet_list, nextSheetIdCount)
         } else {
             postFirebaseDatabaseForPutSheet(sheet_list,  false, id, name, content, textSize)
@@ -657,8 +656,8 @@ object DataManager {
         pdm.setFloat(sheetTextSizeKey, item?.getTextSize()!!)
     }
 
-    fun setSingleSheetOnRTDB(context:Context, i:Int, item: Sheet?, nextSheetSize:Int, nextSheetLastCount:Int) {
-        putSingleSheet("sheet_list", i, item?.getName()!!, item.getContent()!!, item.getTextSize()!!,  nextSheetSize, nextSheetLastCount)
+    fun setSingleSheetOnRTDB(context:Context, i:Int, item: Sheet?, nextSheetLastCount:Int) {
+        putSingleSheet("sheet_list", i, item?.getName()!!, item.getContent()!!, item.getTextSize()!!,  nextSheetLastCount)
     }
 
     fun setSheetCount(context:Context, size:Int) {
