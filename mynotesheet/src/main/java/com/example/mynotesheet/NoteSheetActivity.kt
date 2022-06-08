@@ -14,7 +14,6 @@ import com.example.model.data.Sheet
 import java.util.concurrent.atomic.AtomicBoolean
 
 /*
-    3. 삭제 기능
     4. 시트명 편집 기능
  */
 
@@ -167,23 +166,11 @@ class NoteSheetActivity : AppCompatActivity() {
         } else {
             switchFocusSheetInTab(target, true)
         }
-        //DataManager.setSheetCount(this, sheetList.size)
     }
 
     private fun removeShowingSheetInTab(view: View) {
         if (view.parent != null) {
             ((view.parent) as ViewGroup).removeView(view)
-        }
-    }
-
-    private fun isTargetLastElement(target: Int):Boolean {
-        return target == sheetList.size-1
-    }
-
-    private fun printAll() {
-        Log.i("kongyi0607", "-------------------------\n")
-        for (sheet in sheetList) {
-            Log.i("kongyi0607", "id = ${sheet.getId()} name = ${sheet.getName()} content = ${sheet.getContent()}")
         }
     }
 
@@ -261,7 +248,16 @@ class NoteSheetActivity : AppCompatActivity() {
         ad.setView(view) // 메시지
         // set New Sheet Name if the confirm button is clicked.
         view.findViewById<Button>(R.id.dialogConfirmBtn).setOnClickListener {
-
+            val newName = view.findViewById<EditText>(R.id.dialogEditBox).text.toString()
+            sheetList[currentTabPosition].setName(newName)
+            sheetList[currentTabPosition].getTabTitleView()?.text = newName
+            val bringTypeSheet = Sheet(
+                sheetList[currentTabPosition].getId(),
+                sheetList[currentTabPosition].getName(),
+                sheetList[currentTabPosition].getContent(),
+                sheetList[currentTabPosition].getTextSize())
+            DataManager.setSingleSheetOnRTDB(this, currentTabPosition, bringTypeSheet, -1, -1)
+            ad.dismiss()
         }
         ad.show()
     }
