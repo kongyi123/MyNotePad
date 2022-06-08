@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.example.model.DataManager
 import com.example.model.data.Sheet
@@ -28,6 +29,7 @@ class NoteSheetActivity : AppCompatActivity() {
     private val isTabClicked = AtomicBoolean(false)
     private var isFirst = true
     private val sheetList = ArrayList<Sheet>()
+    private val sheetOrder: MutableMap<Int, Int> = mutableMapOf<Int, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,7 @@ class NoteSheetActivity : AppCompatActivity() {
     }
 
     private fun initialization() {
+        Log.i("kongyi0608", "initialization")
         for (sheet in DataManager.sheetList.value!!) {
             sheetList.add(Sheet(sheet.getId()!!, sheet.getName(), sheet.getContent(), sheet.getTabTitleView(), sheet.getTextSize(), sheet.getEditTextView()))
         }
@@ -48,7 +51,7 @@ class NoteSheetActivity : AppCompatActivity() {
         mMemoPager = findViewById(R.id.vpPager)
         mMemoAdapter =
             RecyclerViewAdapterForNoteSheet(this, sheetList)
-        sheetLastId = getLastSheetId(sheetList)
+        sheetLastId = this.getLastSheetIdWithRefreshSheetInfo(sheetList)
         mMemoPager.adapter = mMemoAdapter
         mMemoPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         val onPageChangeCallbackForCalendar = object : ViewPager2.OnPageChangeCallback() {
@@ -58,7 +61,7 @@ class NoteSheetActivity : AppCompatActivity() {
                     if (isTabClicked.get()) {
                         isTabClicked.set(false)
                     } else {
-                        switchFocusSheetInTab(it.getTabTitleView()!!)
+                        switchFocusSheetInTab(position, false)
                     }
                 }
             }
@@ -71,9 +74,12 @@ class NoteSheetActivity : AppCompatActivity() {
         initialTab()
     }
 
-    private fun getLastSheetId(sheetList: MutableList<Sheet>):Int {
+    private fun getLastSheetIdWithRefreshSheetInfo(sheetList: MutableList<Sheet>):Int {
         var lastSheetId = 0
+        var cnt = 0
+        sheetOrder.clear()
         for (sheetInfo in sheetList) {
+            sheetOrder[sheetInfo.getTabTitleView()!!.id] = cnt++
             if (lastSheetId < sheetInfo.getId()!!.toInt()) {
                 lastSheetId = sheetInfo.getId()!!.toInt()
             }
@@ -87,12 +93,12 @@ class NoteSheetActivity : AppCompatActivity() {
         sheetSelectionTab?.removeAllViews()
         for (i in 0 until sheetSize) {
             val textView = sheetList[i].getTabTitleView()
-            Log.i("kongyi0606_", "textview.id = ${textView?.id}")
+            Log.i("kongyi0608", "textview id = ${sheetOrder[textView?.id]}")
             textView?.let {
                 textView.setOnClickListener {
                     Log.i("kongyi0606", "currentTabPosition = ${currentTabPosition}")
                     isTabClicked.set(true)
-                    switchFocusSheetInTab(it)
+                    switchFocusSheetInTab(it.id, false)
                     mMemoPager.setCurrentItem(it.id, true)
                 }
                 textView.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
@@ -126,10 +132,52 @@ class NoteSheetActivity : AppCompatActivity() {
         sheetSelectionTab?.addView(view)
     }
 
+    private fun itemId(position: Int): Long = sheetList[position].getId()!!.toLong()
+    fun createIdSnapshot(): List<Long> = (0 until sheetList.size).map { position -> itemId(position) }
 
     private fun deleteCurrentSheet() {
+        val lastPosOfOriginalList = sheetList.size-1
         if (sheetList.size <= 0) return
+        val target = currentTabPosition
 
+        // tab
+        Log.i("kongyi0608", "currentTabPosition!!!!!!!!!!!!!! = ${currentTabPosition}")
+        val currentTabTitleView = sheetList[currentTabPosition].getTabTitleView()
+        removeShowingSheetInTab(currentTabTitleView as View)
+
+        // remove current sheet in DB
+        DataManager.removeSingleSheet("sheet_list", sheetList[currentTabPosition].getId().toString())
+
+        // sheet
+        val idsOld = createIdSnapshot()
+        sheetList.removeAt(target)
+        sheetLastId = this.getLastSheetIdWithRefreshSheetInfo(sheetList)
+        val idsNew = createIdSnapshot()
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = idsOld.size
+            override fun getNewListSize(): Int = idsNew.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                idsOld[oldItemPosition] == idsNew[newItemPosition]
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                areItemsTheSame(oldItemPosition, newItemPosition)
+        }, true).dispatchUpdatesTo(mMemoPager.adapter!!)
+
+        if (lastPosOfOriginalList == target) {
+            switchFocusSheetInTab(sheetList.size-1, true)
+        } else {
+            switchFocusSheetInTab(target, true)
+        }
+        //DataManager.setSheetCount(this, sheetList.size)
+    }
+
+    private fun removeShowingSheetInTab(view: View) {
+        if (view.parent != null) {
+            ((view.parent) as ViewGroup).removeView(view)
+        }
+    }
+
+    private fun isTargetLastElement(target: Int):Boolean {
+        return target == sheetList.size-1
     }
 
     private fun printAll() {
@@ -139,23 +187,27 @@ class NoteSheetActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun switchFocusSheetInTab(it:View) {
+    private fun switchFocusSheetInTab(target: Int, isFromDelete:Boolean) {
         Log.d(TAG, "switchFocusSheetInTab")
-        Log.i("kongyi0606_", "from = $currentTabPosition, to = ${it.id}")
-//        printAll()
-        val targetTextView = it as TextView
-        val currentTabTitleView = sheetList[currentTabPosition].getTabTitleView()
+        Log.i("kongyi0608", "from = $currentTabPosition to = $target")
+        val targetTextView = sheetList[target].getTabTitleView() as TextView
 
-        if (targetTextView.id == currentTabTitleView?.id) return
+        if (!isFromDelete) {
+            val currentTabTitleView = sheetList[currentTabPosition].getTabTitleView()
 
-        val sourceTextView = currentTabTitleView
-        Log.i("kongyi0606", "sourceTextView = $sourceTextView")
-        sourceTextView?.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
+            if (targetTextView.id == currentTabTitleView?.id) {
+                Log.i("kongyi0608", "targetTextView.id = ${targetTextView.id}")
+                Log.i("kongyi0608", "currentTabTitleView.id = ${currentTabTitleView.id}")
+                return
+            }
+
+            currentTabTitleView?.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
+        }
+
         targetTextView.setBackgroundColor(resources.getColor(R.color.colorActivatedSheet))
 
         // StateVariable update
-        currentTabPosition = targetTextView.id
+        currentTabPosition = target
         tabOuter.requestFocus()
     }
 
@@ -185,7 +237,7 @@ class NoteSheetActivity : AppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.memo_menu, menu)
+        menuInflater.inflate(R.menu.mynote_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

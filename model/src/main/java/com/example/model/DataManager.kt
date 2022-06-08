@@ -524,18 +524,16 @@ object DataManager {
     }
 
     // debounce logic.
-    private suspend fun updateSheetList(
+    @Synchronized private suspend fun updateSheetList(
         sheetList: ArrayList<Sheet>,
         snapshot: DataSnapshot,
         context: Context
     ) {
         Log.i("kongyi0605", "updateDataList")
 
-        Mutex().withLock {
-            if (ContextHolder.lastJob != null) {
-                Log.i("kongyi0605", "lastJob Canceled")
-                ContextHolder.lastJob!!.cancel()
-            }
+        if (ContextHolder.lastJob != null) {
+            Log.i("kongyi0605", "lastJob Canceled")
+            ContextHolder.lastJob!!.cancel()
         }
         ContextHolder.lastJob = CoroutineScope(Dispatchers.Default).launch {
             delay(1000)
@@ -550,7 +548,7 @@ object DataManager {
         context: Context
     ) {
         sheetList.clear()
-        Log.i("kongyi0606", "sheetList right after clear= {$sheetList}")
+        Log.i("kongyi0608", "sheetList right after clear= {$sheetList}")
 
         for (postSnapshot in snapshot.children) {
             if (!postSnapshot.exists()) {
@@ -560,19 +558,20 @@ object DataManager {
                 val get = postSnapshot.getValue(FirebaseSheetPost::class.java)
                 get?.id?.let {
                     val sheetName = get.name
-                    val sheetId:String = get.id
                     val textView = TabTextView(context.applicationContext)
+                    val sheetId = get.id
+                    Log.i("kongyi0608", "textview id!!!! = ${textView.id}")
                     val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     textView.layoutParams = params
                     textView.text = sheetName
-                    textView.id = sheetId.toInt()
+                    textView.id = sheetId.toInt() // 동적 생성시 default는 무조건 0이 됨.
                     textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
                     val editTextView = EditText(context.applicationContext)
                     val params2 = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     editTextView.layoutParams = params2
                     editTextView.setText(get.content)
                     editTextView.setPadding(20, 10, 20, 10)
-                   editTextView.setEms(10)
+                    editTextView.setEms(10)
                     editTextView.gravity = Gravity.TOP
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         editTextView.textCursorDrawable = context.getDrawable(R.drawable.text_cursor)
@@ -583,12 +582,18 @@ object DataManager {
                     editTextView.isNestedScrollingEnabled = false
                     editTextView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,  context.resources.displayMetrics), 1.0f);
                     sheetList.add(Sheet(get.id.toInt(), get.name, get.content, textView, get.textSize.toFloat(), editTextView))
+                    Log.i("kongyi0608", "textview.id = ${textView.id}")
                 }
             }
         }
 
         Log.i("kongyi0606", "!!!!!!!!!!!sheetList after adding ")
         this.sheetList.postValue(sheetList)
+    }
+
+    fun removeSingleSheet(sheet_list:String, id:String) { // color 넣어야 할지
+        val ref = FirebaseDatabase.getInstance().reference
+        ref.child("/$sheet_list/sheetId$id").removeValue()
     }
 
     fun putSingleSheet(sheet_list:String, id:Int, name:String, content:String, textSize:Float, nextSheetCount:Int, nextSheetIdCount:Int) {
@@ -736,11 +741,11 @@ object DataManager {
         }
         return sheetCount
     }
-
-    fun getSheetCount(context:Context):Int {
-        val pdm = PreferenceDataManager(context)
-        return pdm.getInt("sheetCount")
-    }
+//
+//    fun getSheetCount(context:Context):Int {
+//        val pdm = PreferenceDataManager(context)
+//        return pdm.getInt("sheetCount")
+//    }
 
     suspend fun getLastIdFromRTDB(context:Context, sheet_list:String):Int {
         var sheetLastId = 0

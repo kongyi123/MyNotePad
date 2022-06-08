@@ -69,7 +69,7 @@ class SheetFragment(private val softKeyboard: SoftKeyboard, private val mContext
                     DataManager.sheetList.value!![i-1].getTextSize())
                 DataManager.setSingleSheetOnRTDB(mContext, i-1, bringTypeSheet, nextSheetSize, nextSheetIdCount)
             }
-            DataManager.setSheetCountOnRTDB(mContext, DataManager.sheetList.value!!.size)
+//            DataManager.setSheetCountOnRTDB(mContext, DataManager.sheetList.value!!.size)
             DataManager.setIdCountOnRTDB(mContext, nextSheetIdCount)
         }
     }
