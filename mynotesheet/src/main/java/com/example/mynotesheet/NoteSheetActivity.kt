@@ -60,6 +60,7 @@ class NoteSheetActivity : AppCompatActivity() {
         val onPageChangeCallbackForCalendar = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                Log.i("kongyi0609", "onPageChanged position : $position")
                 sheetList[position].let {
                     if (isTabClicked.get()) {
                         isTabClicked.set(false)
@@ -169,6 +170,7 @@ class NoteSheetActivity : AppCompatActivity() {
         if (lastPosOfOriginalList == target) {
             Log.i("kongyi0609", "removed last one")
             switchFocusSheetInTab(sheetList.size-1, true)
+            mMemoPager.setCurrentItem(sheetList.size-1, true)
         } else {
             switchFocusSheetInTab(target, true)
         }
@@ -309,6 +311,4 @@ class NoteSheetActivity : AppCompatActivity() {
         }
         ad.show()
     }
-
-
 }
