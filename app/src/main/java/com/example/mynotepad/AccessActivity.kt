@@ -142,12 +142,12 @@ class AccessActivity : AppCompatActivity() {
     private suspend fun init() {
         if (isAdmin) {
             findViewById<Button>(R.id.alarmNotiBtn).visibility = View.VISIBLE
-            findViewById<Button>(R.id.myMemoBtn).visibility = View.VISIBLE
+//            findViewById<Button>(R.id.myMemoBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.shareCalendarBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.personalCalendarBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.historyManagerBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.paperWeightBtn).visibility = View.VISIBLE
-            findViewById<Button>(R.id.noteSheettBtn).visibility = View.VISIBLE
+            findViewById<Button>(R.id.noteSheetBtn).visibility = View.VISIBLE
         }
 
         findViewById<Button>(R.id.alarmNotiBtn).setOnClickListener {
@@ -172,11 +172,11 @@ class AccessActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.paperWeightBtn).setOnClickListener {
             startActivity(Intent(this, PaperWeightActivity::class.java))
-            DataManager.putSingleHistory(this, "access", "historyManager", mPhoneNumber)
+            DataManager.putSingleHistory(this, "access", "paperWeight", mPhoneNumber)
         }
-        findViewById<Button>(R.id.noteSheettBtn).setOnClickListener {
+        findViewById<Button>(R.id.noteSheetBtn).setOnClickListener {
             startActivity(Intent(this, NoteSheetActivity::class.java))
-            DataManager.putSingleHistory(this, "access", "historyManager", mPhoneNumber)
+            DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
         }
     }
 }
