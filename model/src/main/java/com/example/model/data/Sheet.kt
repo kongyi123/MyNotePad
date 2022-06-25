@@ -1,6 +1,5 @@
 package com.example.model.data
 
-import android.widget.EditText
 import android.widget.TextView
 import com.example.model.view.SheetFragment
 
@@ -9,20 +8,10 @@ class Sheet {
     private var content: String? = null
     private var id: Int? = null
     private var tabTitleView: TextView? = null
-    private var textSize: Float = 10.0f
+    private var textSize: Float? = null
     private var sheetFragment: SheetFragment? = null
-    private var editTextView: EditText? = null
 
-    constructor(id: Int, name: String?, content: String?, textView: TextView?, textSize: Float, editTextView: EditText?) {
-        this.id = id
-        this.name = name
-        this.content = content
-        this.tabTitleView = textView
-        this.textSize = textSize
-        this.editTextView = editTextView
-    }
-
-    constructor(id: Int, name: String?, content: String?, textView: TextView?, textSize: Float) {
+    constructor(id: Int, name: String?, content: String?, textView: TextView?, textSize: Float?) {
         this.id = id
         this.name = name
         this.content = content
@@ -30,7 +19,7 @@ class Sheet {
         this.textSize = textSize
     }
 
-    constructor(id: Int?, name: String?, content: String?, textSize: Float) {
+    constructor(id: Int?, name: String?, content: String?, textSize: Float?) {
         this.id = id
         this.name = name
         this.content = content
@@ -67,23 +56,11 @@ class Sheet {
         return this.tabTitleView
     }
 
-    fun setTabTitleView(textView: TextView?) {
-        this.tabTitleView = textView
-    }
-
-    fun getEditTextView(): EditText? {
-        return this.editTextView
-    }
-
-    fun setEditTextView(editTextView: EditText?) {
-        this.tabTitleView = editTextView
-    }
-
     fun setName(text: String) {
         this.name = text
     }
 
-    fun getTextSize(): Float {
+    fun getTextSize(): Float? {
         return this.textSize
     }
 

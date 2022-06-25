@@ -3,7 +3,6 @@ package com.example.mynotepad.activity
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -60,40 +59,46 @@ class MainActivity : AppCompatActivity() {
         }
 
         tts?.initTTS()
-        if (modelView?.sheetLastId == 0) {
-            modelView?.sheetLastId = 15
+        if (modelView?.sheetIdCount == 0) {
+            modelView?.sheetIdCount = 15
         }
 
         DataManager.sheetList.observe(this) {
-            if (modelView?.isFirstStart == true) {
-                Log.i("kongyi0605", "sheetList Updated")
-                modelView?.isFirstStart = false
-                vpPager.registerOnPageChangeCallback(object :
-                    ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        super.onPageSelected(position)
-                        if (modelView?.size!! > 0 && position >= 0 && position < modelView?.sheetLastId!!) {
-                            switchFocusSheetInTab(position)
+            CoroutineScope(Dispatchers.Default).launch {
+                for (cnt in 0..10) {
+                    if (modelView?.isFirstStart == false) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            initialTab()
+                            vpPager.adapter = createViewPagerAdapter()
                         }
-                        modelView?.currentTabPosition = position
+                        break
                     }
-                })
-                initialTab()
-                vpPager.adapter = createViewPagerAdapter()
-                initializeHotKey()
-
+                    Log.i("kongyi0510", "loading... try count = $cnt")
+                    delay(1000)
+                }
             }
         }
 
-
-
+        vpPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                //                Toast.makeText(ontext, "pos = " + position + " / viewModelSheetIdCount = " + viewModel?.sheetIdCount, Toast.LENGTH_SHORT).show()
+                if (modelView?.size!! > 0 && position >= 0 && position < modelView?.sheetIdCount!!) {
+                    Log.d(TAG, "registerOnPageChangeCallback : position = " + position)
+                    switchFocusSheetInTab(position)
+                    //(viewModel?.adapterViewPager as MainViewModel.MyPagerAdapter).adapterSheetFragmentArray[position].textSize = viewModel!!.sheets[position].getTextSize()
+                }
+                modelView?.currentTabPosition = position
+            }
+        })
+        initializeHotKey()
     }
 
     private fun createViewPagerAdapter(): RecyclerView.Adapter<*> {
         val items = modelView
         return object : FragmentStateAdapter(this) {
             override fun createFragment(position: Int): SheetFragment {
-                val sheetFragment = SheetFragment(softKeyboard!!, this@MainActivity, modelView!!.sheetLastId)
+                val sheetFragment = SheetFragment(softKeyboard!!, this@MainActivity, modelView!!.sheetIdCount)
                 sheetFragment.initialize(DataManager.sheetList.value!![position].getContent()!!, DataManager.sheetList.value!![position].getTextSize()!!, position)
                 DataManager.sheetList.value!![position].setSheetFragment(sheetFragment)
                 return sheetFragment
@@ -106,36 +111,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initialTab() {
-        Log.i("kongyi0605", "initialTab()")
-        if (DataManager.sheetList.value!!.size <= 0) {
-            Log.i("kongyi0605", "DataManager.sheetList.value!!.size == ${DataManager.sheetList.value!!.size}")
-            Log.i("kongyi0605", "modelView?.sheetSize!! == ${modelView?.sheetSize!!}")
+        if (DataManager.sheetList.value!!.size <= 0 || modelView?.sheetSize!! <= 0) {
+            Log.i("kongyi0421", "DataManager.sheetList.value!!.size == ${DataManager.sheetList.value!!.size}")
+            Log.i("kongyi0421", "modelView?.sheetSize!! == ${modelView?.sheetSize!!}")
             return
         } else {
-            Log.i("kongyi0605", "items.size = ${DataManager.sheetList.value!!.size}")
-            Log.i("kongyi0605", "sheetSize = ${modelView?.sheetSize}")
+            Log.i("kongyi0421", "items.size = ${DataManager.sheetList.value!!.size}")
+            Log.i("kongyi0421", "sheetSize = ${modelView?.sheetSize}")
         }
-        modelView?.sheetSize = DataManager.sheetList.value!!.size
-        for (i in 0 until DataManager.sheetList.value!!.size) {
-            Log.i("kongyi0605", "i = $i")
-
+        for (i in 0 until modelView?.sheetSize!!) {
             val textView = DataManager.sheetList.value!![i].getTabTitleView()
-            textView?.let {
-                modelView?.sheetOrder?.set(textView!!.id, i)
-                textView?.setOnClickListener {
-                    modelView?.switchFocusSheetInTab(it)
-                    modelView?.sheetOrder?.get((it as TextView).id)?.let { it1 ->
-                        //                                Toast.makeText(this, "it1 = " + it1, Toast.LENGTH_SHORT).show()
-                        vpPager.setCurrentItem(it1, true)
-                        modelView?.currentTabPosition = it1
-                    }
+            modelView?.sheetOrder?.set(textView!!.id, i)
+            textView?.setOnClickListener {
+                modelView?.switchFocusSheetInTab(it)
+                modelView?.sheetOrder?.get((it as TextView).id)?.let { it1 ->
+                    //                                Toast.makeText(this, "it1 = " + it1, Toast.LENGTH_SHORT).show()
+                    vpPager.setCurrentItem(it1, true)
+                    modelView?.currentTabPosition = it1
                 }
-                textView?.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
+            }
+            textView?.setBackgroundColor(resources.getColor(R.color.colorDeactivatedSheet))
 
-                if (textView != null) {
-                    Log.i("kongyi0605", "addShowingSheetInTab will be called soon")
-                    addShowingSheetInTab(textView)
-                }
+            if (textView != null) {
+                Log.i("kongyi0421", "addShowingSheetInTab will be called soon")
+                addShowingSheetInTab(textView)
             }
         }
         if (modelView?.sheetSize!! > 0) {
@@ -206,6 +205,19 @@ class MainActivity : AppCompatActivity() {
         }
         modelView?.sheetSize = modelView?.sheetSize!!-1
 
+// 아래는 사장된 코드임... 처음 모르는 것을 배울때는, 예제를 그대로 따르는 것을 원칙으로 하자.
+        // 아래 방식은 중간에 있는 항목에는 동작하지만, 마지막 끝 항에 대해서는 current page가 부적절하게 표시되는 오류가 있다.
+        // 지금 보니 아래 방식도 구현 가능한 예제가 구글에서 제공하는 git에 제시되어있음.
+//            items?.currentTabPosition = target-1
+//        }
+//        else {
+//            Log.d(TAG, "currentTabPosition = " + target)
+//            items?.removeAt(target)
+//            vpPager.adapter!!.notifyDataSetChanged()
+//            items?.removeShowingSheetInTab(items?.currentTabTitleView as View)
+//            switchFocusSheetInTab(target)
+//            items?.sheetSize = items?.sheetSize!!-1
+//        }
     }
 
     override fun onBackPressed() {
@@ -223,7 +235,7 @@ class MainActivity : AppCompatActivity() {
         modelView?.switchFocusSheetInTab(position)
         modelView?.updateFragmentToSheets()
         tabOuter.requestFocus()
-        //showAllData("switchFocusSheetInTab")
+        showAllData("switchFocusSheetInTab")
     }
 
     private fun makeDialogAndEditSheetName() {
@@ -254,8 +266,8 @@ class MainActivity : AppCompatActivity() {
         val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         textView.layoutParams = params
         textView.text = "newSheet"
-        textView.id = modelView?.sheetLastId!! + 1
-        modelView?.sheetLastId = modelView?.sheetLastId!! + 1
+        textView.id = modelView?.sheetIdCount!! + 1
+        modelView?.sheetIdCount = modelView?.sheetIdCount!! + 1
 //        textView.background = getDrawable(R.drawable.edge)
         textView.setBackgroundColor(context.resources.getColor(R.color.colorActivatedSheet))
 //        textView.typeface = resources.getFont(R.font.whj000f0cb5)
@@ -376,6 +388,21 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun showAllData(callingFunction: String) {
+        Log.d("kongyi0421", "showAllData calling function = $callingFunction")
+        Log.d("kongyi0421", "currentViewInTab = " + modelView?.currentTabTitleView!!.text)
+        for (i in 1..DataManager.sheetList.value!!.size) {
+            val text: String = DataManager.sheetList.value!![i - 1].getContent().toString()
+            val title: String = DataManager.sheetList.value!![i - 1].getName()!!
+            val viewId: Int = DataManager.sheetList.value!![i - 1].getTabTitleView()!!.id
+            val sheetId: Int = DataManager.sheetList.value!![i - 1].getId()!!
+            var length = text.length
+            if (text.length >= 5) {
+                length = 5
+            }
+            Log.d(TAG, "num = $i, content = ${text.substring(0, length)}, title = $title, viewId = $viewId sheetId = $sheetId")
+        }
+    }
 
     /** Add new title view of a sheet into the tab bottom side of screen
      * - If there is previous parent (linear layout) of view, it should be called removeView method.

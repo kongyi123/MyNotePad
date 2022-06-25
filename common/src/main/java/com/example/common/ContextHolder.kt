@@ -10,7 +10,6 @@ object ContextHolder {
     private var mContext:Context? = null
     private var mPhoneNumber:String? = null
     var lastJob: Job? = null
-    var lastJobForRecyclerView: Job? = null
     fun setContext(context:Context?) {
         mContext = context
     }

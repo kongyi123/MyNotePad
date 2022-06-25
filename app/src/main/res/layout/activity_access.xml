@@ -28,13 +28,6 @@
         android:visibility="gone"/>
 
     <Button
-        android:id="@+id/noteSheetBtn"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:text="new NoteSheet"
-        android:visibility="gone"/>
-
-    <Button
         android:id="@+id/shareCalendarBtn"
         android:layout_width="300dp"
         android:layout_height="50dp"
@@ -61,4 +54,10 @@
         android:text="PaperWeight Manager"
         android:visibility="gone"/>
 
+    <Button
+        android:id="@+id/accountBookBtn"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Account Book Manager"
+        android:visibility="gone"/>
 </LinearLayout>

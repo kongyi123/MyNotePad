@@ -5,7 +5,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 32
-    buildToolsVersion "29.0.3"
+    buildToolsVersion "30.0.3"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -48,7 +48,7 @@ dependencies {
     implementation project(path: ':sharedcalendar')
     implementation project(path: ':personalcalender')
     implementation project(path: ':paperweight')
-    implementation project(path: ':mynotesheet')
+    implementation project(path: ':accountbook')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
