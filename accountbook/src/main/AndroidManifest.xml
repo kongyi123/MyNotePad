@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.accountbook">
+
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:requestLegacyExternalStorage="true">
+        <activity
+            android:name=".accountBookActivity"
+            android:exported="true"
+            android:label="@string/title_activity_account_book"
+            android:theme="@style/Theme.MyNotepad.NoActionBar" />
+    </application>
+
+</manifest>

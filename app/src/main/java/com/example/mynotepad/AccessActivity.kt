@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
+import com.example.accountbook.accountBookActivity
 import com.example.model.DataManager
 import com.example.mynotepad.activity.MainActivity
 import com.example.mynotesheet.NoteSheetActivity
@@ -127,10 +128,10 @@ class AccessActivity : AppCompatActivity() {
         ad.show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.main_menu, menu)
+//        return super.onCreateOptionsMenu(menu)
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
@@ -143,11 +144,12 @@ class AccessActivity : AppCompatActivity() {
         if (isAdmin) {
             findViewById<Button>(R.id.alarmNotiBtn).visibility = View.VISIBLE
 //            findViewById<Button>(R.id.myMemoBtn).visibility = View.VISIBLE
+            findViewById<Button>(R.id.noteSheetBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.shareCalendarBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.personalCalendarBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.historyManagerBtn).visibility = View.VISIBLE
             findViewById<Button>(R.id.paperWeightBtn).visibility = View.VISIBLE
-            findViewById<Button>(R.id.noteSheetBtn).visibility = View.VISIBLE
+            findViewById<Button>(R.id.accountBookBtn).visibility = View.VISIBLE
         }
 
         findViewById<Button>(R.id.alarmNotiBtn).setOnClickListener {
@@ -156,6 +158,10 @@ class AccessActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.myMemoBtn).setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
+            DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
+        }
+        findViewById<Button>(R.id.noteSheetBtn).setOnClickListener {
+            startActivity(Intent(this, NoteSheetActivity::class.java))
             DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
         }
         findViewById<Button>(R.id.shareCalendarBtn).setOnClickListener {
@@ -172,11 +178,11 @@ class AccessActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.paperWeightBtn).setOnClickListener {
             startActivity(Intent(this, PaperWeightActivity::class.java))
-            DataManager.putSingleHistory(this, "access", "paperWeight", mPhoneNumber)
+            DataManager.putSingleHistory(this, "access", "historyManager", mPhoneNumber)
         }
-        findViewById<Button>(R.id.noteSheetBtn).setOnClickListener {
-            startActivity(Intent(this, NoteSheetActivity::class.java))
-            DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
+        findViewById<Button>(R.id.accountBookBtn).setOnClickListener {
+            startActivity(Intent(this, accountBookActivity::class.java))
+            //     DataManager.putSingleHistory(this, "access", "historyManager", mPhoneNumber)
         }
     }
 }
