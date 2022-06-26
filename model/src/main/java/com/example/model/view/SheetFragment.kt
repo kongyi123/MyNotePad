@@ -19,7 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SheetFragment(private val softKeyboard: SoftKeyboard, private val mContext: Context, private val sheetIdCount:Int) : Fragment() {
+class SheetFragment(private val softKeyboard: SoftKeyboard, private val mContext: Context, private val nextSheetIdCount:Int) : Fragment() {
     // Store instance variables
     private val TAG = "SheetFragment/kongyi123"
     var content: String? = null
@@ -35,8 +35,12 @@ class SheetFragment(private val softKeyboard: SoftKeyboard, private val mContext
         softKeyboard.addEditText(editText)
         editText?.setText("$content")
         if (textSize != null) editText?.textSize = textSize!!
+        Log.i("kongyi0603", "onCreateView")
         editText?.doOnTextChanged { text, start, before, count ->
             Log.i("kongyi0603", "input changing...")
+            if (idxOfSheetsArray != null) {
+                DataManager.sheetList.value!![idxOfSheetsArray!!].setContent(text.toString())
+            }
             saveAllIntoDB()
         }
         return view
@@ -50,19 +54,23 @@ class SheetFragment(private val softKeyboard: SoftKeyboard, private val mContext
     }
 
     private fun saveAllIntoDB() {
+        Log.i("kongyi0603", "saveAllIntoDB")
         CoroutineScope(Dispatchers.IO).launch {
             // 현재 프레그 먼트 덩어리에 있는 것을 저장하여 올림
+            DataManager.clearSheetListFirebaseDatabase("sheet_list")
             updateFragmentToSheets()
+            val nextSheetSize = DataManager.sheetList.value!!.size + 1
             for (i in 1..DataManager.sheetList.value!!.size) {
+                Log.i("kongyi0603", "data = ${DataManager.sheetList.value!![i-1].getId()} ${DataManager.sheetList.value!![i-1].getName()} ${DataManager.sheetList.value!![i-1].getContent()}")
                 val bringTypeSheet = Sheet(
                     DataManager.sheetList.value!![i-1].getId(),
                     DataManager.sheetList.value!![i-1].getName(),
                     DataManager.sheetList.value!![i-1].getContent(),
                     DataManager.sheetList.value!![i-1].getTextSize())
-                DataManager.setSingleSheetOnRTDB(mContext, i-1, bringTypeSheet)
+                DataManager.setSingleSheetOnRTDB(mContext, i-1, bringTypeSheet, nextSheetIdCount)
             }
-            DataManager.setSheetCountOnRTDB(mContext, DataManager.sheetList.value!!.size)
-            DataManager.setIdCountOnRTDB(mContext, sheetIdCount)
+//            DataManager.setSheetCountOnRTDB(mContext, DataManager.sheetList.value!!.size)
+            DataManager.setIdCountOnRTDB(mContext, nextSheetIdCount)
         }
     }
 

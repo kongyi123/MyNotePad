@@ -8,10 +8,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Typeface
+import android.os.Build
 import android.telephony.TelephonyManager
+import android.text.InputType
 import android.util.Log
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -33,6 +39,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.*
 
 
@@ -304,12 +312,14 @@ object DataManager {
         snapshot: DataSnapshot
     ) {
         Log.i("kongyi0521", "updateDataList")
-        if (ContextHolder.lastJob != null) {
-            Log.i("kongyi0521", "lastJob Canceled")
-            ContextHolder.lastJob!!.cancel()
+        Mutex().withLock {
+            if (ContextHolder.lastJob != null) {
+                Log.i("kongyi0521", "lastJob Canceled")
+                ContextHolder.lastJob!!.cancel()
+            }
         }
         ContextHolder.lastJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(2000)
+            delay(500)
             doUpdate(scheduleList, snapshot)
             ContextHolder.lastJob = null
         }
@@ -320,8 +330,6 @@ object DataManager {
         snapshot: DataSnapshot
     ) {
         scheduleList.clear()
-        Log.i("kongyi0521", "scheduleList right after clear= {$scheduleList}")
-
         for (postSnapshot in snapshot.children) {
             if (!postSnapshot.exists()) {
                 continue
@@ -497,6 +505,144 @@ object DataManager {
     //---------------------------------------------------------------------------------------------------------------
     // Regarding NotePad
 
+    fun getAllSheetData(sheet_list:String, context: Context) {
+        val sheetList = ArrayList<Sheet>()
+        val sortByAge:Query = FirebaseDatabase.getInstance().reference.child(sheet_list)
+        sortByAge.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.i("kongyi0606", "onChanged!!!!!! here!!!! watch it!!")
+                CoroutineScope(Dispatchers.Default).launch {
+                    updateSheetList(sheetList, snapshot, context)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+
+    }
+
+    // debounce logic.
+    @Synchronized private suspend fun updateSheetList(
+        sheetList: ArrayList<Sheet>,
+        snapshot: DataSnapshot,
+        context: Context
+    ) {
+        Log.i("kongyi0605", "updateDataList")
+
+        if (ContextHolder.lastJob != null) {
+            Log.i("kongyi0605", "lastJob Canceled")
+            ContextHolder.lastJob!!.cancel()
+        }
+        ContextHolder.lastJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(1000)
+            doSheetUpdate(sheetList, snapshot, context)
+            ContextHolder.lastJob = null
+        }
+    }
+
+    private fun doSheetUpdate(
+        sheetList: ArrayList<Sheet>,
+        snapshot: DataSnapshot,
+        context: Context
+    ) {
+        sheetList.clear()
+        Log.i("kongyi0608", "sheetList right after clear= {$sheetList}")
+
+        for (postSnapshot in snapshot.children) {
+            if (!postSnapshot.exists()) {
+                continue
+            }
+            if (!("sheetLastId" in postSnapshot.ref.toString() || "size" in postSnapshot.ref.toString())) {
+                val get = postSnapshot.getValue(FirebaseSheetPost::class.java)
+                get?.id?.let {
+                    val sheetName = get.name
+                    val textView = TabTextView(context.applicationContext)
+                    val sheetId = get.id
+                    Log.i("kongyi0608", "textview id!!!! = ${textView.id}")
+                    val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    textView.layoutParams = params
+                    textView.text = sheetName
+                    textView.id = sheetId.toInt() // 동적 생성시 default는 무조건 0이 됨.
+                    textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
+                    val editTextView = EditText(context.applicationContext)
+                    val params2 = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    editTextView.layoutParams = params2
+                    editTextView.setText(get.content)
+                    editTextView.setPadding(20, 10, 20, 10)
+                    editTextView.setEms(10)
+                    editTextView.gravity = Gravity.TOP
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        editTextView.textCursorDrawable = context.getDrawable(R.drawable.text_cursor)
+                    }
+                    editTextView.setBackgroundResource(0)
+                    //editTextView.setTypeface(null, Typeface.NORMAL);
+                    editTextView.canScrollHorizontally(- 1)
+                    editTextView.isNestedScrollingEnabled = false
+                    editTextView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,  context.resources.displayMetrics), 1.0f);
+                    sheetList.add(Sheet(get.id.toInt(), get.name, get.content, textView, get.textSize.toFloat(), editTextView))
+                    Log.i("kongyi0608", "textview.id = ${textView.id}")
+                }
+            }
+        }
+
+        Log.i("kongyi0606", "!!!!!!!!!!!sheetList after adding ")
+        this.sheetList.postValue(sheetList)
+    }
+
+    fun removeSingleSheet(sheet_list:String, id:String) { // color 넣어야 할지
+        val ref = FirebaseDatabase.getInstance().reference
+        ref.child("/$sheet_list/sheetId$id").removeValue()
+    }
+
+    fun putSingleSheet(sheet_list:String, id:Int, name:String, content:String, textSize:Float, nextSheetIdCount:Int) {
+        Log.i("kongyi1220A", "id = " + id)
+        if (id == -1) {
+            val newId = nextSheetIdCount
+            postFirebaseDatabaseForPutSheet(sheet_list, true, newId, name, content, textSize)
+            postFirebaseDatabaseForPutSheetIdCount(sheet_list, nextSheetIdCount)
+        } else {
+            postFirebaseDatabaseForPutSheet(sheet_list,  false, id, name, content, textSize)
+        }
+    }
+
+    private fun postFirebaseDatabaseForPutSheet(sheet_list:String, add: Boolean, id:Int, name:String, content:String, textSize:Float) {
+        val mPostReference = FirebaseDatabase.getInstance().reference
+        val childUpdates: MutableMap<String, Any?> = HashMap()
+        var postValues: Map<String?, Any?>? = null
+
+
+        val post = FirebaseSheetPost(id.toString(), name, content, textSize.toString())
+        postValues = post.toMap()
+        childUpdates["/$sheet_list/sheetId$id"] = postValues
+        mPostReference.updateChildren(childUpdates)
+    }
+
+
+    fun clearSheetListFirebaseDatabase(sheet_list:String) {
+        val mPostReference = FirebaseDatabase.getInstance().reference
+        val childUpdates: MutableMap<String, Any?> = HashMap()
+        var postValues: Map<String?, Any?>? = null
+        childUpdates["/$sheet_list"] = postValues
+        mPostReference.updateChildren(childUpdates)
+    }
+
+
+    private fun postFirebaseDatabaseForPutSheetCount(sheet_list:String, nextSheetCount:Int) {
+        val mPostReference = FirebaseDatabase.getInstance().reference
+        val childUpdates: MutableMap<String, Any?> = HashMap()
+        childUpdates["sheetCount"] = nextSheetCount.toString()
+        mPostReference.updateChildren(childUpdates)
+    }
+
+    private fun postFirebaseDatabaseForPutSheetIdCount(sheet_list:String, nextSheetIdCount:Int) {
+        val mPostReference = FirebaseDatabase.getInstance().reference
+        val childUpdates: MutableMap<String, Any?> = HashMap()
+        childUpdates["sheetIdCount"] = nextSheetIdCount.toString()
+        mPostReference.updateChildren(childUpdates)
+    }
+
     fun setSingleSheet(context:Context, i:Int, item: Sheet?) {
         val pdm = PreferenceDataManager(context)
         val sheetNameKey = "sheetName$i"
@@ -510,17 +656,8 @@ object DataManager {
         pdm.setFloat(sheetTextSizeKey, item?.getTextSize()!!)
     }
 
-    fun setSingleSheetOnRTDB(context:Context, i:Int, item: Sheet?) {
-        val pdm = PreferenceDataManager(context)
-        val sheetNameKey = "sheetName$i"
-        val sheetContentKey = "sheetContent$i"
-        val sheetIdKey = "sheetId$i"
-        val sheetTextSizeKey = "sheetTextSize$i"
-
-        putStringAtPathOnRTDB(sheetNameKey, item?.getName()!!)
-        putStringAtPathOnRTDB(sheetContentKey, item?.getContent()!!)
-        putStringAtPathOnRTDB(sheetIdKey, item?.getId().toString())
-        putStringAtPathOnRTDB(sheetTextSizeKey, item?.getTextSize()!!.toString())
+    fun setSingleSheetOnRTDB(context:Context, i:Int, item: Sheet?, nextSheetLastCount:Int) {
+        putSingleSheet("sheet_list", i, item?.getName()!!, item.getContent()!!, item.getTextSize()!!,  nextSheetLastCount)
     }
 
     fun setSheetCount(context:Context, size:Int) {
@@ -553,62 +690,6 @@ object DataManager {
             pdm.getFloat(sheetTextSizeKey))
     }
 
-    suspend fun getSingleSheetFromRTDB(context:Context, i:Int):Sheet {
-        Log.i("kongyi0420", "getSingleSheetFromRTDB")
-
-//        val pdm = PreferenceDataManager(context)
-        val sheetNameKey = "sheetName${i-1}"
-        val sheetContentKey = "sheetContent${i-1}"
-        val sheetIdKey = "sheetId${i-1}"
-        val sheetTextSizeKey = "sheetTextSize${i-1}"
-        var sheetNameValue = ""
-        var sheetIdValue = "0"
-        var sheetContentValue = ""
-        var sheetTextSizeValue = 0f
-
-        getStringFromRTDB(sheetIdKey).take(1).collect {
-            Log.i("kongyi0420", "it = $it")
-            if (it == "fail" || it == null || it == "null") {
-                Log.i("kongyi0420", "getting sheetNameKey is failed")
-            } else {
-                sheetIdValue = it
-                Log.i("kongyi0420", "it = $it")
-            }
-        }
-        getStringFromRTDB(sheetNameKey).take(1).collect {
-            Log.i("kongyi0420", "it = $it")
-            if (it == "fail" || it == null || it == "null") {
-                Log.i("kongyi0420", "getting sheetNameKey is failed")
-            } else {
-                sheetNameValue = it
-                Log.i("kongyi0420", "it = $it")
-            }
-        }
-
-        getStringFromRTDB(sheetContentKey).take(1).collect {
-            Log.i("kongyi0420", "it = $it")
-            if (it == "fail" || it == null || it == "null") {
-                Log.i("kongyi0420", "getting sheetNameKey is failed")
-            } else {
-                sheetContentValue = it
-                Log.i("kongyi0420", "it = $it")
-            }
-        }
-
-        getStringFromRTDB(sheetTextSizeKey).take(1).collect {
-            Log.i("kongyi0420", "it = $it")
-            if (it == "fail" || it == null || it == "null") {
-                Log.i("kongyi0420", "getting sheetNameKey is failed")
-            } else {
-                sheetTextSizeValue = it.toFloat()
-                Log.i("kongyi0420", "it = $it")
-            }
-        }
-        return Sheet(sheetIdValue.toInt(),
-            sheetNameValue,
-            sheetContentValue,
-            sheetTextSizeValue)
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun getStringFromRTDB(key:String): Flow<String> = callbackFlow {
@@ -647,7 +728,7 @@ object DataManager {
         }
     }
 
-    suspend fun getSheetCountFromRTDB(context:Context):Int {
+    suspend fun getSheetListSizeFromRTDB(context:Context, sheet_list:String):Int {
         var sheetCount = 0
         getStringFromRTDB("sheetCount").take(1).collect {
             if (it == "fail" || it == null || it == "null") {
@@ -659,23 +740,23 @@ object DataManager {
         }
         return sheetCount
     }
+//
+//    fun getSheetCount(context:Context):Int {
+//        val pdm = PreferenceDataManager(context)
+//        return pdm.getInt("sheetCount")
+//    }
 
-    fun getSheetCount(context:Context):Int {
-        val pdm = PreferenceDataManager(context)
-        return pdm.getInt("sheetCount")
-    }
-
-    suspend fun getIdCountFromRTDB(context:Context):Int {
-        var sheetIdCount = 0
+    suspend fun getLastIdFromRTDB(context:Context, sheet_list:String):Int {
+        var sheetLastId = 0
         getStringFromRTDB("sheetIdCount").take(1).collect {
             if (it == "fail" || it == "null") {
                 Log.i("kongyi1220dd", "getting sheetNameKey is failed")
             } else {
-                sheetIdCount = it.toInt()
+                sheetLastId = it.toInt()
                 Log.i("kongyi1220dd", "it = $it")
             }
         }
-        return sheetIdCount
+        return sheetLastId
     }
 
     fun getIdCount(context:Context):Int {
@@ -683,37 +764,6 @@ object DataManager {
         return pdm.getInt("sheetIdCount")
     }
 
-    fun loadNotepadData(context:Context) {
-        Log.i("kongyi0509", "loadNotepadData")
-
-        val items:MutableList<Sheet> = mutableListOf()
-        CoroutineScope(Dispatchers.IO).launch {
-            val sheetSize = getSheetCountFromRTDB(context)
-            Log.i("kongyi0509", "sheetSize : $sheetSize")
-
-            if (sheetSize > 0) {
-                for (i in 1..sheetSize) {
-                    val item:Sheet = getSingleSheetFromRTDB(context, i)
-                    val sheetName = item.getName()
-                    val sheetContent = item.getContent()
-                    val sheetId:String = item.getId().toString()
-                    var sheetTextSize:Float? = item.getTextSize()
-                    if (sheetTextSize == -1.0f) {
-                        sheetTextSize = 10.0f
-                    }
-                    val textView = TabTextView(context.applicationContext);
-                    Log.i("kongyi0421", "sheetName : $sheetName")
-                    items.add(Sheet(sheetId.toInt(), sheetName, sheetContent, textView, sheetTextSize))
-                    val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                    textView.layoutParams = params
-                    textView.text = sheetName
-                    textView.id = sheetId.toInt()
-                    textView.setBackgroundColor(context.resources.getColor(R.color.colorDeactivatedSheet))
-                }
-            } //sheetList
-            sheetList.postValue(items)
-        }
-    }
 
     fun getLastFilterSettingState(context: Context): CalendarFilter? {
         val pdm = PreferenceDataManager(context)
