@@ -6,21 +6,16 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.AndroidViewModel
 import com.example.model.data.Sheet
 import androidx.viewpager2.widget.ViewPager2
 import com.example.model.DataManager
-import com.example.model.view.TabTextView
 import com.example.mynotepad.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.concurrent.atomic.AtomicBoolean
 
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -30,7 +25,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var isFirstStart = true
 
     var sheetSize: Int = 0
-    var sheetIdCount:Int = 0
+    var sheetLastId:Int = 0
     val sheetOrder: MutableMap<Int, Int> = mutableMapOf<Int, Int>()
     @SuppressLint("StaticFieldLeak")
     var currentTabPosition:Int = 0
@@ -64,7 +59,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /** Switch focused Sheet in Tab at the bottom line at the screen
      */
     fun switchFocusSheetInTab(position:Int) {
-        switchFocusSheetInTab(DataManager.sheetList.value!![position].getTabTitleView() as View)
+        Log.i("kongyi0605", "sheetList = ${DataManager.sheetList.value.toString()}")
+        Log.i("kongyi0605", "$position / pos = ${DataManager.sheetList.value!![position].getTabTitleView()}")
+        DataManager.sheetList.value?.let {
+            it[position].getTabTitleView()?.let {
+                switchFocusSheetInTab(DataManager.sheetList.value!![position].getTabTitleView()!!)
+            }
+        }
     }
 
     /** Save all of the data in the application.
@@ -74,16 +75,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         // 현재 프레그 먼트 덩어리에 있는 것을 저장하여 올림
         updateFragmentToSheets()
+
+        DataManager.clearSheetListFirebaseDatabase("sheet_list")
         for (i in 1..DataManager.sheetList.value!!.size) {
             val bringTypeSheet = Sheet(
                 DataManager.sheetList.value!![i-1].getId(),
                 DataManager.sheetList.value!![i-1].getName(),
                 DataManager.sheetList.value!![i-1].getContent(),
                 DataManager.sheetList.value!![i-1].getTextSize())
-            DataManager.setSingleSheetOnRTDB(context, i-1, bringTypeSheet)
+            DataManager.setSingleSheetOnRTDB(context, i-1, bringTypeSheet, sheetLastId)
         }
         DataManager.setSheetCountOnRTDB(context, DataManager.sheetList.value!!.size)
-        DataManager.setIdCountOnRTDB(context, sheetIdCount)
+        DataManager.setIdCountOnRTDB(context, sheetLastId)
         Toast.makeText(getApplication(), "saved", Toast.LENGTH_SHORT).show()
     }
 
@@ -93,12 +96,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         Log.i("kongyi0421", "loadSheetData")
 
         val context:Context = getApplication()
-        isFirstStart = false
-        sheetSize = DataManager.sheetList.value!!.size
         CoroutineScope(Dispatchers.Main).launch {
-            sheetIdCount = DataManager.getIdCountFromRTDB(context)
+            sheetSize = DataManager.getSheetListSizeFromRTDB(context, "sheet_list")
+            sheetLastId = DataManager.getLastIdFromRTDB(context, "sheet_list")
         }
-
+        DataManager.getAllSheetData("sheet_list", context)
         Log.i("kongyi0420", "isRead is true")
     }
 
@@ -143,7 +145,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 //    fun addNewSheet(context: Context, vpPager: ViewPager, switchFocusSheetInTab: (View) -> Unit, addShowingSheet: (TextView) -> Unit) {
 @SuppressLint("NotifyDataSetChanged")
 fun addNewSheet(vpPager: ViewPager2, textView:TextView) {
-        DataManager.sheetList.value!!.add(Sheet(sheetIdCount, "newSheet", "new", textView, 10.0f))
+        DataManager.sheetList.value!!.add(Sheet(++sheetLastId, "newSheet", "new", textView, 10.0f))
 //        adapterViewPager?.getItem()
         vpPager.adapter!!.notifyDataSetChanged()
         switchFocusSheetInTab(textView)
