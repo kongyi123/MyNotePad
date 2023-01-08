@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_account_book">accountBookActivity</string>
+    <style name="Theme.MyNotepad.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="Theme.MyNotepad.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.MyNotepad.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+</resources>

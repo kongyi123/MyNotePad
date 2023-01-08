@@ -1,0 +1,2 @@
+com/example/accountbook/BuildConfig.java
+ com.example.accountbook.BuildConfig

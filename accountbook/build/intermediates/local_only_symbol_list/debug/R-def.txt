@@ -1,0 +1,6 @@
+R_DEF: Internal format may change without notice
+local
+string title_activity_account_book
+style Theme.MyNotepad.AppBarOverlay
+style Theme.MyNotepad.NoActionBar
+style Theme.MyNotepad.PopupOverlay
