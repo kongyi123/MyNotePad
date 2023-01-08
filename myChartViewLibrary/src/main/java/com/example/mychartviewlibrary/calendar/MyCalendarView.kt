@@ -185,12 +185,13 @@ class MyCalendarView : FrameLayout {
         cal.timeInMillis = System.currentTimeMillis()
         for (year in startYear..endYear) {
             for (month in 1..12) {
-                mTodayPosition += weight
+                val monthValueOfCalendarLib = month - 1
                 if (cal.get(Calendar.YEAR) == year &&
-                    cal.get(Calendar.MONTH) == month
+                    cal.get(Calendar.MONTH) == monthValueOfCalendarLib
                 ) {
                     weight = 0
                 }
+                mTodayPosition += weight
             }
         }
 
