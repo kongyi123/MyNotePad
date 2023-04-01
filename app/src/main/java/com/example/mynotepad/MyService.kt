@@ -5,16 +5,15 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.ViewModelProvider
 import com.example.common.AlarmNotification
 import com.example.common.R
 import com.example.model.DataManager
-import com.example.mynotepad.activity.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 
 
 // Notification ID.
@@ -45,13 +44,23 @@ class MyService : Service() {
             startOnGoingNotification()
         }
         DataManager.getAllHistoryData(this)
-        val intent = Intent(this, AccessActivity::class.java)
-        DataManager.get14daysSchedule(this, "id_list", intent)
+        val intent = Intent(this, HomeActivity::class.java)
+        CoroutineScope(Dispatchers.Default).launch {
+            DataManager.get14daysSchedule(applicationContext, "id_list", intent).collect { scheduleList ->
+                // https://aroundck.tistory.com/39
+                CoroutineScope(Dispatchers.Main).launch {
+                    Log.i("kongyi122011", "view.post is called")
+                    val wp = WidgetProvider()
+                    wp.update(applicationContext, scheduleList, intent)
+                }
+            }
+        }
+
     }
 
     private fun startOnGoingNotification() {
         Log.d("kyi123", "startForegroundService()")
-        val intent = Intent(this, AccessActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP) // 액티비티 중복생성 하지 않게 하는 FLAG
         val notification = AlarmNotification.createNotification(this, intent) // foreground Noti
         startForeground(NOTIFICATION_ID, notification)

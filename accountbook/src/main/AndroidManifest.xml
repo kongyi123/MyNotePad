@@ -3,13 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.accountbook">
 
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <application
-        android:requestLegacyExternalStorage="true">
+    <application android:requestLegacyExternalStorage="true">
+        <activity
+            android:name=".AccoutBookActivityO"
+            android:exported="false"
+            android:label="@string/title_activity_accout_book_o"
+            android:theme="@style/Theme.MyNotepad.NoActionBar" />
         <activity
             android:name=".accountBookActivity"
             android:exported="true"

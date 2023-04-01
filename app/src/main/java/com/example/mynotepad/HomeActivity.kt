@@ -2,14 +2,12 @@ package com.example.mynotepad
 
 import android.app.ActivityManager
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -17,7 +15,6 @@ import android.widget.ProgressBar
 import com.example.accountbook.accountBookActivity
 import com.example.model.DataManager
 import com.example.mynotepad.activity.MainActivity
-import com.example.mynotesheet.NoteSheetActivity
 import com.example.paperweight.PaperWeightActivity
 import com.example.personalcalendar.activity.PcalendarActivity
 import com.example.sharedcalendar.activity.CalendarActivity
@@ -27,10 +24,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
-class AccessActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
     private lateinit var mPhoneNumber:String
     var isAdmin:Boolean = false
-    private var isHcntReady:AtomicBoolean = AtomicBoolean(false)
+    private var isSheetLoadReady:AtomicBoolean = AtomicBoolean(false)
 
     private val isDBReady:AtomicBoolean = AtomicBoolean(false)
 
@@ -39,8 +36,7 @@ class AccessActivity : AppCompatActivity() {
         setContentView(R.layout.activity_access)
         mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
         // onCreate 이전에는 null이다.
-        if (mPhoneNumber == "+821027740931"
-            || mPhoneNumber == "+821040052032") {
+        if (/*mPhoneNumber == "+821027740931" || */mPhoneNumber == "+821040052032") {
             isAdmin = true
         }
 
@@ -69,23 +65,22 @@ class AccessActivity : AppCompatActivity() {
         DataManager.getAllScheduleData("id_list")
         DataManager.getAllSheetData("sheet_list", this)
 
-        DataManager.hcnt.observe(this, androidx.lifecycle.Observer {
-            isHcntReady.set(true)
-        })
-
+        DataManager.sheetList.observe(this) {
+            isSheetLoadReady.set(true)
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 1..15) {
-                if (isHcntReady.get()) {
+                if (isSheetLoadReady.get()) {
                     Log.i("kongyi0509", "DB is ready")
-                    init()
+                    showButtons()
                     break
                 }
                 delay(1000)
                 Log.i("kongyi0509", "getting data from DB....")
             }
 
-            if (!isHcntReady.get()) {
+            if (!isSheetLoadReady.get()) {
                 showDBLinkFailDialog()
                 //makeDBReady()
                 return@launch
@@ -128,10 +123,10 @@ class AccessActivity : AppCompatActivity() {
         ad.show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.main_menu, menu)
+//        return super.onCreateOptionsMenu(menu)
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
@@ -140,7 +135,7 @@ class AccessActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private suspend fun init() {
+    private fun showButtons() {
         if (isAdmin) {
             findViewById<Button>(R.id.alarmNotiBtn).visibility = View.VISIBLE
 //            findViewById<Button>(R.id.myMemoBtn).visibility = View.VISIBLE
@@ -152,6 +147,8 @@ class AccessActivity : AppCompatActivity() {
             findViewById<Button>(R.id.accountBookBtn).visibility = View.VISIBLE
         }
 
+        Log.i("kongyi1220", "isAdmin = $isAdmin")
+
         findViewById<Button>(R.id.alarmNotiBtn).setOnClickListener {
             startActivity(Intent(this, AlarmMainActivity::class.java))
             DataManager.putSingleHistory(this,"access", "alarmNoti", mPhoneNumber)
@@ -160,10 +157,10 @@ class AccessActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
             DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
         }
-        findViewById<Button>(R.id.noteSheetBtn).setOnClickListener {
-            startActivity(Intent(this, NoteSheetActivity::class.java))
-            DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
-        }
+//        findViewById<Button>(R.id.noteSheetBtn).setOnClickListener {
+//            startActivity(Intent(this, NoteSheetActivity::class.java))
+//            DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
+//        }
         findViewById<Button>(R.id.shareCalendarBtn).setOnClickListener {
             startActivity(Intent(this, CalendarActivity::class.java))
             DataManager.putSingleHistory(this, "access", "sharedCalendar", mPhoneNumber)

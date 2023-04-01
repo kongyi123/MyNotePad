@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.model.DataManager
 import com.example.personalcalendar.R
 import com.example.personalcalendar.list.DayListAdapter
-import com.example.common.Utils
+import com.example.common.CommonUtils
 import com.example.common.data.Schedule
 import com.prolificinteractive.materialcalendarview.*
 import java.util.*
@@ -147,7 +147,7 @@ class PcalendarActivity : AppCompatActivity() {
         val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rvAdapter = DayListAdapter(
             mScheduleList!!,
-            date.year.toString() + "~" + Utils.addFront0(date.month.toString()) + "~" + Utils.addFront0(date.day.toString())
+            date.year.toString() + "~" + CommonUtils.addFront0(date.month.toString()) + "~" + CommonUtils.addFront0(date.day.toString())
         )
         mRecyclerView.layoutManager = manager
         mRecyclerView.adapter = rvAdapter
@@ -254,11 +254,11 @@ class PcalendarActivity : AppCompatActivity() {
         var color: String? = null
         for (schedule in mScheduleList!!) {
             Log.i("kongyi1220B", "show schedule.date = " + schedule.date)
-            day = Utils.getDateFromStringToCal(schedule.date)
+            day = CommonUtils.getDateFromStringToCal(schedule.date)
             // converting logic
-            if (!Utils.isMonth2Char(schedule.date) || !Utils.isDay2Char(schedule.date)) {
+            if (!CommonUtils.isMonth2Char(schedule.date) || !CommonUtils.isDay2Char(schedule.date)) {
                 DataManager.removeSingleSchedule("pid_list", schedule.date, schedule.id)
-                val date = day?.year.toString()+"~"+ Utils.addFront0(day?.month.toString())+"~"+ Utils.addFront0(day?.day.toString())
+                val date = day?.year.toString()+"~"+ CommonUtils.addFront0(day?.month.toString())+"~"+ CommonUtils.addFront0(day?.day.toString())
                 DataManager.putSingleSchedule("pid_list", date, schedule.title, schedule.content, schedule.color, schedule.id)
             }
             color = schedule.color

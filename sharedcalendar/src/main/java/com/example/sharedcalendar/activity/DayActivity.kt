@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import com.example.model.DataManager
-import com.example.common.Utils
+import com.example.common.CommonUtils
 import com.example.common.data.Schedule
 import com.example.sharedcalendar.R
 
@@ -44,7 +44,7 @@ class DayActivity : AppCompatActivity() {
         contentView.setText(mSchedule?.content)
 
         if (mSchedule != null) {
-            val day = Utils.getDateFromStringToCal(mSchedule!!.date)
+            val day = CommonUtils.getDateFromStringToCal(mSchedule!!.date)
             dateView.init(day!!.year, day.month, day.day, null)
         }
 
@@ -109,7 +109,7 @@ class DayActivity : AppCompatActivity() {
     }
 
     private fun setInput() {
-        val date = "${dateView.year}~${Utils.addFront0(dateView.month.toString())}~${Utils.addFront0(dateView.dayOfMonth.toString())}"
+        val date = "${dateView.year}~${CommonUtils.addFront0(dateView.month.toString())}~${CommonUtils.addFront0(dateView.dayOfMonth.toString())}"
         Log.i("kongyi1220TT", "before id = " + mSchedule!!.id)
         if (isNew) {
             mSchedule?.id = "no_id"
@@ -122,8 +122,8 @@ class DayActivity : AppCompatActivity() {
                 mSchedule!!.id
             )
             val str = "$date, ${titleView.text}, ${contentView.text}, $mSelectedColor, ${
-                Utils.bytesToHex1(
-                    Utils.sha256(date+titleView.text+contentView.text))}"
+                CommonUtils.bytesToHex1(
+                    CommonUtils.sha256(date+titleView.text+contentView.text))}"
 
             DataManager.putSingleHistory(this, "cal-schedule-new", "content: $str", mPhoneNumber)
         } else {

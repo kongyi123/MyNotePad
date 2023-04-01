@@ -14,7 +14,7 @@ class TimeChangeReceiver : BroadcastReceiver() {
         Log.i("kongyi000", "receive : ${p1?.action}")
         Log.i("kongyi000", "receive : ${p1?.action}")
         if (p0 != null) {
-            val intent = Intent(p0, AccessActivity::class.java)
+            val intent = Intent(p0, HomeActivity::class.java)
             DataManager.get14daysSchedule(p0, "id_list", intent)
         }
 //            if(Intent.ACTION_DATE_CHANGED == intent!!.action) {

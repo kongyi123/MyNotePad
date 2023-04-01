@@ -21,7 +21,6 @@
             <option value="$PROJECT_DIR$/paperweight" />
             <option value="$PROJECT_DIR$/personalcalender" />
             <option value="$PROJECT_DIR$/sharedcalendar" />
-            <option value="$PROJECT_DIR$/workmanagertest" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -16,8 +16,8 @@ android {
         applicationId "com.example.mynotepad"
         minSdkVersion 28
         targetSdkVersion 29
-        versionCode 2
-        versionName "1.01"
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,6 +50,7 @@ dependencies {
     implementation project(path: ':paperweight')
     implementation project(path: ':mynotesheet')
     implementation project(path: ':accountbook')
+    implementation 'com.prolificinteractive:material-calendarview:1.4.3'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -7,7 +7,7 @@ import android.widget.*
 import com.example.personalcalendar.R
 import com.example.model.DataManager
 import com.example.model.DataManager.putSingleHistory
-import com.example.common.Utils
+import com.example.common.CommonUtils
 import com.example.common.data.Schedule
 
 class DayActivity : AppCompatActivity() {
@@ -60,7 +60,7 @@ class DayActivity : AppCompatActivity() {
         contentView.setText(mSchedule?.content)
 
         if (mSchedule != null) {
-            val day = Utils.getDateFromStringToCal(mSchedule!!.date)
+            val day = CommonUtils.getDateFromStringToCal(mSchedule!!.date)
             dateView.init(day!!.year, day.month, day.day, null)
         }
 
@@ -125,7 +125,7 @@ class DayActivity : AppCompatActivity() {
     }
 
     private fun setInput() {
-        var date = "${dateView.year}~${Utils.addFront0(dateView.month.toString())}~${Utils.addFront0(dateView.dayOfMonth.toString())}"
+        var date = "${dateView.year}~${CommonUtils.addFront0(dateView.month.toString())}~${CommonUtils.addFront0(dateView.dayOfMonth.toString())}"
         if (isNew) {
             mSchedule?.id = "no_id"
             DataManager.putSingleSchedule(
@@ -137,8 +137,8 @@ class DayActivity : AppCompatActivity() {
                 mSchedule!!.id
             )
             val str = "$date, ${titleView.text}, ${contentView.text}, $mSelectedColor, ${
-                Utils.bytesToHex1(
-                    Utils.sha256(date+titleView.text+contentView.text))}"
+                CommonUtils.bytesToHex1(
+                    CommonUtils.sha256(date+titleView.text+contentView.text))}"
 
             putSingleHistory(this, "pcal-schedule-new", "content: $str", mPhoneNumber)
         } else {

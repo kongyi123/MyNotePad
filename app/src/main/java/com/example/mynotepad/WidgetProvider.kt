@@ -1,4 +1,4 @@
-package com.example.common
+package com.example.mynotepad
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.RemoteViews
 import com.example.common.data.Schedule
 import java.util.*
-import kotlin.properties.Delegates
 
 class WidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -20,6 +19,15 @@ class WidgetProvider : AppWidgetProvider() {
         appWidgetIds: IntArray?
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+        Log.i("kongyi1220", "onUpdate()")
+    }
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        super.onReceive(context, intent)
+        Log.i("kongyi1220", "onReceive()")
+        val intent = Intent(context, MyService::class.java)
+        intent.putExtra("command", "show")
+        context?.startService(intent) // foreground service 실행을 위해 이것만 있으면 됨. 윗줄의 startService(intent)는 필요 없음.
     }
 
     object ViewSetter {
@@ -166,7 +174,8 @@ class WidgetProvider : AppWidgetProvider() {
             }
         }
 
-        views.setOnClickPendingIntent(R.id.clickable_view,
+        views.setOnClickPendingIntent(
+            R.id.clickable_view,
             PendingIntent.getActivity(context, 0, intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_CANCEL_CURRENT))
         appWidgetManager.updateAppWidget(testWidget, views);
     }

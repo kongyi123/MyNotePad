@@ -23,7 +23,7 @@
             android:name=".SettingActivity"
             android:exported="true" />
         <activity
-            android:name=".AccessActivity"
+            android:name=".HomeActivity"
             android:exported="true"
             android:label="Toy Project"
             android:launchMode="singleInstance">
@@ -63,6 +63,16 @@
             android:exported="true"
             android:label="@string/title_activity_history"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver android:name="com.example.mynotepad.WidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider"/>
+        </receiver>
 
     </application>
 

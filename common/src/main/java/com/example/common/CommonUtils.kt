@@ -4,7 +4,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.security.MessageDigest
 import java.util.*
 
-object Utils {
+object CommonUtils {
     fun getDateFromStringToCal(str:String): CalendarDay? {
         if (str.indexOf("~") != -1) {
             val dayOfMonth = str.substring(str.lastIndexOf("~")+1)

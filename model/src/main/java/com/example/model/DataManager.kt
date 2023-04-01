@@ -8,10 +8,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Typeface
 import android.os.Build
 import android.telephony.TelephonyManager
-import android.text.InputType
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -24,21 +22,17 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.common.ContextHolder
 import com.example.common.MyNotification
-import com.example.common.WidgetProvider
 import com.example.model.data.History
 import com.example.model.data.Notice
 import com.example.common.data.Schedule
-import com.example.common.Utils
+import com.example.common.CommonUtils
 import com.example.model.data.CalendarFilter
 import com.example.model.data.Sheet
 import com.example.model.view.TabTextView
 import com.google.firebase.database.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.*
@@ -113,52 +107,56 @@ object DataManager {
         })
     }
 
-    fun get14daysSchedule(context: Context, id_list: String, intent: Intent) {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun get14daysSchedule(context: Context, id_list: String, intent: Intent): Flow<ArrayList<Schedule>> = callbackFlow {
         val scheduleList = ArrayList<Schedule>()
         val sortByAge:Query = FirebaseDatabase.getInstance().reference.child(id_list)
         sortByAge.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("kongyi0414", "get14daysSchedule - onchanged")
-                scheduleList.clear()
-                var start = false
-                var cnt = 0
-                var str = ""
-                for(postSnapshot in snapshot.children) {
-                    if (!postSnapshot.exists()) {
-                        continue
-                    }
-                    for (postPostSnapshot in postSnapshot.children) {
-                        Log.i("kongyi1220", "key = " + postPostSnapshot.key.toString())
-                        val get = postPostSnapshot.getValue(FirebasePost::class.java)
-                        Log.i("kongyi1220", "title = ${get?.title}, content = ${get?.content}, id = ${get?.id}")
+                CoroutineScope(Dispatchers.Default).launch {
 
-                        get?.id?.let {
-                            if (!start) {
-                                val cal = Calendar.getInstance()
-                                cal.timeInMillis = System.currentTimeMillis()
-                                val dateOfToday = Utils.getDateFromCalToString(cal)
-                                if (get.date >= dateOfToday) {
-                                    start = true
-                                    Log.i("kongyi0414", "${get.date}/${dateOfToday}")
+
+                    Log.i("kongyi0414", "get14daysSchedule - onchanged")
+                    scheduleList.clear()
+                    var start = false
+                    var cnt = 0
+                    var str = ""
+                    for (postSnapshot in snapshot.children) {
+                        if (!postSnapshot.exists()) {
+                            continue
+                        }
+                        for (postPostSnapshot in postSnapshot.children) {
+                            Log.i("kongyi1220", "key = " + postPostSnapshot.key.toString())
+                            val get = postPostSnapshot.getValue(FirebasePost::class.java)
+                            Log.i(
+                                "kongyi1220",
+                                "title = ${get?.title}, content = ${get?.content}, id = ${get?.id}"
+                            )
+
+                            get?.id?.let {
+                                if (!start) {
+                                    val cal = Calendar.getInstance()
+                                    cal.timeInMillis = System.currentTimeMillis()
+                                    val dateOfToday = CommonUtils.getDateFromCalToString(cal)
+                                    if (get.date >= dateOfToday) {
+                                        start = true
+                                        Log.i("kongyi0414", "${get.date}/${dateOfToday}")
+                                    }
                                 }
-                            }
-                            if (start && cnt <= 14) {
-                                Log.i("kongyi0414", "in start && cnt <=14 date = ${get.date.toString()}")
-                                cnt ++
-                                str += Utils.convDBdateToShown(get.date.toString()) + " " + get.title + " " + get.content + "\n"
-                                scheduleList.add(
-                                    Schedule(get.id,get.date,get.title,get.content,get.color)
-                                )
+                                if (start && cnt <= 14) {
+                                    Log.i(
+                                        "kongyi0414",
+                                        "in start && cnt <=14 date = ${get.date.toString()}"
+                                    )
+                                    cnt++
+                                    str += CommonUtils.convDBdateToShown(get.date.toString()) + " " + get.title + " " + get.content + "\n"
+                                    scheduleList.add(Schedule(get.id, get.date, get.title, get.content, get.color))
+                                }
                             }
                         }
                     }
-                }
-                Log.i("kongyi1220aa", "scheduleList = ${scheduleList}")
-                // https://aroundck.tistory.com/39
-                CoroutineScope(Dispatchers.Main).launch {
-                    Log.i("kongyi1220aa", "view.post is called")
-                    val wp = WidgetProvider()
-                    wp.update(context, scheduleList, intent)
+                    Log.i("kongyi1220aa", "scheduleList = ${scheduleList}")
+                    send(scheduleList)
                 }
             }
 
@@ -166,7 +164,7 @@ object DataManager {
             }
 
         })
-
+        awaitClose {  }
     }
 
     private fun getBitmapFromView(v: View): Bitmap {
@@ -377,7 +375,7 @@ object DataManager {
     fun putSingleSchedule(id_list:String, date:String, title:String, content:String, color:String, id:String) {
         Log.i("kongyi1220A", "id = " + id)
         if (id == "no_id") {
-            val newId = Utils.bytesToHex1(Utils.sha256(date+title+content))
+            val newId = CommonUtils.bytesToHex1(CommonUtils.sha256(date+title+content))
             postFirebaseDatabaseForPutSchedule(id_list, true, newId, date, title, content, color)
         } else {
             postFirebaseDatabaseForPutSchedule(id_list,  false, id, date, title, content, color)
@@ -398,7 +396,7 @@ object DataManager {
         val childUpdates: MutableMap<String, Any?> = HashMap()
         var postValues: Map<String?, Any?>? = null
         Log.i("kongyi111", "add = $add / id = $id");
-        var puttingId = Utils.bytesToHex1(Utils.sha256(date+title+content))
+        var puttingId = CommonUtils.bytesToHex1(CommonUtils.sha256(date+title+content))
         if (!add) {
             puttingId = id
         }

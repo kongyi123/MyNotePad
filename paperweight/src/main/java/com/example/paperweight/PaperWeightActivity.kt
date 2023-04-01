@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.model.DataManager
-import com.example.common.Utils
+import com.example.common.CommonUtils
 import com.example.common.data.Schedule
 import com.example.paperweight.list.WeightListAdapter
 import java.text.SimpleDateFormat
@@ -54,7 +54,7 @@ class PaperWeightActivity : AppCompatActivity() {
             Log.i("kongyi444", "datas.apply applied")
             val cal = Calendar.getInstance()
             cal.timeInMillis = System.currentTimeMillis()
-            val dateOfToday = Utils.getDateFromCalToString(cal)
+            val dateOfToday = CommonUtils.getDateFromCalToString(cal)
             Log.d("kongyi444", "date = $dateOfToday")
             val listInDate = DataManager.getScheduleDataInDate(dateOfToday)
             putCard(listInDate, "green", "기록", "오늘 한 일 기록하자", " *3가지 키워드만 쓰자")
@@ -95,7 +95,7 @@ class PaperWeightActivity : AppCompatActivity() {
                 val sc = weightListAdapter.datas[idx]
                 val cal = Calendar.getInstance()
                 cal.timeInMillis = System.currentTimeMillis()
-                val dateOfToday = Utils.getDateFromCalToString(cal)
+                val dateOfToday = CommonUtils.getDateFromCalToString(cal)
                 DataManager.putSingleSchedule(
                     "pid_list",
                     dateOfToday,
