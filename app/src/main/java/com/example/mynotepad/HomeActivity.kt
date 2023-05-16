@@ -23,11 +23,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
+import com.example.mynotesheet.NoteSheetActivity
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var mPhoneNumber:String
     var isAdmin:Boolean = false
     private var isSheetLoadReady:AtomicBoolean = AtomicBoolean(false)
+    private var isDataListReady:AtomicBoolean = AtomicBoolean(false)
 
     private val isDBReady:AtomicBoolean = AtomicBoolean(false)
 
@@ -68,10 +70,13 @@ class HomeActivity : AppCompatActivity() {
         DataManager.sheetList.observe(this) {
             isSheetLoadReady.set(true)
         }
+        DataManager.dataList.observe(this) {
+            isDataListReady.set(true)
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 1..15) {
-                if (isSheetLoadReady.get()) {
+                if (isSheetLoadReady.get() && isDataListReady.get()) {
                     Log.i("kongyi0509", "DB is ready")
                     showButtons()
                     break
@@ -80,14 +85,14 @@ class HomeActivity : AppCompatActivity() {
                 Log.i("kongyi0509", "getting data from DB....")
             }
 
-            if (!isSheetLoadReady.get()) {
+            if (!isSheetLoadReady.get() || !isDataListReady.get()) {
                 showDBLinkFailDialog()
                 //makeDBReady()
                 return@launch
             } else {
                 isDBReady.set(true)
             }
-            findViewById<ProgressBar>(R.id.loadingIcon).visibility = View.GONE
+            findViewById<View>(R.id.loadingIcon).visibility = View.GONE
         }
     }
 
@@ -153,14 +158,15 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, AlarmMainActivity::class.java))
             DataManager.putSingleHistory(this,"access", "alarmNoti", mPhoneNumber)
         }
-        findViewById<Button>(R.id.myMemoBtn).setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
-        }
-//        findViewById<Button>(R.id.noteSheetBtn).setOnClickListener {
-//            startActivity(Intent(this, NoteSheetActivity::class.java))
+//        findViewById<Button>(R.id.myMemoBtn).setOnClickListener {
+//            Log.i("kongyi1220", "what?")
+//            startActivity(Intent(this, MainActivity::class.java))
 //            DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
 //        }
+        findViewById<Button>(R.id.noteSheetBtn).setOnClickListener {
+            startActivity(Intent(this, NoteSheetActivity::class.java))
+            DataManager.putSingleHistory(this, "access", "myMemo", mPhoneNumber)
+        }
         findViewById<Button>(R.id.shareCalendarBtn).setOnClickListener {
             startActivity(Intent(this, CalendarActivity::class.java))
             DataManager.putSingleHistory(this, "access", "sharedCalendar", mPhoneNumber)

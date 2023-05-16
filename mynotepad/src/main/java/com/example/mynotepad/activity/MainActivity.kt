@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     var sheetSelectionTab: LinearLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate")
+        Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         modelView = ViewModelProvider(this)[MainViewModel::class.java]

@@ -6506,4 +6506,3 @@ int xml standalone_badge_gravity_bottom_end 0x0
 int xml standalone_badge_gravity_bottom_start 0x0
 int xml standalone_badge_gravity_top_start 0x0
 int xml standalone_badge_offset 0x0
-int xml widget_provider 0x0

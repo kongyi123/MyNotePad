@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="second_fragment_label">Second Fragment</string>
     <string name="title_activity_account_book">accountBookActivity</string>
+    <string name="title_activity_accout_book_o">AccoutBookActivityO</string>
     <style name="Theme.MyNotepad.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Theme.MyNotepad.NoActionBar">
         <item name="windowActionBar">false</item>

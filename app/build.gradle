@@ -51,6 +51,7 @@ dependencies {
     implementation project(path: ':mynotesheet')
     implementation project(path: ':accountbook')
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+    implementation 'com.airbnb.android:lottie:5.0.2'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

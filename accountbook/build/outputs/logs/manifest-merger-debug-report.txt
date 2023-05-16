@@ -1,55 +1,65 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-20:12
-INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-20:12
-INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-20:12
+ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-25:12
+INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-25:12
+INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-25:12
 	package
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:4:5-38
-		INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:4:5-38
+		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 	xmlns:tools
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:3:5-51
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:3:5-51
 	xmlns:android
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.READ_SMS
-ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:6:5-66
+ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:6:5-67
 	android:name
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:6:22-64
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:6:22-64
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:7:5-8:40
+ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:7:5-9:40
 	tools:ignore
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:8:9-37
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:9:9-37
 	android:name
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:7:22-78
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:8:9-65
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:9:5-80
+ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:10:5-80
 	android:name
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:9:22-77
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:10:22-77
 application
-ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:11:5-18:19
+ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:12:5-23:19
 	android:requestLegacyExternalStorage
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:12:9-52
-activity#com.example.accountbook.accountBookActivity
-ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:13:9-17:66
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:12:18-61
+activity#com.example.accountbook.AccoutBookActivityO
+ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:13:9-17:66
 	android:label
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:16:13-64
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:16:13-65
 	android:exported
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:15:13-36
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:15:13-37
 	android:theme
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:17:13-63
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:17:13-63
 	android:name
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml:14:13-48
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:14:13-48
+activity#com.example.accountbook.accountBookActivity
+ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:18:9-22:66
+	android:label
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:21:13-64
+	android:exported
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:20:13-36
+	android:theme
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:22:13-63
+	android:name
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:19:13-48
 uses-sdk
-INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
-INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
-INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
-INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
+INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		ADDED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\kongyi123\MyNotePad\accountbook\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml

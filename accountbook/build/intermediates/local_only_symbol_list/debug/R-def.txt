@@ -1,6 +1,32 @@
 R_DEF: Internal format may change without notice
 local
+dimen fab_margin
+id FirstFragment
+id SecondFragment
+id action_FirstFragment_to_SecondFragment
+id action_SecondFragment_to_FirstFragment
+id button_first
+id button_second
+id fab
+id nav_graph
+id nav_host_fragment_content_accout_book_activity_o
+id textview_first
+id textview_second
+id toolbar
+layout activity_accout_book_o
+layout blank_fragment
+layout content_accout_book_activity_o
+layout fragment_first
+layout fragment_second
+navigation nav_graph
+string first_fragment_label
+string hello_first_fragment
+string hello_second_fragment
+string next
+string previous
+string second_fragment_label
 string title_activity_account_book
+string title_activity_accout_book_o
 style Theme.MyNotepad.AppBarOverlay
 style Theme.MyNotepad.NoActionBar
 style Theme.MyNotepad.PopupOverlay

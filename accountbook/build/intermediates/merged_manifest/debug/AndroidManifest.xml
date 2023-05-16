@@ -15,6 +15,11 @@
 
     <application android:requestLegacyExternalStorage="true" >
         <activity
+            android:name="com.example.accountbook.AccoutBookActivityO"
+            android:exported="false"
+            android:label="@string/title_activity_accout_book_o"
+            android:theme="@style/Theme.MyNotepad.NoActionBar" />
+        <activity
             android:name="com.example.accountbook.accountBookActivity"
             android:exported="true"
             android:label="@string/title_activity_account_book"
