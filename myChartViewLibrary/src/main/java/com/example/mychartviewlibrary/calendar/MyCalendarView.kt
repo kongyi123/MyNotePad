@@ -387,6 +387,9 @@ class MyCalendarView : FrameLayout {
         }
     }
 
+//test
+
+
     override fun onViewRemoved(child: View?) {
         super.onViewRemoved(child)
         ContextHolder.setContext(null)
