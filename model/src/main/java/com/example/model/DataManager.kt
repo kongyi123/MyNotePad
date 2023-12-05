@@ -522,7 +522,7 @@ object DataManager {
     }
 
     // debounce logic.
-    @Synchronized private suspend fun updateSheetList(
+    private suspend fun updateSheetList(
         sheetList: ArrayList<Sheet>,
         snapshot: DataSnapshot,
         context: Context

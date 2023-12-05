@@ -1250,6 +1250,8 @@ int color bright_foreground_material_dark 0x0
 int color bright_foreground_material_light 0x0
 int color button_material_dark 0x0
 int color button_material_light 0x0
+int color call_notification_answer_color 0x0
+int color call_notification_decline_color 0x0
 int color cardview_dark_background 0x0
 int color cardview_light_background 0x0
 int color cardview_shadow_end_color 0x0
@@ -2514,6 +2516,12 @@ int drawable design_ic_visibility 0x0
 int drawable design_ic_visibility_off 0x0
 int drawable design_password_eye 0x0
 int drawable design_snackbar_background 0x0
+int drawable ic_call_answer 0x0
+int drawable ic_call_answer_low 0x0
+int drawable ic_call_answer_video 0x0
+int drawable ic_call_answer_video_low 0x0
+int drawable ic_call_decline 0x0
+int drawable ic_call_decline_low 0x0
 int drawable ic_clock_black_24dp 0x0
 int drawable ic_keyboard_black_24dp 0x0
 int drawable ic_m3_chip_check 0x0
@@ -2561,6 +2569,7 @@ int drawable notification_bg_low_pressed 0x0
 int drawable notification_bg_normal 0x0
 int drawable notification_bg_normal_pressed 0x0
 int drawable notification_icon_background 0x0
+int drawable notification_oversize_large_icon_bg 0x0
 int drawable notification_template_icon_bg 0x0
 int drawable notification_template_icon_low_bg 0x0
 int drawable notification_tile_bg 0x0
@@ -2701,7 +2710,6 @@ int id currentState 0x0
 int id custom 0x0
 int id customPanel 0x0
 int id cut 0x0
-int id dataBinding 0x0
 int id date_picker_actions 0x0
 int id decelerate 0x0
 int id decelerateAndComplete 0x0
@@ -2731,6 +2739,7 @@ int id easeInOut 0x0
 int id easeOut 0x0
 int id east 0x0
 int id edit_query 0x0
+int id edit_text_id 0x0
 int id edittext_dropdown_editable 0x0
 int id edittext_dropdown_noneditable 0x0
 int id elastic 0x0
@@ -2760,6 +2769,7 @@ int id gone 0x0
 int id group_divider 0x0
 int id guideline 0x0
 int id header_title 0x0
+int id hide_ime_id 0x0
 int id hide_in_inspector_tag 0x0
 int id home 0x0
 int id honorRequest 0x0
@@ -2776,10 +2786,6 @@ int id inspection_slot_table_set 0x0
 int id invisible 0x0
 int id inward 0x0
 int id italic 0x0
-int id item1 0x0
-int id item2 0x0
-int id item3 0x0
-int id item4 0x0
 int id item_touch_helper_previous_elevation 0x0
 int id jumpToEnd 0x0
 int id jumpToStart 0x0
@@ -2873,8 +2879,6 @@ int id notification_main_column 0x0
 int id notification_main_column_container 0x0
 int id off 0x0
 int id on 0x0
-int id onAttachStateChangeListener 0x0
-int id onDateChanged 0x0
 int id outline 0x0
 int id outward 0x0
 int id overshoot 0x0
@@ -2895,6 +2899,7 @@ int id progress_circular 0x0
 int id progress_horizontal 0x0
 int id radio 0x0
 int id rectangles 0x0
+int id report_drawn 0x0
 int id reverseSawtooth 0x0
 int id right 0x0
 int id rightToLeft 0x0
@@ -2981,7 +2986,6 @@ int id text 0x0
 int id text2 0x0
 int id textSpacerNoButtons 0x0
 int id textSpacerNoTitle 0x0
-int id textWatcher 0x0
 int id text_input_end_icon 0x0
 int id text_input_error_icon 0x0
 int id text_input_password_toggle 0x0
@@ -3016,6 +3020,7 @@ int id vertical_only 0x0
 int id view_offset_helper 0x0
 int id view_transition 0x0
 int id view_tree_lifecycle_owner 0x0
+int id view_tree_on_back_pressed_dispatcher_owner 0x0
 int id view_tree_saved_state_registry_owner 0x0
 int id view_tree_view_model_store_owner 0x0
 int id visible 0x0
@@ -3144,6 +3149,8 @@ int layout design_text_input_password_icon 0x0
 int layout design_text_input_start_icon 0x0
 int layout fragment_first 0x0
 int layout fragment_second 0x0
+int layout ime_base_split_test_activity 0x0
+int layout ime_secondary_split_test_activity 0x0
 int layout m3_alert_dialog 0x0
 int layout m3_alert_dialog_actions 0x0
 int layout m3_alert_dialog_title 0x0
@@ -3227,8 +3234,6 @@ int layout text_view_with_line_height_from_layout 0x0
 int layout text_view_with_line_height_from_style 0x0
 int layout text_view_with_theme_line_height 0x0
 int layout text_view_without_line_height 0x0
-int menu example_menu 0x0
-int menu example_menu2 0x0
 int navigation nav_graph 0x0
 int plurals mtrl_badge_content_description 0x0
 int string abc_action_bar_home_description 0x0
@@ -3270,10 +3275,16 @@ int string abc_searchview_description_voice 0x0
 int string abc_shareactionprovider_share_with 0x0
 int string abc_shareactionprovider_share_with_application 0x0
 int string abc_toolbar_collapse_description 0x0
-int string androidx_startup 0x0
 int string appbar_scrolling_view_behavior 0x0
 int string bottom_sheet_behavior 0x0
 int string bottomsheet_action_expand_halfway 0x0
+int string call_notification_answer_action 0x0
+int string call_notification_answer_video_action 0x0
+int string call_notification_decline_action 0x0
+int string call_notification_hang_up_action 0x0
+int string call_notification_incoming_text 0x0
+int string call_notification_ongoing_text 0x0
+int string call_notification_screening_text 0x0
 int string character_counter_content_description 0x0
 int string character_counter_overflowed_content_description 0x0
 int string character_counter_pattern 0x0
@@ -3387,6 +3398,7 @@ int string search_menu_title 0x0
 int string second_fragment_label 0x0
 int string selected 0x0
 int string status_bar_notification_info_overflow 0x0
+int string switch_role 0x0
 int string tab 0x0
 int string template_percent 0x0
 int string title_activity_account_book 0x0
@@ -3665,6 +3677,8 @@ int style CardView_Dark 0x0
 int style CardView_Light 0x0
 int style DialogWindowTheme 0x0
 int style EmptyTheme 0x0
+int style FloatingDialogTheme 0x0
+int style FloatingDialogWindowTheme 0x0
 int style MaterialAlertDialog_Material3 0x0
 int style MaterialAlertDialog_Material3_Body_Text 0x0
 int style MaterialAlertDialog_Material3_Body_Text_CenterStacked 0x0

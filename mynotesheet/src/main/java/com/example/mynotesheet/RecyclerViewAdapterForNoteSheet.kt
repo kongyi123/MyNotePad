@@ -74,7 +74,7 @@ class RecyclerViewAdapterForNoteSheet(
     }
 
     // debounce logic.
-    @Synchronized private suspend fun update(text:String, pos:Int, sheetInfo:Sheet) {
+    private suspend fun update(text:String, pos:Int, sheetInfo:Sheet) {
         if (ContextHolder.lastJobForRecyclerView != null) {
             Log.i("kongyi0605", "lastJobForRecyclerView Canceled")
             ContextHolder.lastJobForRecyclerView!!.cancel()

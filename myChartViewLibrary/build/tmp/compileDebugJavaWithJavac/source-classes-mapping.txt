@@ -1,5 +1,0 @@
-com/example/mychartviewlibrary/BuildConfig.java
- com.example.mychartviewlibrary.BuildConfig
-com/example/mychartviewlibrary/calendar/list/ViewHolder.java
- com.example.mychartviewlibrary.calendar.list.ViewHolder
- com.example.mychartviewlibrary.calendar.list.ViewHolder$1

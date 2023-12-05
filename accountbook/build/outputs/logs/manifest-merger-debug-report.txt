@@ -2,10 +2,7 @@
 manifest
 ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-24:12
 INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-24:12
-INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-24:12
 	package
-		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:2:1-24:12
 		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 	xmlns:tools
 		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:3:5-51
@@ -53,13 +50,7 @@ uses-sdk
 INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
-INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
-INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 	android:targetSdkVersion
 		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
-		ADDED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml

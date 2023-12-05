@@ -4,7 +4,6 @@
 4    package="com.example.accountbook" >
 5
 6    <uses-sdk android:minSdkVersion="21" />
-6-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
 7
 8    <uses-permission android:name="android.permission.READ_SMS" />
 8-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:5:5-67

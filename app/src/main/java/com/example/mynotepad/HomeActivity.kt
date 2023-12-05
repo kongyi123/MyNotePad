@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import com.example.accountbook.accountBookActivity
+import com.example.common.ContextHolder
 import com.example.model.DataManager
 import com.example.mynotepad.activity.MainActivity
 import com.example.paperweight.PaperWeightActivity
@@ -24,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import com.example.mynotesheet.NoteSheetActivity
+import com.google.firebase.FirebaseApp
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var mPhoneNumber:String

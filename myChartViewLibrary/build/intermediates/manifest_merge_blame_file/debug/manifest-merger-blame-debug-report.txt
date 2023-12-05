@@ -3,6 +3,5 @@
 3    package="com.example.mychartviewlibrary" >
 4
 5    <uses-sdk android:minSdkVersion="21" />
-5-->C:\Users\kongy\Documents\MyNotePad\myChartViewLibrary\src\main\AndroidManifest.xml
 6
 7</manifest>

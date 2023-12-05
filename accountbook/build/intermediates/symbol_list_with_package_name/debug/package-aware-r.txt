@@ -1251,6 +1251,8 @@ color bright_foreground_material_dark
 color bright_foreground_material_light
 color button_material_dark
 color button_material_light
+color call_notification_answer_color
+color call_notification_decline_color
 color cardview_dark_background
 color cardview_light_background
 color cardview_shadow_end_color
@@ -2515,6 +2517,12 @@ drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
+drawable ic_call_answer
+drawable ic_call_answer_low
+drawable ic_call_answer_video
+drawable ic_call_answer_video_low
+drawable ic_call_decline
+drawable ic_call_decline_low
 drawable ic_clock_black_24dp
 drawable ic_keyboard_black_24dp
 drawable ic_m3_chip_check
@@ -2562,6 +2570,7 @@ drawable notification_bg_low_pressed
 drawable notification_bg_normal
 drawable notification_bg_normal_pressed
 drawable notification_icon_background
+drawable notification_oversize_large_icon_bg
 drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
@@ -2702,7 +2711,6 @@ id currentState
 id custom
 id customPanel
 id cut
-id dataBinding
 id date_picker_actions
 id decelerate
 id decelerateAndComplete
@@ -2732,6 +2740,7 @@ id easeInOut
 id easeOut
 id east
 id edit_query
+id edit_text_id
 id edittext_dropdown_editable
 id edittext_dropdown_noneditable
 id elastic
@@ -2761,6 +2770,7 @@ id gone
 id group_divider
 id guideline
 id header_title
+id hide_ime_id
 id hide_in_inspector_tag
 id home
 id honorRequest
@@ -2777,10 +2787,6 @@ id inspection_slot_table_set
 id invisible
 id inward
 id italic
-id item1
-id item2
-id item3
-id item4
 id item_touch_helper_previous_elevation
 id jumpToEnd
 id jumpToStart
@@ -2874,8 +2880,6 @@ id notification_main_column
 id notification_main_column_container
 id off
 id on
-id onAttachStateChangeListener
-id onDateChanged
 id outline
 id outward
 id overshoot
@@ -2896,6 +2900,7 @@ id progress_circular
 id progress_horizontal
 id radio
 id rectangles
+id report_drawn
 id reverseSawtooth
 id right
 id rightToLeft
@@ -2982,7 +2987,6 @@ id text
 id text2
 id textSpacerNoButtons
 id textSpacerNoTitle
-id textWatcher
 id text_input_end_icon
 id text_input_error_icon
 id text_input_password_toggle
@@ -3017,6 +3021,7 @@ id vertical_only
 id view_offset_helper
 id view_transition
 id view_tree_lifecycle_owner
+id view_tree_on_back_pressed_dispatcher_owner
 id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible
@@ -3145,6 +3150,8 @@ layout design_text_input_password_icon
 layout design_text_input_start_icon
 layout fragment_first
 layout fragment_second
+layout ime_base_split_test_activity
+layout ime_secondary_split_test_activity
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title
@@ -3228,8 +3235,6 @@ layout text_view_with_line_height_from_layout
 layout text_view_with_line_height_from_style
 layout text_view_with_theme_line_height
 layout text_view_without_line_height
-menu example_menu
-menu example_menu2
 navigation nav_graph
 plurals mtrl_badge_content_description
 string abc_action_bar_home_description
@@ -3271,10 +3276,16 @@ string abc_searchview_description_voice
 string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
-string androidx_startup
 string appbar_scrolling_view_behavior
 string bottom_sheet_behavior
 string bottomsheet_action_expand_halfway
+string call_notification_answer_action
+string call_notification_answer_video_action
+string call_notification_decline_action
+string call_notification_hang_up_action
+string call_notification_incoming_text
+string call_notification_ongoing_text
+string call_notification_screening_text
 string character_counter_content_description
 string character_counter_overflowed_content_description
 string character_counter_pattern
@@ -3388,6 +3399,7 @@ string search_menu_title
 string second_fragment_label
 string selected
 string status_bar_notification_info_overflow
+string switch_role
 string tab
 string template_percent
 string title_activity_account_book
@@ -3666,6 +3678,8 @@ style CardView_Dark
 style CardView_Light
 style DialogWindowTheme
 style EmptyTheme
+style FloatingDialogTheme
+style FloatingDialogWindowTheme
 style MaterialAlertDialog_Material3
 style MaterialAlertDialog_Material3_Body_Text
 style MaterialAlertDialog_Material3_Body_Text_CenterStacked
