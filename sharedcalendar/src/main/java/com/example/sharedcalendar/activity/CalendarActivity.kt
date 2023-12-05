@@ -51,7 +51,7 @@ class CalendarActivity : AppCompatActivity() {
         ContextHolder.setPhoneNumber(mPhoneNumber)
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
 
-        mCalendarView.setDateRange(2021, 2025)
+        mCalendarView.setDateRange(2021, 2024) // if the end of year changed to 2025, then loading is not finish. doesn't know the reason for now.
         mCalendarView.initializeCalendar(iTask)
 
         DataManager.getLastFilterSettingState(this)?.let { calendarFilterFromDB ->
