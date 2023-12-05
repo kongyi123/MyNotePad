@@ -36,8 +36,6 @@ class DayActivity : AppCompatActivity() {
             setRadioButtonModify()
         }
 
-        var date = ""
-
         mSchedule = intent.getSerializableExtra("info") as? Schedule
         Log.i("kongyi1220", "hey!!! title = " + mSchedule?.title)
         titleView.setText(mSchedule?.title)
@@ -94,7 +92,7 @@ class DayActivity : AppCompatActivity() {
         }
 
         val radioGroup = findViewById<RadioGroup>(R.id.radio_group)
-        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.radio_button_red -> mSelectedColor = "red"
                 R.id.radio_button_orange -> mSelectedColor = "orange"

@@ -1,9 +1,14 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.google.gms.google-services'
+plugins {
+    id 'kotlin-android'
+    id 'com.android.library'
+    id 'com.google.gms.google-services'
+}
 
 android {
+    viewBinding {
+        enabled = true
+    }
+
     compileSdkVersion 31
 
     defaultConfig {
@@ -26,6 +31,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'com.example.personalcalendar'
 }
 
 dependencies {
