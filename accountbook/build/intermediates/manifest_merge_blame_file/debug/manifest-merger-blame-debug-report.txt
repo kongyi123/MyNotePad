@@ -3,48 +3,45 @@
 3    xmlns:tools="http://schemas.android.com/tools"
 4    package="com.example.accountbook" >
 5
-6    <uses-sdk
-7        android:minSdkVersion="21"
-7-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
-8        android:targetSdkVersion="32" />
-8-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
-9
-10    <uses-permission android:name="android.permission.READ_SMS" />
-10-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:6:5-67
-10-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:6:22-64
-11    <uses-permission
-11-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:7:5-9:40
-12        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-12-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:8:9-65
-13        tools:ignore="ScopedStorage" />
-13-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:9:9-37
-14    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-14-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:10:5-80
-14-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:10:22-77
-15
-16    <application android:requestLegacyExternalStorage="true" >
-16-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:12:5-23:19
-16-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:12:18-61
-17        <activity
-17-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:13:9-17:66
-18            android:name="com.example.accountbook.AccoutBookActivityO"
-18-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:14:13-48
-19            android:exported="false"
-19-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:15:13-37
-20            android:label="@string/title_activity_accout_book_o"
-20-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:16:13-65
-21            android:theme="@style/Theme.MyNotepad.NoActionBar" />
-21-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:17:13-63
-22        <activity
-22-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:18:9-22:66
-23            android:name="com.example.accountbook.accountBookActivity"
-23-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:19:13-48
-24            android:exported="true"
-24-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:20:13-36
-25            android:label="@string/title_activity_account_book"
-25-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:21:13-64
-26            android:theme="@style/Theme.MyNotepad.NoActionBar" />
-26-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:22:13-63
-27    </application>
-28
-29</manifest>
+6    <uses-sdk android:minSdkVersion="21" />
+6-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml
+7
+8    <uses-permission android:name="android.permission.READ_SMS" />
+8-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:5:5-67
+8-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:5:22-64
+9    <uses-permission
+9-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:6:5-8:40
+10        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+10-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:7:9-65
+11        tools:ignore="ScopedStorage" />
+11-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:8:9-37
+12    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+12-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:9:5-80
+12-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:9:22-77
+13
+14    <application android:requestLegacyExternalStorage="true" >
+14-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:11:5-22:19
+14-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:11:18-61
+15        <activity
+15-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:12:9-16:66
+16            android:name="com.example.accountbook.AccoutBookActivityO"
+16-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:13:13-48
+17            android:exported="false"
+17-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:14:13-37
+18            android:label="@string/title_activity_accout_book_o"
+18-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:15:13-65
+19            android:theme="@style/Theme.MyNotepad.NoActionBar" />
+19-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:16:13-63
+20        <activity
+20-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:17:9-21:66
+21            android:name="com.example.accountbook.accountBookActivity"
+21-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:18:13-48
+22            android:exported="true"
+22-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:19:13-36
+23            android:label="@string/title_activity_account_book"
+23-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:20:13-64
+24            android:theme="@style/Theme.MyNotepad.NoActionBar" />
+24-->C:\Users\kongy\Documents\MyNotePad\accountbook\src\main\AndroidManifest.xml:21:13-63
+25    </application>
+26
+27</manifest>

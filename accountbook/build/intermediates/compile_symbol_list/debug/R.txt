@@ -1810,6 +1810,8 @@ int color test_mtrl_calendar_day 0x0
 int color test_mtrl_calendar_day_selected 0x0
 int color tooltip_background_dark 0x0
 int color tooltip_background_light 0x0
+int color vector_tint_color 0x0
+int color vector_tint_theme_color 0x0
 int dimen abc_action_bar_content_inset_material 0x0
 int dimen abc_action_bar_content_inset_with_nav 0x0
 int dimen abc_action_bar_default_height_material 0x0
@@ -2686,6 +2688,7 @@ int id compose_view_saveable_id_tag 0x0
 int id compress 0x0
 int id confirm_button 0x0
 int id constraint 0x0
+int id consume_window_insets_tag 0x0
 int id container 0x0
 int id content 0x0
 int id contentPanel 0x0
@@ -3279,6 +3282,8 @@ int string clear_text_end_icon_content_description 0x0
 int string close_drawer 0x0
 int string close_sheet 0x0
 int string default_error_message 0x0
+int string default_popup_window_title 0x0
+int string dropdown_menu 0x0
 int string error_icon_content_description 0x0
 int string exposed_dropdown_menu_content_description 0x0
 int string fab_transformation_scrim_behavior 0x0
@@ -3376,6 +3381,8 @@ int string path_password_eye_mask_strike_through 0x0
 int string path_password_eye_mask_visible 0x0
 int string path_password_strike_through 0x0
 int string previous 0x0
+int string range_end 0x0
+int string range_start 0x0
 int string search_menu_title 0x0
 int string second_fragment_label 0x0
 int string selected 0x0
