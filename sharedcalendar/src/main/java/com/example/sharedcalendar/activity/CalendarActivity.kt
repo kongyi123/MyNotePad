@@ -51,7 +51,7 @@ class CalendarActivity : AppCompatActivity() {
         ContextHolder.setPhoneNumber(mPhoneNumber)
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
 
-        mCalendarView.setDateRange(2021, 2023)
+        mCalendarView.setDateRange(2021, 2025)
         mCalendarView.initializeCalendar(iTask)
 
         DataManager.getLastFilterSettingState(this)?.let { calendarFilterFromDB ->
