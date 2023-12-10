@@ -8,7 +8,7 @@ import com.example.model.DataManager
 import com.example.common.CommonUtils
 import com.example.common.data.Schedule
 import com.example.sharedcalendar.R
-// multiple files .
+
 class DayActivity : AppCompatActivity() {
     private lateinit var inputButtonView: Button
     private lateinit var closeButtonView: Button
