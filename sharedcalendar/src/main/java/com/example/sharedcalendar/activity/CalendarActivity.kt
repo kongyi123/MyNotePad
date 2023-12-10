@@ -66,7 +66,6 @@ class CalendarActivity : AppCompatActivity() {
             Log.i("kongyi0516", "loadComplete")
         }
 
-        Log.i("kongyi0521", "hi")
         DataManager.dataList.observe(this, androidx.lifecycle.Observer { scheduleList ->
             Log.i("kongyi0516", "dataList.observe")
 
