@@ -10,6 +10,7 @@ import com.example.common.data.Schedule
 import com.example.sharedcalendar.R
 
 // 연습 수정
+// 수정할게 있어서 추가로 수정
 
 class DayActivity : AppCompatActivity() {
     private lateinit var inputButtonView: Button
