@@ -3310,7 +3310,6 @@ id customPanel
 id cut
 id dark
 id date_picker_actions
-id date_text_view
 id decelerate
 id decelerateAndComplete
 id decor_content_parent
@@ -3345,15 +3344,11 @@ id editText
 id edit_keyword
 id edit_query
 id edit_text_id
-id edit_text_millisecond
 id elastic
 id embed
 id end
 id endToStart
 id end_padder
-id et_hour
-id et_min
-id et_second
 id expand_activities_button
 id expanded_menu
 id fade
@@ -3501,7 +3496,6 @@ id none
 id normal
 id north
 id notification_background
-id notification_content
 id notification_main_column
 id notification_main_column_container
 id off
@@ -3527,17 +3521,6 @@ id outline
 id outward
 id overshoot
 id packed
-id paper_recyclerview
-id paper_weight_activity_cancel_btn
-id paper_weight_activity_confirm_btn
-id paper_weight_color_circle
-id paper_weight_comment
-id paper_weight_item_title
-id paper_weight_question_tv
-id paper_weight_radio_button_no
-id paper_weight_radio_button_yes
-id paper_weight_radio_group
-id paper_weight_sub_tv
 id parallax
 id parent
 id parentPanel
@@ -3612,12 +3595,10 @@ id start
 id startHorizontal
 id startToEnd
 id startVertical
-id start_button
 id staticLayout
 id staticPostLayout
 id status_bar_latest_event_content
 id stop
-id stop_button
 id stretch
 id submenuarrow
 id submit_area
@@ -3639,7 +3620,6 @@ id tag_transition_group
 id tag_unhandled_key_event_manager
 id tag_unhandled_key_listeners
 id tag_window_insets_animation_callback
-id target
 id text
 id text2
 id textList
@@ -3825,8 +3805,6 @@ layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_history
 layout activity_main
-layout activity_paper_weight
-layout alarm_activity_main
 layout calendar_date_item
 layout calendar_item
 layout calendar_list_item
@@ -3852,7 +3830,6 @@ layout design_text_input_start_icon
 layout dialog
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
-layout item_weight_recycler
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title

@@ -15,7 +15,6 @@ import android.widget.ProgressBar
 import com.example.accountbook.accountBookActivity
 import com.example.common.ContextHolder
 import com.example.model.DataManager
-import com.example.mynotepad.activity.MainActivity
 import com.example.paperweight.PaperWeightActivity
 import com.example.personalcalendar.activity.PcalendarActivity
 import com.example.sharedcalendar.activity.CalendarActivity

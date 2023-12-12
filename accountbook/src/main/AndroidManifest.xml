@@ -10,14 +10,9 @@
 
     <application android:requestLegacyExternalStorage="true">
         <activity
-            android:name=".AccoutBookActivityO"
-            android:exported="false"
-            android:label="@string/title_activity_accout_book_o"
-            android:theme="@style/Theme.MyNotepad.NoActionBar" />
-        <activity
             android:name=".accountBookActivity"
-            android:exported="true"
-            android:label="@string/title_activity_account_book"
+            android:exported="false"
+            android:label="@string/title_activity_accout_book"
             android:theme="@style/Theme.MyNotepad.NoActionBar" />
     </application>
 

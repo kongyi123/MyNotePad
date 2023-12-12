@@ -176,7 +176,8 @@ class WidgetProvider : AppWidgetProvider() {
 
         views.setOnClickPendingIntent(
             R.id.clickable_view,
-            PendingIntent.getActivity(context, 0, intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_CANCEL_CURRENT))
+            PendingIntent.getActivity(context, 0, intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE))
         appWidgetManager.updateAppWidget(testWidget, views);
     }
 

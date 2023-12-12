@@ -78,7 +78,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent snoozeIntent = new Intent(context, AlarmReceiver.class);
         snoozeIntent.setAction("snooze");
         snoozeIntent.putExtra("noti_id", 0);
-        PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(context, 0, snoozeIntent, 0);
+        PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(context, 0, snoozeIntent, PendingIntent.FLAG_IMMUTABLE);
         builder.addAction(com.example.common.R.drawable.ic_launcher_background, "snooze", snoozePendingIntent);
         NotificationManager notificationManager = context.getSystemService(
                 NotificationManager.class

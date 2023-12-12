@@ -5,9 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-        <include
-            layout="@layout/calendar_row_item"
-            android:layout_height="wrap_content" />
+        <include layout="@layout/calendar_row_item"/>
         <include layout="@layout/calendar_row_item"/>
         <include layout="@layout/calendar_row_item"/>
         <include layout="@layout/calendar_row_item"/>

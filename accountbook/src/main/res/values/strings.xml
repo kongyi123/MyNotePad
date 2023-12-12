@@ -1,6 +1,6 @@
 <resources>
     <string name="title_activity_account_book">accountBookActivity</string>
-    <string name="title_activity_accout_book_o">AccoutBookActivityO</string>
+    <string name="title_activity_accout_book">AccoutBookActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

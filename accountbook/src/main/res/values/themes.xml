@@ -6,6 +6,7 @@
     </style>
 
     <style name="Theme.MyNotepad.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.MyNotepad" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MyNotepad.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

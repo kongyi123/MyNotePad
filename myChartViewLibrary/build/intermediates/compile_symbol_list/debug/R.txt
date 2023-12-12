@@ -3309,7 +3309,6 @@ int id customPanel 0x0
 int id cut 0x0
 int id dark 0x0
 int id date_picker_actions 0x0
-int id date_text_view 0x0
 int id decelerate 0x0
 int id decelerateAndComplete 0x0
 int id decor_content_parent 0x0
@@ -3344,15 +3343,11 @@ int id editText 0x0
 int id edit_keyword 0x0
 int id edit_query 0x0
 int id edit_text_id 0x0
-int id edit_text_millisecond 0x0
 int id elastic 0x0
 int id embed 0x0
 int id end 0x0
 int id endToStart 0x0
 int id end_padder 0x0
-int id et_hour 0x0
-int id et_min 0x0
-int id et_second 0x0
 int id expand_activities_button 0x0
 int id expanded_menu 0x0
 int id fade 0x0
@@ -3500,7 +3495,6 @@ int id none 0x0
 int id normal 0x0
 int id north 0x0
 int id notification_background 0x0
-int id notification_content 0x0
 int id notification_main_column 0x0
 int id notification_main_column_container 0x0
 int id off 0x0
@@ -3526,17 +3520,6 @@ int id outline 0x0
 int id outward 0x0
 int id overshoot 0x0
 int id packed 0x0
-int id paper_recyclerview 0x0
-int id paper_weight_activity_cancel_btn 0x0
-int id paper_weight_activity_confirm_btn 0x0
-int id paper_weight_color_circle 0x0
-int id paper_weight_comment 0x0
-int id paper_weight_item_title 0x0
-int id paper_weight_question_tv 0x0
-int id paper_weight_radio_button_no 0x0
-int id paper_weight_radio_button_yes 0x0
-int id paper_weight_radio_group 0x0
-int id paper_weight_sub_tv 0x0
 int id parallax 0x0
 int id parent 0x0
 int id parentPanel 0x0
@@ -3611,12 +3594,10 @@ int id start 0x0
 int id startHorizontal 0x0
 int id startToEnd 0x0
 int id startVertical 0x0
-int id start_button 0x0
 int id staticLayout 0x0
 int id staticPostLayout 0x0
 int id status_bar_latest_event_content 0x0
 int id stop 0x0
-int id stop_button 0x0
 int id stretch 0x0
 int id submenuarrow 0x0
 int id submit_area 0x0
@@ -3638,7 +3619,6 @@ int id tag_transition_group 0x0
 int id tag_unhandled_key_event_manager 0x0
 int id tag_unhandled_key_listeners 0x0
 int id tag_window_insets_animation_callback 0x0
-int id target 0x0
 int id text 0x0
 int id text2 0x0
 int id textList 0x0
@@ -3824,8 +3804,6 @@ int layout abc_select_dialog_material 0x0
 int layout abc_tooltip 0x0
 int layout activity_history 0x0
 int layout activity_main 0x0
-int layout activity_paper_weight 0x0
-int layout alarm_activity_main 0x0
 int layout calendar_date_item 0x0
 int layout calendar_item 0x0
 int layout calendar_list_item 0x0
@@ -3851,7 +3829,6 @@ int layout design_text_input_start_icon 0x0
 int layout dialog 0x0
 int layout ime_base_split_test_activity 0x0
 int layout ime_secondary_split_test_activity 0x0
-int layout item_weight_recycler 0x0
 int layout m3_alert_dialog 0x0
 int layout m3_alert_dialog_actions 0x0
 int layout m3_alert_dialog_title 0x0
