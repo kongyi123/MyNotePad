@@ -28,7 +28,8 @@ object MyNotification {
         val snoozeIntent = Intent(context, AlarmReceiver::class.java)
         snoozeIntent.action = "snooze"
         snoozeIntent.putExtra("noti_id", 0)
-        val snoozePendingIntent = PendingIntent.getBroadcast(context, 0, snoozeIntent, 0)
+        val snoozePendingIntent = PendingIntent.getBroadcast(context, 0, snoozeIntent,
+            PendingIntent.FLAG_IMMUTABLE)
         builder.addAction(R.drawable.ic_launcher_background, "snooze", snoozePendingIntent)
         val notificationManager: NotificationManager =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

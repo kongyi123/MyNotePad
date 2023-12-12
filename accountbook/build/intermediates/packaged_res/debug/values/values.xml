@@ -8,7 +8,8 @@
     <string name="previous">Previous</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="title_activity_account_book">accountBookActivity</string>
-    <string name="title_activity_accout_book_o">AccoutBookActivityO</string>
+    <string name="title_activity_accout_book">AccoutBookActivity</string>
+    <style name="Theme.MyNotepad" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Theme.MyNotepad.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Theme.MyNotepad.NoActionBar">
         <item name="windowActionBar">false</item>

@@ -3403,7 +3403,7 @@ string switch_role
 string tab
 string template_percent
 string title_activity_account_book
-string title_activity_accout_book_o
+string title_activity_accout_book
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
 style AndroidThemeColorAccentYellow
@@ -4118,6 +4118,7 @@ style Theme_MaterialComponents_Light_NoActionBar
 style Theme_MaterialComponents_Light_NoActionBar_Bridge
 style Theme_MaterialComponents_NoActionBar
 style Theme_MaterialComponents_NoActionBar_Bridge
+style Theme_MyNotepad
 style Theme_MyNotepad_AppBarOverlay
 style Theme_MyNotepad_NoActionBar
 style Theme_MyNotepad_PopupOverlay

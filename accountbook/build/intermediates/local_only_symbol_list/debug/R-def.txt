@@ -26,7 +26,8 @@ string next
 string previous
 string second_fragment_label
 string title_activity_account_book
-string title_activity_accout_book_o
+string title_activity_accout_book
+style Theme.MyNotepad
 style Theme.MyNotepad.AppBarOverlay
 style Theme.MyNotepad.NoActionBar
 style Theme.MyNotepad.PopupOverlay

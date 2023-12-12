@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity() {
         ad.show()
     }
 
-    fun onClickPlusIcon(view: View) {
+    public fun onClickPlusIcon(view: View) {
         val context:Context = application
         val textView = TabTextView(context)
         val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)

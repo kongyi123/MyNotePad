@@ -3402,7 +3402,7 @@ int string switch_role 0x0
 int string tab 0x0
 int string template_percent 0x0
 int string title_activity_account_book 0x0
-int string title_activity_accout_book_o 0x0
+int string title_activity_accout_book 0x0
 int style AlertDialog_AppCompat 0x0
 int style AlertDialog_AppCompat_Light 0x0
 int style AndroidThemeColorAccentYellow 0x0
@@ -4117,6 +4117,7 @@ int style Theme_MaterialComponents_Light_NoActionBar 0x0
 int style Theme_MaterialComponents_Light_NoActionBar_Bridge 0x0
 int style Theme_MaterialComponents_NoActionBar 0x0
 int style Theme_MaterialComponents_NoActionBar_Bridge 0x0
+int style Theme_MyNotepad 0x0
 int style Theme_MyNotepad_AppBarOverlay 0x0
 int style Theme_MyNotepad_NoActionBar 0x0
 int style Theme_MyNotepad_PopupOverlay 0x0
