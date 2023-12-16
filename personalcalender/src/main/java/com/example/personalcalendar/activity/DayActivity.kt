@@ -10,6 +10,8 @@ import com.example.model.DataManager.putSingleHistory
 import com.example.common.CommonUtils
 import com.example.common.data.Schedule
 
+
+// 브랜치 테스트 수정.
 class DayActivity : AppCompatActivity() {
     private lateinit var inputButtonView: Button
     private lateinit var closeButtonView: Button
