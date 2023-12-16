@@ -25,7 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
+//jjljljljljjl
 class MainActivity : AppCompatActivity() {
     private val TAG = "kongyi123/MainActivity"
     private var modelView: MainViewModel? = null
