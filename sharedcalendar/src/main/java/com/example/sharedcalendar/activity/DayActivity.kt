@@ -9,6 +9,11 @@ import com.example.common.CommonUtils
 import com.example.common.data.Schedule
 import com.example.sharedcalendar.R
 
+
+
+
+
+
 class DayActivity : AppCompatActivity() {
     private lateinit var inputButtonView: Button
     private lateinit var closeButtonView: Button

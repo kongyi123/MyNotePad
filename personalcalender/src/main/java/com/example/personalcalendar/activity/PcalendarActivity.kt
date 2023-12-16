@@ -36,6 +36,11 @@ class PcalendarActivity : AppCompatActivity() {
     private var mCurrentDate: CalendarDay? = null
     private lateinit var mPhoneNumber:String
 
+
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pcalendar)
@@ -102,6 +107,11 @@ class PcalendarActivity : AppCompatActivity() {
 
 
     }
+
+
+
+
+
 
     private fun showDialog(date:CalendarDay) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
