@@ -7,6 +7,7 @@ import android.widget.EditText
 import com.example.model.DataManager
 import com.example.sharedcalendar.R
 
+// last test.
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
