@@ -18,7 +18,10 @@ class HistoryActivity : AppCompatActivity() {
         DataManager.hList.observe(this, androidx.lifecycle.Observer {
             mHistoryList = it
             var str = ""
+            var cnt = 100
             for (history: History in mHistoryList.reversed() ) {
+                if (cnt <= 0) break
+                cnt --;
                 str += history.toString() + "\n\n"
             }
 

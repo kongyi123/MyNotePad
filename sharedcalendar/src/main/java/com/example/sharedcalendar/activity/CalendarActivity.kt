@@ -25,7 +25,7 @@ import com.example.mychartviewlibrary.calendar.list.OnScheduleItemClickListener
 
 class CalendarActivity : AppCompatActivity() {
     private lateinit var mContext: Context
-    private lateinit var mPhoneNumber: String
+    private var mPhoneNumber: String = ""
     private lateinit var mCalendarView: MyCalendarView
 
     val iTask = object : ITask {
