@@ -53,17 +53,25 @@ object DataManager {
     @SuppressLint("HardwareIds")
     fun getLineNumber(context:Context, tt:Activity):String {
         var result = "none"
-        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_PHONE_STATE) }
-            != PackageManager.PERMISSION_GRANTED) {
+        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_PHONE_STATE) } != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(tt, arrayOf(Manifest.permission.READ_PHONE_STATE),1004)
 
-        } else {
+        }
+
+        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_SMS) } != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(tt, arrayOf(Manifest.permission.READ_SMS),1004)
+
+        }
+
+        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_PHONE_STATE) } == PackageManager.PERMISSION_GRANTED
+            && context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_SMS) } == PackageManager.PERMISSION_GRANTED) {
             try {
                 result = (tt.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
-            } catch (e:NullPointerException) {
+            } catch (e: NullPointerException) {
                 e.printStackTrace()
             }
         }
+
         lineNumber = result
         return result
 

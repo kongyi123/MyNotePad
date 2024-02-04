@@ -103,8 +103,7 @@ class DayActivity : AppCompatActivity() {
             }
         }
 
-//        mPhoneNumber = DataManager.getLineNumber(this, this)
-        mPhoneNumber = "+821040052032"
+        mPhoneNumber = DataManager.getLineNumber(this, this)
     }
 
     private fun setInput() {

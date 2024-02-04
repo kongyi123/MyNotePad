@@ -45,8 +45,7 @@ class CalendarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
         mContext = this
-        //mPhoneNumber = DataManager.getLineNumber(this, this)
-        mPhoneNumber = "+821040052032"
+        mPhoneNumber = DataManager.getLineNumber(this, this)
         ContextHolder.setPhoneNumber(mPhoneNumber)
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
 

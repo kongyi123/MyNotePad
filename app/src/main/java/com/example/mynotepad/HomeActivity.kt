@@ -38,10 +38,9 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_access)
-//        mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
-        mPhoneNumber = "+821040052032"
+        mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
         // onCreate 이전에는 null이다.
-        if (/*mPhoneNumber == "+821027740931" || */mPhoneNumber == "+821040052032") {
+        if (mPhoneNumber == "+821027740931" || mPhoneNumber == "+821040052032") {
             isAdmin = true
         }
 
