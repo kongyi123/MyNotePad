@@ -25,7 +25,7 @@ import com.example.mychartviewlibrary.calendar.list.OnScheduleItemClickListener
 
 class CalendarActivity : AppCompatActivity() {
     private lateinit var mContext: Context
-    private lateinit var mPhoneNumber: String
+    private var mPhoneNumber: String = ""
     private lateinit var mCalendarView: MyCalendarView
 
     val iTask = object : ITask {
@@ -45,7 +45,8 @@ class CalendarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
         mContext = this
-        mPhoneNumber = DataManager.getLineNumber(this, this)
+        //mPhoneNumber = DataManager.getLineNumber(this, this)
+        mPhoneNumber = "+821040052032"
         ContextHolder.setPhoneNumber(mPhoneNumber)
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
 

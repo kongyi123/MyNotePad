@@ -81,32 +81,23 @@ class MyService : Service() {
     fun createChannel(channelId: String?, channelName: String?) {
         Log.d("kyi123", "createChannel")
         var notificationChannel: NotificationChannel? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationChannel = NotificationChannel(
-                channelId,
-                channelName,
-                NotificationManager.IMPORTANCE_MAX
-            )
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationChannel!!.description =
-                getString(R.string.breakfast_notification_channel_description)
-            notificationChannel.enableVibration(true)
-            notificationChannel.lockscreenVisibility = NotificationCompat.VISIBILITY_PRIVATE
-        }
+        notificationChannel = NotificationChannel(
+            channelId,
+            channelName,
+            NotificationManager.IMPORTANCE_MAX
+        )
+        notificationChannel.description = getString(R.string.breakfast_notification_channel_description)
+        notificationChannel.enableVibration(true)
+        notificationChannel.lockscreenVisibility = NotificationCompat.VISIBILITY_PRIVATE
 
 //        notificationChannel.setShowBadge(false);
 //        notificationChannel.enableLights(true);
 //        notificationChannel.setLightColor(Color.RED);
 //        notificationChannel.setShowBadge(true);
         var notificationManager: NotificationManager? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            notificationManager = getSystemService(
-                NotificationManager::class.java
-            )
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager!!.createNotificationChannel(notificationChannel!!)
-        }
+        notificationManager = getSystemService(
+            NotificationManager::class.java
+        )
+        notificationManager!!.createNotificationChannel(notificationChannel!!)
     }
 }

@@ -18,7 +18,7 @@ class DayActivity : AppCompatActivity() {
     private var mSelectedColor:String = ""
     private var isNew = false
     private var mSchedule: Schedule? = null
-    private lateinit var mPhoneNumber:String
+    private var mPhoneNumber:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +103,8 @@ class DayActivity : AppCompatActivity() {
             }
         }
 
-        mPhoneNumber = DataManager.getLineNumber(this, this)
+//        mPhoneNumber = DataManager.getLineNumber(this, this)
+        mPhoneNumber = "+821040052032"
     }
 
     private fun setInput() {

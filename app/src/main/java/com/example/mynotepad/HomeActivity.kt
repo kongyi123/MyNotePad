@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -27,7 +28,7 @@ import com.example.mynotesheet.NoteSheetActivity
 import com.google.firebase.FirebaseApp
 
 class HomeActivity : AppCompatActivity() {
-    private lateinit var mPhoneNumber:String
+    private var mPhoneNumber:String = ""
     var isAdmin:Boolean = false
     private var isSheetLoadReady:AtomicBoolean = AtomicBoolean(false)
     private var isDataListReady:AtomicBoolean = AtomicBoolean(false)
@@ -37,7 +38,8 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_access)
-        mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
+//        mPhoneNumber = DataManager.getLineNumber(this, this) // context 정보가 null이 아니려면 onCreate 에서 this를 넣어줘야.
+        mPhoneNumber = "+821040052032"
         // onCreate 이전에는 null이다.
         if (/*mPhoneNumber == "+821027740931" || */mPhoneNumber == "+821040052032") {
             isAdmin = true
@@ -129,10 +131,10 @@ class HomeActivity : AppCompatActivity() {
         ad.show()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.main_menu, menu)
-//        return super.onCreateOptionsMenu(menu)
-//    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {

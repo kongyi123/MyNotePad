@@ -17,7 +17,7 @@ class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
-        var notificationState = DataManager.getNotificationState(this)
+        val notificationState = DataManager.getNotificationState(this)
         if (notificationState) {
             findViewById<CheckBox>(R.id.notificationCheckBox).isChecked = true
         } else {
