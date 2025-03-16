@@ -78,6 +78,7 @@ class MyCalendarView : FrameLayout {
         this.startYear = startYear
         this.endYear = endYear
         this.calendarMaxPage = (endYear-startYear+1)*12
+        Log.i("kongyi250316", "calendarMaxPage = ${calendarMaxPage}")
     }
 
     fun loadFilterInfo(calendarFilter: CalendarFilter) {
