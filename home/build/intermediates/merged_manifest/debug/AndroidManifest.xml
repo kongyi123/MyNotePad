@@ -34,7 +34,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.example.common.AlarmReceiver" />
+        <receiver android:name="com.example.dailyreport.AlarmReceiver" />
         <receiver
             android:name="com.example.mynotepad.TimeChangeReceiver"
             android:enabled="true"

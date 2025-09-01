@@ -25,7 +25,7 @@ import com.example.mychartviewlibrary.calendar.list.OnScheduleItemClickListener
 
 class CalendarActivity : AppCompatActivity() {
     private lateinit var mContext: Context
-    private lateinit var mPhoneNumber: String
+    private var mPhoneNumber: String = ""
     private lateinit var mCalendarView: MyCalendarView
 
     val iTask = object : ITask {
@@ -49,7 +49,7 @@ class CalendarActivity : AppCompatActivity() {
         ContextHolder.setPhoneNumber(mPhoneNumber)
         mCalendarView = findViewById<MyCalendarView>(R.id.myCalendarView)
 
-        mCalendarView.setDateRange(2021, 2024) // if the end of year changed to 2025, then loading is not finish. doesn't know the reason for now.
+        mCalendarView.setDateRange(2021, 2026) // 재작년에 endTime을 2025년으로 했을 때는 잘 동작이 잘 안됐는데 2025년인 지금에는 26년까지 잘 동작함.
         mCalendarView.initializeCalendar(iTask)
 
         DataManager.getLastFilterSettingState(this)?.let { calendarFilterFromDB ->
@@ -62,7 +62,6 @@ class CalendarActivity : AppCompatActivity() {
             Log.i("kongyi0516", "loadComplete")
         }
 
-        Log.i("kongyi0521", "hi")
         DataManager.dataList.observe(this, androidx.lifecycle.Observer { scheduleList ->
             Log.i("kongyi0516", "dataList.observe")
 

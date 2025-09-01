@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.common.ContextHolder
-import com.example.common.MyNotification
 import com.example.model.data.History
 import com.example.model.data.Notice
 import com.example.common.data.Schedule
@@ -53,17 +52,25 @@ object DataManager {
     @SuppressLint("HardwareIds")
     fun getLineNumber(context:Context, tt:Activity):String {
         var result = "none"
-        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_PHONE_STATE) }
-            != PackageManager.PERMISSION_GRANTED) {
+        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_PHONE_STATE) } != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(tt, arrayOf(Manifest.permission.READ_PHONE_STATE),1004)
 
-        } else {
+        }
+
+        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_SMS) } != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(tt, arrayOf(Manifest.permission.READ_SMS),1004)
+
+        }
+
+        if (context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_PHONE_STATE) } == PackageManager.PERMISSION_GRANTED
+            && context.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_SMS) } == PackageManager.PERMISSION_GRANTED) {
             try {
                 result = (tt.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
-            } catch (e:NullPointerException) {
+            } catch (e: NullPointerException) {
                 e.printStackTrace()
             }
         }
+
         lineNumber = result
         return result
 
@@ -176,7 +183,7 @@ object DataManager {
         return b;
     }
 
-    fun getAllHistoryData(context:Context) {
+    fun getAllHistoryData(context: Context, block: (context: Context, content: String) -> Unit) {
         val historyList = ArrayList<History>()
         val sortByAge:Query = FirebaseDatabase.getInstance().reference.child("history")
         sortByAge.addValueEventListener(object : ValueEventListener {
@@ -203,7 +210,7 @@ object DataManager {
                     val content = decideNotifyText(historyList)
                     val subjectLineNumber = getOnlySubjectLineNumber(historyList)
                     if (lineNumber != subjectLineNumber) {
-                        MyNotification.doNotify(context, content) // 이거 대신 broadcast 하도록 해야한다.
+                        block(context, content)
                     }
                 }
             }

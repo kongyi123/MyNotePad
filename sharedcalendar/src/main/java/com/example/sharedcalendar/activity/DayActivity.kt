@@ -18,7 +18,7 @@ class DayActivity : AppCompatActivity() {
     private var mSelectedColor:String = ""
     private var isNew = false
     private var mSchedule: Schedule? = null
-    private lateinit var mPhoneNumber:String
+    private var mPhoneNumber:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
