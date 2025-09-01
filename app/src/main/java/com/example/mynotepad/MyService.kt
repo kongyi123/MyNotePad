@@ -43,7 +43,9 @@ class MyService : Service() {
             )
             startOnGoingNotification()
         }
-        DataManager.getAllHistoryData(this)
+        DataManager.getAllHistoryData(this, { context, content ->
+            MyNotification.doNotify(context, content) // 이거 대신 broadcast 하도록 해야한다.
+        })
         val intent = Intent(this, HomeActivity::class.java)
         CoroutineScope(Dispatchers.Default).launch {
             DataManager.get14daysSchedule(applicationContext, "id_list", intent).collect { scheduleList ->

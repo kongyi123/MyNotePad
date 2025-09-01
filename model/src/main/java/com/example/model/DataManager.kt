@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.common.ContextHolder
-import com.example.common.MyNotification
 import com.example.model.data.History
 import com.example.model.data.Notice
 import com.example.common.data.Schedule
@@ -184,7 +183,7 @@ object DataManager {
         return b;
     }
 
-    fun getAllHistoryData(context:Context) {
+    fun getAllHistoryData(context: Context, block: (context: Context, content: String) -> Unit) {
         val historyList = ArrayList<History>()
         val sortByAge:Query = FirebaseDatabase.getInstance().reference.child("history")
         sortByAge.addValueEventListener(object : ValueEventListener {
@@ -211,7 +210,7 @@ object DataManager {
                     val content = decideNotifyText(historyList)
                     val subjectLineNumber = getOnlySubjectLineNumber(historyList)
                     if (lineNumber != subjectLineNumber) {
-                        MyNotification.doNotify(context, content) // 이거 대신 broadcast 하도록 해야한다.
+                        block(context, content)
                     }
                 }
             }

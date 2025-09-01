@@ -1,4 +1,4 @@
-package com.example.common
+package com.example.mynotepad
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.example.common.R
 
 object MyNotification {
     private const val NOTIFICATION_ID = 1
